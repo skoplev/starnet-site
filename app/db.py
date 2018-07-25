@@ -60,6 +60,13 @@ def loadCPM(cpm_dir="data/expr/cpm"):
 		# Write to database
 		db.commit()
 
+def loadeQTL():
+	# TODO
+	pass
+
+def loadModules():
+	# TODO
+	pass
 
 
 # flask init-db command
@@ -69,7 +76,11 @@ def cmdInitDB():
     """Clear the existing data and create new tables."""
     initDB()
     click.echo('Initialized the database.')
+
+    # Load tables to database
     loadCPM()
+    loadeQTL()
+    loadModules()
 
 
 
