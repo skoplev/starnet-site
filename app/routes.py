@@ -1,5 +1,10 @@
-from flask import render_template, request, redirect, url_for
-from app import app
+from flask import (
+	render_template, request, redirect, url_for, g
+)
+
+from app.db import getDB, queryDB, closeDB
+
+from app import app  # required
 
 import warnings
 
@@ -21,6 +26,26 @@ def variant(snp_id):
 
 @app.route('/search', methods=['GET'])
 def search():
+
+	db = getDB()
+
+	cur = db.cursor()
+
+	sql = "INSERT INTO cpm (id, data) VALUES (?, ?)"
+	entry = ("ENSG101101010", "1.0,2.0")
+	cur.execute(sql, entry)
+	# cur.execute("INSERT INTO cpm (id, data) VALUES ('ENSG001001', '[1.0, 2.0, 1.3]')")
+	# cur.execute("INSERT INTO cpm (id, data) VALUES ('ENSG001001', '1.2')")
+	cur.close()
+	# closeDB()
+	db.commit()
+
+	# db = getDB()
+	for entry in queryDB("select * from cpm"):
+		print(entry["id"], ": ", entry["data"])
+
+
+
 	query = request.args['q']
 
 	# Redirect to page
