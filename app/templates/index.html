@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form action="/search" method="get">
+  <input type="text" name="q" placeholder="Search for genes...">
+  <!-- <button type="button">go</button> -->
+  <select name="type">
+    <option>Gene</option>
+    <option>SNP</option>
+  </select>
+  <input type="submit" name="">
+</form>
+
+{% endblock %}
