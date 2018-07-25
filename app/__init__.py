@@ -1,6 +1,8 @@
 import os
 
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
 
 def createApp(test_config=None):
 	# create and configure the app
@@ -28,5 +30,15 @@ def createApp(test_config=None):
 
 # Init flask application
 app = createApp()
+
+db = SQLAlchemy()
+
+
+from app.models import ExpressionCPM
+x = ExpressionCPM(ensembl_id="ENSG00000000", data=[1.0, 2.0, 3.0])
+
+
+# sci_db = connect("http://localhost:5001")
+
 
 from app import routes

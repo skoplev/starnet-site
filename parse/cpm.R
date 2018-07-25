@@ -1,0 +1,48 @@
+# Parses STARNET case RNA-seq counts into cpm (counts per million) matrices
+
+library(data.table)
+library(edgeR)
+library(biomaRt)
+
+# Use for debug only
+# rm(list=ls())
+# setwd("~/GoogleDrive/projects/STARNET/site")
+
+emat_folder = "data/expr"
+
+
+# Load biomaRt data
+ensembl = useMart("ensembl", dataset="hsapiens_gene_ensembl")
+
+gene_map = getBM(
+	attributes=c("ensembl_gene_id", "hgnc_symbol"),
+	mart=ensembl)
+
+dir.create(file.path(emat_folder, "cpm"))
+
+mat_files = list.files(emat_folder, "*.exp.mat$")
+# print(mat_files)
+out = lapply(mat_files, function(file_name) {
+	message("parsing: ", file_name)
+	# Read count matrix
+	mat = fread(file.path(emat_folder, file_name))
+
+	# Parse
+	id = as.character(mat$id)
+	mat = mat[, -1]
+	mat = data.matrix(mat)
+
+	# Additional transcript annotation
+	tissue = sapply(strsplit(file_name, "[.]"), function(x) x[2])
+	ensembl_base = sapply(strsplit(id, "[.]"), function(x) x[1])
+	hgnc_symbol = gene_map$hgnc_symbol[match(ensembl_base, gene_map$ensembl_gene_id)]
+
+	# Counts per million
+	norm_mat = cpm(mat)
+
+	# Collect attributes in data frame
+	df = cbind(id, ensembl_base, hgnc_symbol, tissue, data.frame(norm_mat))
+
+	write.csv(df, file.path(emat_folder, "cpm", file_name),
+		row.names=FALSE)
+})

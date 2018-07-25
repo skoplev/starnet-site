@@ -27,7 +27,6 @@ def search():
 	if request.args['type'] == "Gene":
 		return redirect(url_for("gene", symbol=query))
 	elif request.args['type'] == "SNP":
-		print("DEBUG")
 		return redirect(url_for("variant", snp_id=query))
 	else:
 		warnings.warn("Unrecognized GET type")
