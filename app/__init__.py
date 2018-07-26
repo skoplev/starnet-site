@@ -1,8 +1,6 @@
 
 import os
 
-print(os.getcwd())
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -36,51 +34,16 @@ def createApp(test_config=None):
 	return app
 
 
-# Load data into database
-# def updateDB():
-	# pass
-
-
 
 
 # Init flask application
 app = createApp()
 # from app import db
 from app import routes
+from app import api
 
-
-
-
-
-# from app.db import getDB
-
-# db = getDB()
-# print(db)
-
-
-# from . import db
-# .getDB
-# db = getDB()
-
-# from . import db
-# db = initDB()
-
-# print(db)
 
 # db = SQLAlchemy()
 
-# data_dir = "../data"
-
-# print(os.getcwd())
-
-
-# df.to_sql("cpm", db, if_exists='replace')
-
-
-
 # from app.models import ExpressionCPM
 # x = ExpressionCPM(ensembl_id="ENSG00000000", data=[1.0, 2.0, 3.0])
-
-
-# sci_db = connect("http://localhost:5001")
-
