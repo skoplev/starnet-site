@@ -9,6 +9,9 @@ from flask import current_app, g
 from flask.cli import with_appcontext
 
 def getDB():
+	"""
+	Opens sqlite3 database connection, returning database handle
+	"""
 	if 'db' not in g:
 		g.db = sqlite3.connect(
 		    current_app.config['DATABASE'],
@@ -39,6 +42,7 @@ def loadCPM(cpm_dir="data/expr/cpm"):
 
 	# get database handle
 	db = getDB()
+	click.echo("Loading CPM matrices...")
 	
 	# Assume that all files in directory are CPM files
 	cpm_files = os.listdir(cpm_dir)
@@ -60,13 +64,37 @@ def loadCPM(cpm_dir="data/expr/cpm"):
 		# Write to database
 		db.commit()
 
+	closeDB()
+
 def loadeQTL():
 	# TODO
 	pass
 
 def loadModules():
-	# TODO
-	pass
+	"""
+	Load STARNET co-expression modules into database.
+	Table describes the assigned module IDs for included transcripts
+	"""
+	db = getDB()
+	click.echo("Loading co-expression modules...")
+
+	# Load module co-expression table into panda
+	df = pd.read_csv("data/modules/modules.csv")
+
+	# Remove version from ensembl IDs
+	df['ensembl_versioned'] = df['ensembl']
+
+	# print(df['ensembl'].str.split('.'))
+	df['ensembl'], df['ensembl_version'] = df['ensembl'].str.split('.').str
+
+	# write to SQL database
+	df.to_sql("modules",
+		db, 
+		index=False,
+		if_exists="replace")
+
+	db.commit()
+	closeDB()
 
 
 # flask init-db command
@@ -78,7 +106,8 @@ def cmdInitDB():
     click.echo('Initialized the database.')
 
     # Load tables to database
-    loadCPM()
+    # Comment out during development to avoid reloading
+    # loadCPM()
     loadeQTL()
     loadModules()
 

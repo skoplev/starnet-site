@@ -27,7 +27,8 @@ function cpmBoxplot(data) {
 	// Plotly layout config
 	var layout = {
 		yaxis: {
-			title: 'CPM'
+			title: 'CPM',
+			showline: true
 		},
 		xaxis: {
 			title: 'Tissue/cell type'

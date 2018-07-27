@@ -3,9 +3,18 @@
 {% block content %}
 
 <h1>Gene page for: {{symbol}}</h1>
+Description of gene
 
+<h2>Absolute expression</h2>
 <!-- Boxplot to be populated by plotly.js -->
 <div id='cpm_boxplot'></div>
+
+<h2>Co-expression modules</h2>
+<div id='module_barplot'></div>
+
+<h2>Differential expression</h2>
+
+<h2>Variant associations (eQTL)</h2>
 
 {% endblock %}
 
