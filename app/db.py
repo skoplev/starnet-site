@@ -84,7 +84,7 @@ def loadModules():
 	# Remove version from ensembl IDs
 	df['ensembl_versioned'] = df['ensembl']
 
-	# print(df['ensembl'].str.split('.'))
+	# split versioned ensembl, overwrites 'ensembl'
 	df['ensembl'], df['ensembl_version'] = df['ensembl'].str.split('.').str
 
 	# write to SQL database
@@ -120,7 +120,10 @@ def initApp(app):
 
 
 def queryDB(query, args=(), one=False):
-    cur = getDB().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
+	'''
+	Connect to SQL database and execute SQL query
+	'''
+	cur = getDB().execute(query, args)
+	rv = cur.fetchall()
+	cur.close()
+	return (rv[0] if rv else None) if one else rv
