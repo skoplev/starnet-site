@@ -4,4 +4,29 @@
 
 <h1>Gene page for: {{symbol}}</h1>
 
+<!-- Boxplot to be populated by plotly.js -->
+<div id='cpm_boxplot'></div>
+
+{% endblock %}
+
+{% block script %}
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<!--  -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/gene.js') }}"></script>
+
+<!-- Set variables for client-side javascript from flask using Jinja -->
+<script type="text/javascript">
+
+	// User input for page, passed by Jinja variables
+	var input = {
+		gene: '{{symbol}}'
+	};
+</script>
+
 {% endblock %}
