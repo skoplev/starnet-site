@@ -12,6 +12,7 @@ $(document).ready(function() {
 	$.get('/api/in-module',
 		{q: input.gene}
 	).done(function(data) {
+		addModuleLinks(data);
 		moduleBarplot(data);
 	});
 });
@@ -44,6 +45,22 @@ function cpmBoxplot(data) {
 	Plotly.plot('cpm_boxplot', data, layout);
 };
 
+function addModuleLinks(data) {
+	var div = $('#module_links');
+
+	div.append("Modules (tissue of ", input.gene, "): ");
+
+	data.map(function(d) {
+		// Make hyperlink to module
+		var a = document.createElement('a');
+		$(a).html(d.module + " (" + d.gene_tissue + ")")
+			.attr('href', '/module/' + d.module)
+			.appendTo(div);
+
+		div.append(", ");
+	});
+};
+
 function moduleBarplot(data) {
 	// Plots module transcript statistics as stacked barplot
 
@@ -52,7 +69,8 @@ function moduleBarplot(data) {
 
 	// Get module ids
 	// Prepended with 'mod' to avoid number interpretation by Plotly
-	var module_ids = data.map(function(d) {return 'mod'.concat(d.module.toString())});
+	// var module_ids = data.map(function(d) {return 'mod'.concat(d.module.toString())});
+	var module_ids = data.map(function(d) {return 'mod' + d.module.toString() + " (" + d.gene_tissue + ")"});
 
 	// Tissue-by-tissue array containing data
 	plt_data = tissues.map(function(t) {
