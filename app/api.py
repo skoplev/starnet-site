@@ -91,4 +91,7 @@ def deg():
 
 	df = pd.read_sql_query(sql, db, params=[query])
 
-	return df.to_json(orient='records')
+	# filter columns
+	df = df[['tissue', 'ensembl', 'hgnc_symbol', 'baseMean', 'log2FoldChange', 'pvalue', 'padj']]
+
+	return jsonify(df.to_dict(orient='records'))

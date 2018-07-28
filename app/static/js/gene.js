@@ -13,7 +13,65 @@ $(document).ready(function() {
 		addModuleLinks(data);
 		moduleBarplot(data);
 	});
+
+	$.get('/api/deg',
+		{q: input.gene}
+	).done(function(data) {
+		renderTableDEG(data);
+	});
 });
+
+function renderTableDEG(data) {
+	// specified column order
+	var column_order = [
+		'tissue',
+		'ensembl',
+		'hgnc_symbol',
+		'baseMean',
+		'log2FoldChange',
+		'pvalue',
+		'padj'];
+
+	// Format data for DataTable
+	var tab = jsonFormatTable(data);
+
+	// Init DataTable
+	var table = $('#deg_table').DataTable({
+		data: tab.data,
+		columns: tab.columns,
+		colReorder: true
+	});
+
+	// Reorder columns based on column_order
+	var columns = Object.keys(data[0]);
+	var order = column_order.map(function(col) {
+		return columns.indexOf(col)
+	});
+
+	table.colReorder.order(order);
+}
+
+function jsonFormatTable(json) {
+	// formats json object from python pandas dataframe
+	// for use with DataTable
+
+	var tab_data = {};
+
+	// Assumes that all 'columns' are identical
+	var col_names = Object.keys(json[0]);
+
+	// [title: name, ...]
+	tab_data.columns = col_names.map(function(col) {
+		return {title: col}
+	});
+
+	// [row1, row2] of values
+	tab_data.data = json.map(function(row) {
+		return Object.values(row);
+	});
+
+	return tab_data;
+};
 
 function test() {
 	console.log("test invoked");

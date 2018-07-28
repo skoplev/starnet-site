@@ -15,6 +15,10 @@ Description of gene
 
 <h2>Differential expression</h2>
 
+<div>
+	<table id='deg_table' class='display'></table>
+</div>
+
 <h2>Variant associations (eQTL)</h2>
 
 {% endblock %}
@@ -27,7 +31,12 @@ Description of gene
 <!-- Plotly.js -->
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-<!--  -->
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<!-- colReorder extension -->
+<script src="https://cdn.datatables.net/colreorder/1.5.1/js/dataTables.colReorder.min.js"></script>
+
+<!-- Code for this page-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/gene.js') }}"></script>
 
 <!-- Set variables for client-side javascript from flask using Jinja -->
