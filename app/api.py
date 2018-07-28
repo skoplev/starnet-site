@@ -76,3 +76,19 @@ def inmodule():
 		})
 
 	return jsonify(message)
+
+
+@app.route('/api/deg', methods=['GET'])
+def deg():
+	'''
+	Gets differental statistics of ensembl ID. In table format.
+	'''
+	db = getDB()
+
+	query = request.args['q']
+
+	sql = "SELECT * FROM deg WHERE ensembl = ?"
+
+	df = pd.read_sql_query(sql, db, params=[query])
+
+	return df.to_json(orient='records')
