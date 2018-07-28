@@ -22,7 +22,10 @@ $(document).ready(function() {
 });
 
 function renderTableDEG(data) {
-	// specified column order
+	// get columns order as recieved from flask api
+	var columns = Object.keys(data[0]);
+
+	// specify desired column order
 	var column_order = [
 		'tissue',
 		'ensembl',
@@ -32,6 +35,15 @@ function renderTableDEG(data) {
 		'pvalue',
 		'padj'];
 
+	// specify numeric columns for rounding
+	var num_cols = ['baseMean', 'log2FoldChange', 'pvalue', 'padj'];
+	var precision = 4;
+
+	// get column index (original) of numeric columns
+	var num_col_index = num_cols.map(function(col) {
+		return columns.indexOf(col);
+	})
+
 	// Format data for DataTable
 	var tab = jsonFormatTable(data);
 
@@ -39,11 +51,17 @@ function renderTableDEG(data) {
 	var table = $('#deg_table').DataTable({
 		data: tab.data,
 		columns: tab.columns,
-		colReorder: true
+		colReorder: true,  // enabling column reorder plugin
+		// rounding transformation
+		columnDefs: [{
+			render: function(num, type, row) {
+				return num.toPrecision(precision);
+			},
+			targets: num_col_index
+		}]
 	});
 
 	// Reorder columns based on column_order
-	var columns = Object.keys(data[0]);
 	var order = column_order.map(function(col) {
 		return columns.indexOf(col)
 	});
