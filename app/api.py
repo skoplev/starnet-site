@@ -19,7 +19,7 @@ def cpm():
 	query = request.args['q']
 
 
-	tissues = ["AOR", "MAM", "VAF", "SF", "Blood", "LIV", "FC", "MP"]
+	tissues = ["AOR", "MAM", "VAF", "SF", "Blood", "LIV", "SKLM", "FC", "MP"]
 
 	expr = []  # list of results, one per tissue assumed
 	for tis in tissues:
@@ -27,7 +27,6 @@ def cpm():
 		sql = "SELECT * FROM cpm_%s WHERE ensembl_base = ?" %tis
 
 		results = queryDB(sql, [query])
-		print(results)
 
 		if len(results) > 0:
 			# parse SQL row to dictionary
@@ -39,7 +38,7 @@ def cpm():
 @app.route('/api/in-module', methods=['GET'])
 def inmodule():
 	'''
-	Which co-expression modules is a gene found in.
+	Which co-expression modules is a gene found in?
 	Returns module statistics.
 	'''
 	db = getDB()
@@ -52,7 +51,7 @@ def inmodule():
 	df = pd.read_sql_query(sql_ensembl, db, params=[query])
 
 	identified_modules = df['clust'].tolist()
-
+	gene_tissue = df['tissue'].tolist()  # input gene tissue of origin, in found modules
 
 	# Inner function for counting tissues of module
 	def countTissues(k, db):
@@ -60,15 +59,20 @@ def inmodule():
 
 		df = pd.read_sql_query(sql_module_tissue, db, params=[k])
 
-		stats = {}  # object for json transfer
-		stats['module'] = k
+		counts = df['tissue'].value_counts().to_dict()
 
-		# Count number of transcripts from tissues
-		stats['tissue_counts'] = df['tissue'].value_counts().to_dict()
-
-		return stats
+		return counts
 
 	# list comprehension, applying countTissues() to module ids
-	module_results = [countTissues(k, db) for k in identified_modules]
+	tissue_counts = [countTissues(k, db) for k in identified_modules]
 
-	return jsonify(module_results)
+	# Combine and format results
+	message = []
+	for i in range(len(identified_modules)):
+		message.append({
+			'module': identified_modules[i],
+			'tissue_counts': tissue_counts[i],
+			'gene_tissue': gene_tissue[i]
+		})
+
+	return jsonify(message)
