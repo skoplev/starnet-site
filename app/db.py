@@ -1,6 +1,6 @@
 import sqlite3
 
-import os
+import os, glob, re
 import pandas as pd
 
 import click
@@ -88,10 +88,51 @@ def loadModules():
 	df['ensembl'], df['ensembl_version'] = df['ensembl'].str.split('.').str
 
 	# write to SQL database
-	df.to_sql("modules",
+	df.to_sql('modules',
 		db, 
 		index=False,
-		if_exists="replace")
+		if_exists='replace')
+	db.commit()
+
+	# Specify primary key
+	# Does not work with sqlite, wait with implementation until migrating to another database
+	# db.execute('ALTER TABLE modules ADD PRIMARY KEY (ensembl)')
+	# db.commit()
+
+	closeDB()
+
+
+def loadDEG():
+	"""Load case-control differential expression tables into database."""
+
+	db = getDB()
+	click.echo("Loading differential expression statistics...")
+
+	files = glob.glob("data/DEG/deseq/deseq_full*")
+
+	# load dataframe for each tissue
+	frames = []
+	for f in files:
+		# get tissue encoded in file name
+		basename = os.path.basename(f)
+		tissue = re.split('_|\.', basename)[2]
+
+
+		# read file into pandas dataframe
+		df = pd.read_csv(f)
+		df.columns.values[0] = 'ensembl'
+		df['tissue'] = tissue
+
+		frames.append(df)  # store
+
+	# Combine dataframes into single table
+	combined_df = pd.concat(frames)
+
+	# Write combined table to SQL database
+	combined_df.to_sql('DEG',
+		db,
+		index=False,
+		if_exists='replace')
 
 	db.commit()
 	closeDB()
@@ -109,7 +150,8 @@ def cmdInitDB():
     # Comment out during development to avoid reloading
     # loadCPM()
     loadeQTL()
-    loadModules()
+    # loadModules()  # co-expression modules
+    loadDEG()  # differential expression
 
 
 

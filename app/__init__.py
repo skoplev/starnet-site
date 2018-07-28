@@ -5,7 +5,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 
-
 def createApp(test_config=None):
 	# create and configure the app
 	app = Flask(__name__, instance_relative_config=True)
@@ -21,7 +20,6 @@ def createApp(test_config=None):
 		# load the test config 
 		app.config.from_mapping(test_config)
 
-
 	try:
 		os.makedirs(app.instance_path)
 	except OSError:
@@ -32,7 +30,6 @@ def createApp(test_config=None):
 	db.initApp(app)
 
 	return app
-
 
 
 
