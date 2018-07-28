@@ -1,6 +1,4 @@
 $(document).ready(function() {
-	// console.log("Page loaded");
-
 	// Ajax get request for CPM data
 	$.get('/api/cpm', 
 		{q: input.gene}
@@ -48,16 +46,21 @@ function cpmBoxplot(data) {
 function addModuleLinks(data) {
 	var div = $('#module_links');
 
-	div.append("Modules (tissue of ", input.gene, "): ");
+	div.append("Module IDs (tissue of ", input.gene, "): ");
 
-	data.map(function(d) {
+	// Write comma separated list of links to div
+	data.map(function(d, i) {
+		// comma except for first entry
+		if (i > 0) {
+			div.append(", ");
+		}
+
 		// Make hyperlink to module
 		var a = document.createElement('a');
 		$(a).html(d.module + " (" + d.gene_tissue + ")")
 			.attr('href', '/module/' + d.module)
 			.appendTo(div);
 
-		div.append(", ");
 	});
 };
 
