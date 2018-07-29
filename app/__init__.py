@@ -1,8 +1,10 @@
+# Initialization of server application
 
 import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_bower import Bower
 
 
 def createApp(test_config=None):
@@ -29,18 +31,21 @@ def createApp(test_config=None):
 	from . import db
 	db.initApp(app)
 
-	return app
 
+	Bower(app)  # use bower.static for paths
+
+	return app
 
 
 # Init flask application
 app = createApp()
-# from app import db
+
+# Prepare js and css assets
+from . import assets
+
+
+# Load routes
 from app import routes
 from app import api
 
-
 # db = SQLAlchemy()
-
-# from app.models import ExpressionCPM
-# x = ExpressionCPM(ensembl_id="ENSG00000000", data=[1.0, 2.0, 3.0])

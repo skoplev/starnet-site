@@ -4,4 +4,10 @@
 
 <h1>SNP page for: {{snp_id}}</h1>
 
+<table id='eqtl_table'></table>
+
 {% endblock %}
+
+{% assets 'js_variant' %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
