@@ -67,8 +67,45 @@ def loadCPM(cpm_dir="data/expr/cpm"):
 	closeDB()
 
 def loadeQTL():
-	# TODO
-	pass
+	"""
+	Load cis-eQTL tables for all tissues including macrophages and foam cells.
+	"""
+	db = getDB()
+	click.echo("Loading cis-eQTL...")
+
+	eqtl_files = glob.glob('data/eQTL/STARNET.eQTLs.MatrixEQTL*')
+
+	frames = []
+	for file in eqtl_files:
+		base_name = os.path.basename(file)
+
+		# load eqtl table, as tab-separated file
+		df = pd.read_csv(file, sep='\t')
+
+		# split gene ids by ensembl base and version
+		ensembl, ensembl_version = df['gene'].str.split('.').str
+
+		# overwrite gene entry with ensembl id
+		df['gene'] = ensembl
+
+		# get tissue of file, write to column
+		tissue = base_name.split('.')[3]
+		df['tissue'] = tissue
+
+		frames.append(df)
+
+	combined_df = pd.concat(frames)
+
+	# sort by p-value globally
+	combined_df = combined_df.sort_values(by='p-value')
+
+	print(combined_df)
+
+	combined_df.to_sql('eqtl',
+		db,
+		index=False,
+		if_exists='replace')
+
 
 def loadModules():
 	"""
@@ -151,7 +188,7 @@ def cmdInitDB():
     # loadCPM()
     loadeQTL()
     # loadModules()  # co-expression modules
-    loadDEG()  # differential expression
+    # loadDEG()  # differential expression
 
 
 
