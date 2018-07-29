@@ -92,28 +92,6 @@ function renderTableQTL(data) {
 	renderTable(data, '#eqtl_table', config);
 }
 
-function jsonFormatTable(json) {
-	// formats json object from python pandas dataframe
-	// for use with DataTable
-
-	var tab_data = {};
-
-	// Assumes that all 'columns' are identical
-	var col_names = Object.keys(json[0]);
-
-	// [title: name, ...]
-	tab_data.columns = col_names.map(function(col) {
-		return {title: col}
-	});
-
-	// [row1, row2] of values
-	tab_data.data = json.map(function(row) {
-		return Object.values(row);
-	});
-
-	return tab_data;
-}
-
 function cpmBoxplot(data) {
 	// rename (duplicate) data for rendering with plotly
 	// modifies data array objects

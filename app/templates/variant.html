@@ -4,10 +4,29 @@
 
 <h1>SNP page for: {{snp_id}}</h1>
 
-<table id='eqtl_table'></table>
+<table id='eqtl_table' class='display'></table>
 
 {% endblock %}
 
+
+{% block script %}
+
+<!-- Use assets for minified code -->
 {% assets 'js_variant' %}
-<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+<!-- <script type="text/javascript" src="{{ ASSET_URL }}"></script> -->
 {% endassets %}
+
+<!-- use source code for development  -->
+<!-- <script type="text/javascript" src="/js/table.js"></script> -->
+<!-- <script type="text/javascript" src="/js/variant.js"></script> -->
+
+<script src="{{ url_for('static', filename='js/table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/variant.js') }}"></script>
+
+<script type="text/javascript">
+	var input = {
+		snp: '{{ snp_id }}'
+	};
+</script>
+
+{% endblock%}

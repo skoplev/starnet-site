@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+
 {% block content %}
 
 <h1>Gene page for: {{symbol}}</h1>
@@ -26,12 +27,17 @@ Description of gene
 
 {% endblock %}
 
+
 {% block script %}
 
-<!-- Code for the gene.html page-->
+<!-- Use assets for minimized code -->
 {% assets 'js_gene' %}
-<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+<!-- <script type="text/javascript" src="{{ ASSET_URL }}"></script> -->
 {% endassets %}
+
+<!-- Use source code for development -->
+<script src="{{ url_for('static', filename='js/table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/gene.js') }}"></script>
 
 
 <!-- Set variables for client-side javascript from flask using Jinja -->
