@@ -48,6 +48,10 @@ function renderTable(data, container, config) {
 		config.buttons = [];
 	}
 
+	if (config['columnDefs'] === undefined) {
+		config.columnDefs = [];
+	}
+
 	// get column index (original) of numeric columns
 	var num_col_index = config.num_cols.map(function(col) {
 		return columns.indexOf(col);
@@ -70,7 +74,7 @@ function renderTable(data, container, config) {
 				return num.toPrecision(config.precision);
 			},
 			targets: num_col_index
-		}]
+		}].concat(config.columnDefs)  // add custom column definitions
 	});
 
 	// Reorder columns based on column_order
@@ -102,7 +106,7 @@ function renderTableDEG(data) {
 			'pvalue',
 			'padj'
 		],
-		precision: 4,  // precision of rounding
+		precision: 5,  // precision of rounding
 		dom: 'Bfrti',
 		buttons: ['copyHtml5', 'csvHtml5']
 	};
@@ -114,16 +118,30 @@ function renderTableQTL(data) {
 	// Sets up eQTL table call for DataTable render
 	var columns = Object.keys(data[0]);
 
+	// SNP column index for generating urls
+	var snp_col_index = columns.indexOf('SNP');
+	if (snp_col_index === -1) {
+		snp_col_index = [];
+	}
+
 	var config = {
-		column_order: ['SNP', 'gene', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
+		column_order: ['SNP', 'ensembl', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
 		order: [[columns.indexOf('p-value'), 'asc']],  // sort by p-value column
 		num_cols: ['beta', 't-stat', 'p-value', 'adj.p-value'],
-		precision: 4,
+		precision: 5,
 		dom: 'Blfrtip',  // interface elements to show, and order
 		buttons: [
             'copyHtml5',
             'csvHtml5'
-        ]
+        ],
+        // Custom column definition to be appended to shared defs
+        columnDefs: [{
+			render: function(snp, type, row) {
+				// url link to snp
+				return "<a href='/variant/" + snp + "'>" + snp + "</a>";
+			},
+			targets: snp_col_index
+		}]
 	};
 
 	renderTable(data, '#eqtl_table', config);

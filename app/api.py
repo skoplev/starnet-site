@@ -120,4 +120,7 @@ def eqtl():
 	# execute query, collect as dataframe
 	df = pd.read_sql_query(sql, db, params=[query])
 
+	# Rename gene column to ensembl
+	df = df.rename(columns={'gene': 'ensembl'})
+
 	return jsonify(df.to_dict(orient='records'))
