@@ -23,6 +23,11 @@ def gene(symbol):
 def variant(snp_id):
 	return render_template('variant.html', snp_id=snp_id)
 
+# Module page
+@app.route('/module/<mod_id>')
+def module(mod_id):
+	return render_template('module.html', mod_id=mod_id)
+
 
 @app.route('/search', methods=['GET'])
 def search():
