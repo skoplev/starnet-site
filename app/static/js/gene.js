@@ -14,33 +14,38 @@ $(document).ready(function() {
 		moduleBarplot(data);
 	});
 
+	// Differential expression statistics
 	$.get('/api/deg',
 		{q: input.gene}
 	).done(function(data) {
 		renderTableDEG(data);
 	});
+
+	// eQTL tables
+	$.get('/api/eqtl',
+		{gene: input.gene}
+	).done(function(data) {
+		renderTableQTL(data);
+	});
 });
 
-function renderTableDEG(data) {
+function renderTable(data, container, config) {
+	// wrapper function for calling DataTable initialization
+	// container: JQuery selector for html table object
+	// config.num_cols: array of numerical columns to be rounded
+	// config.precision: rounding precision
+	// config.column_order: array of column ids
+
 	// get columns order as recieved from flask api
 	var columns = Object.keys(data[0]);
 
-	// specify desired column order
-	var column_order = [
-		'tissue',
-		'ensembl',
-		'hgnc_symbol',
-		'baseMean',
-		'log2FoldChange',
-		'pvalue',
-		'padj'];
-
-	// specify numeric columns for rounding
-	var num_cols = ['baseMean', 'log2FoldChange', 'pvalue', 'padj'];
-	var precision = 4;
+	// set default empty config values
+	if (config['num_cols'] === undefined) {
+		config.num_cols = [];
+	}
 
 	// get column index (original) of numeric columns
-	var num_col_index = num_cols.map(function(col) {
+	var num_col_index = config.num_cols.map(function(col) {
 		return columns.indexOf(col);
 	})
 
@@ -48,25 +53,67 @@ function renderTableDEG(data) {
 	var tab = jsonFormatTable(data);
 
 	// Init DataTable
-	var table = $('#deg_table').DataTable({
+	var table = $(container).DataTable({
 		data: tab.data,
 		columns: tab.columns,
+		order: config.order,
 		colReorder: true,  // enabling column reorder plugin
 		// rounding transformation
 		columnDefs: [{
 			render: function(num, type, row) {
-				return num.toPrecision(precision);
+				return num.toPrecision(config.precision);
 			},
 			targets: num_col_index
 		}]
 	});
 
 	// Reorder columns based on column_order
-	var order = column_order.map(function(col) {
+	var order = config.column_order.map(function(col) {
 		return columns.indexOf(col)
 	});
 
 	table.colReorder.order(order);
+}
+
+function renderTableDEG(data) {
+	// Sets up custom configuration of DataTable call for DEG table data
+
+	// Table configuration
+	var config = {
+		column_order: [
+			'tissue',
+			'ensembl',
+			'hgnc_symbol',
+			'baseMean',
+			'log2FoldChange',
+			'pvalue',
+			'padj'
+		],
+		// declaration of numerical column names to be rounded
+		num_cols: [
+			'baseMean',
+			'log2FoldChange',
+			'pvalue',
+			'padj'
+		],
+		precision: 4  // precision of rounding
+	};
+
+	renderTable(data, '#deg_table', config);
+}
+
+function renderTableQTL(data) {
+	// Sets up eQTL table call for DataTable render
+	var columns = Object.keys(data[0]);
+
+	var config = {
+		column_order: ['SNP', 'gene', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
+		order: [[columns.indexOf('p-value'), 'asc']],  // sort by p-value column
+		num_cols: ['beta', 't-stat', 'p-value', 'adj.p-value'],
+		precision: 4
+	};
+
+	renderTable(data, '#eqtl_table', config);
 }
 
 function jsonFormatTable(json) {
@@ -89,11 +136,7 @@ function jsonFormatTable(json) {
 	});
 
 	return tab_data;
-};
-
-function test() {
-	console.log("test invoked");
-};
+}
 
 function cpmBoxplot(data) {
 	// rename (duplicate) data for rendering with plotly
@@ -117,7 +160,7 @@ function cpmBoxplot(data) {
 	};
 
 	Plotly.plot('cpm_boxplot', data, layout);
-};
+}
 
 function addModuleLinks(data) {
 	var div = $('#module_links');
