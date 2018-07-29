@@ -44,6 +44,10 @@ function renderTable(data, container, config) {
 		config.num_cols = [];
 	}
 
+	if (config['buttons'] === undefined) {
+		config.buttons = [];
+	}
+
 	// get column index (original) of numeric columns
 	var num_col_index = config.num_cols.map(function(col) {
 		return columns.indexOf(col);
@@ -57,6 +61,8 @@ function renderTable(data, container, config) {
 		data: tab.data,
 		columns: tab.columns,
 		order: config.order,
+		dom: config.dom,
+		buttons: config.buttons,
 		colReorder: true,  // enabling column reorder plugin
 		// rounding transformation
 		columnDefs: [{
@@ -96,7 +102,9 @@ function renderTableDEG(data) {
 			'pvalue',
 			'padj'
 		],
-		precision: 4  // precision of rounding
+		precision: 4,  // precision of rounding
+		dom: 'Bfrti',
+		buttons: ['copyHtml5', 'csvHtml5']
 	};
 
 	renderTable(data, '#deg_table', config);
@@ -110,7 +118,12 @@ function renderTableQTL(data) {
 		column_order: ['SNP', 'gene', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
 		order: [[columns.indexOf('p-value'), 'asc']],  // sort by p-value column
 		num_cols: ['beta', 't-stat', 'p-value', 'adj.p-value'],
-		precision: 4
+		precision: 4,
+		dom: 'Blfrtip',  // interface elements to show, and order
+		buttons: [
+            'copyHtml5',
+            'csvHtml5'
+        ]
 	};
 
 	renderTable(data, '#eqtl_table', config);
