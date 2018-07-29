@@ -1,5 +1,5 @@
 from flask import (
-	jsonify, request
+	jsonify, request, abort
 )
 
 import pandas as pd
@@ -93,5 +93,31 @@ def deg():
 
 	# filter columns
 	df = df[['tissue', 'ensembl', 'hgnc_symbol', 'baseMean', 'log2FoldChange', 'pvalue', 'padj']]
+
+	return jsonify(df.to_dict(orient='records'))
+
+
+@app.route('/api/eqtl', methods=['GET'])
+def eqtl():
+	'''
+	Get input
+	snp: rsxxx id
+	gene: ensembl id
+	'''
+
+	db = getDB()
+
+	# Get input, set sql column to query
+	if request.args.get('gene') is not None:
+		query = request.args['gene']
+		sql = "SELECT * FROM eqtl WHERE gene = ?"
+	elif request.args.get('snp') is not None:
+		sql = "SELECT * FROM eqtl WHERE SNP = ?"
+		query = request.args['snp']
+	else:
+		abort(400)  # bad request
+
+	# execute query, collect as dataframe
+	df = pd.read_sql_query(sql, db, params=[query])
 
 	return jsonify(df.to_dict(orient='records'))
