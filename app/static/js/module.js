@@ -8,6 +8,9 @@ $(document).ready(function() {
 });
 
 function renderModuleTable(data) {
+	var columns = Object.keys(data[0]);
+
+	var gene_col_index = columns.indexOf('ensembl');
 
 	var config = {
 		column_order: [
@@ -17,7 +20,13 @@ function renderModuleTable(data) {
 			'clust'
 		],
 		dom: 'Blfrtip',
-		buttons: ['copyHtml5', 'csvHtml5']
+		buttons: ['copyHtml5', 'csvHtml5'],
+		columnDefs: [{
+			render: function(gene, type, row) {
+				return "<a href='/gene/" + gene + "'>" + gene + "</a>";
+			},
+			targets: gene_col_index
+		}]
 	};
 
 	renderTable(data, '#mod_table', config);
