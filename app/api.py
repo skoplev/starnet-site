@@ -78,6 +78,26 @@ def inmodule():
 	return jsonify(message)
 
 
+@app.route('/api/module', methods=['GET'])
+def getmodule():
+	'''
+	Get module data for kth module
+	'''
+
+	db = getDB()
+
+	k = request.args['k']
+
+	sql = "SELECT * FROM modules WHERE clust = ?"
+
+	df = pd.read_sql_query(sql, db, params=[k])
+
+	# Filter columns
+	df = df[['tissue', 'ensembl', 'gene_symbol', 'clust']]
+
+	return jsonify(df.to_dict(orient='records'))
+
+
 @app.route('/api/deg', methods=['GET'])
 def deg():
 	'''
