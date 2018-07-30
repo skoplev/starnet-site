@@ -98,6 +98,29 @@ def getmodule():
 	return jsonify(df.to_dict(orient='records'))
 
 
+@app.route('/api/go', methods=['GET'])
+def getgo():
+	# Check user input
+	if request.args.get('k') is None:
+		abort(400)
+	k = request.args['k']  # kth module
+
+	db = getDB()
+
+	if request.args.get('subtree') is not None:
+		# GO subtree
+		go_subtree = request.args['subtree']
+
+		sql = "SELECT * FROM go WHERE module = ? AND termOntology = ?"
+		df = pd.read_sql_query(sql, db, params=[k, go_subtree])
+	else:
+		# get all GO subtrees
+		sql = "SELECT * FROM go WHERE module = ?"
+		df = pd.read_sql_query(sql, db, params=[k])
+
+	return jsonify(df.to_dict(orient='records'))
+
+
 @app.route('/api/deg', methods=['GET'])
 def deg():
 	'''
