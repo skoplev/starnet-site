@@ -4,8 +4,21 @@
 
 <h1>Module {{ mod_id }}</h1>
 
+<table id='mod_table' class='display'></table>
+
 {% endblock %}
 
 {% block script %}
+
+<script src="{{ url_for('static', filename='js/table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/module.js') }}"></script>
+
+<script type="text/javascript">
+
+	// User input for page, passed by Jinja variables
+	var input = {
+		mod_id: '{{mod_id}}'
+	};
+</script>
 
 {% endblock %}
