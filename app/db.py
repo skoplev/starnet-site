@@ -138,6 +138,34 @@ def loadModules():
 
 	closeDB()
 
+def loadModuleGO():
+	"""
+	Load Gene Ontology (GO) enrichment tables for co-expression modules into sqlite3 datbase
+	"""
+
+	db = getDB()
+
+	click.echo("Loading GO tables...")
+
+	# Load GO enrichment tables by GO category
+	frames = []
+	for go_group in ['BP', 'CC', 'MF']:
+		frames.append(
+			pd.read_csv("data/modules/GO/mod_GO_" + go_group + ".tsv", sep="\t")
+		)
+
+	combined_df = pd.concat(frames)
+
+	# Write to sql database
+	combined_df.to_sql('go',
+		db,
+		index=False,
+		if_exists='replace'
+	)
+
+	db.commit()
+	closeDB()
+
 
 def loadDEG():
 	"""Load case-control differential expression tables into database."""
@@ -186,8 +214,9 @@ def cmdInitDB():
     # Load tables to database
     # Comment out during development to avoid reloading
     # loadCPM()
-    loadeQTL()
+    # loadeQTL()
     # loadModules()  # co-expression modules
+    loadModuleGO()  # gene ontology tables
     # loadDEG()  # differential expression
 
 
