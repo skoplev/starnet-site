@@ -203,6 +203,22 @@ def loadDEG():
 	closeDB()
 
 
+def loadPhenoAssoc():
+	db = getDB()
+	click.echo("Loading phenotype associations...")
+
+	df = pd.read_csv('data/modules/pheno/pheno_pval.csv')
+
+	df.to_sql('pheno',
+		db,
+		index=False,
+		if_exists='replace'
+	)
+
+	db.commit()
+	closeDB()
+
+
 # flask init-db command
 @click.command('init-db')
 @with_appcontext
@@ -218,7 +234,7 @@ def cmdInitDB():
     # loadModules()  # co-expression modules
     loadModuleGO()  # gene ontology tables
     # loadDEG()  # differential expression
-
+    loadPhenoAssoc()
 
 
 # Registration with app
