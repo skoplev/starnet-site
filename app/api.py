@@ -167,3 +167,20 @@ def eqtl():
 	df = df.rename(columns={'gene': 'ensembl'})
 
 	return jsonify(df.to_dict(orient='records'))
+
+
+@app.route('/api/pheno', methods=['GET'])
+def pheno():
+	"""
+	Get phenotype associations for kth module
+	"""
+
+	db = getDB()
+
+	k = request.args['k']
+
+	sql = "SELECT * FROM pheno WHERE clust = ?"
+
+	df = pd.read_sql_query(sql, db, params=[k])
+
+	return jsonify(df.to_dict(orient='records'))
