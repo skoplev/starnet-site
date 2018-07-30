@@ -10,6 +10,32 @@
 <h2>Transcripts</h2>
 <table id='mod_table' class='display'></table>
 
+<br>
+
+<h2>Gene Ontology enrichment</h2>
+
+<!-- Tab navigation for GO tables -->
+<nav>
+ 	<div class="nav nav-tabs" id="nav-tab" role="tablist">
+		<a class="nav-item nav-link active" id="nav-go_bp-tab" data-toggle="tab" href="#nav-go_bp" role="tab" aria-controls="nav-go_bp" aria-selected="true">Biological processes</a>
+		<a class="nav-item nav-link" id="nav-go_cc-tab" data-toggle="tab" href="#nav-go_cc" role="tab" aria-controls="nav-go_cc" aria-selected="false">Cellular components</a>
+		<a class="nav-item nav-link" id="nav-go_mf-tab" data-toggle="tab" href="#nav-go_mf" role="tab" aria-controls="nav-go_mf" aria-selected="false">Molecular function</a>
+ 	</div>
+</nav>
+
+<!-- Content (tables) for Gene Ontology enrichment -->
+<div class="tab-content" id="nav-tabContent">
+	<div class="tab-pane fade show active" id="nav-go_bp" role="tabpanel" aria-labelledby="nav-go_bp-tab">
+		<table id="go_bp_table" class="display"></table>
+	</div>
+	<div class="tab-pane fade" id="nav-go_cc" role="tabpanel" aria-labelledby="nav-go_cc-tab">
+		<table id="go_cc_table" class="display"></table>
+	</div>
+	<div class="tab-pane fade" id="nav-go_mf" role="tabpanel" aria-labelledby="nav-go_mf-tab">
+		<table id="go_mf_table" class="display"></table>
+	</div>
+</div>
+
 {% endblock %}
 
 {% block script %}

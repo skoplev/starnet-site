@@ -8,8 +8,6 @@ function renderTable(data, container, config) {
 	// config.precision: rounding precision
 	// config.column_order: array of column ids
 
-	// get columns order as recieved from flask api
-	var columns = Object.keys(data[0]);
 
 	// set default empty config values
 	if (config['num_cols'] === undefined) {
@@ -24,9 +22,33 @@ function renderTable(data, container, config) {
 		config.columnDefs = [];
 	}
 
+
+	// if column order is specified
+	if (config['column_order'] !== undefined) {
+		// filter input data such that it includes only columns specified
+		data = filterColumns(data, config.column_order);
+	}
+
+	// get columns order as recieved from flask api
+	var columns = Object.keys(data[0]);
+
+
+	if (config['orderby'] === undefined) {
+		// config.orderby = '';
+		config.order = undefined;
+	} else {
+		config.order = [[columns.indexOf(config.orderby), 'asc']];  // sort by p-value column
+	}
+
 	// get column index (original) of numeric columns
 	var num_col_index = config.num_cols.map(function(col) {
 		return columns.indexOf(col);
+	});
+
+	// compile custom columnDefs by linking targets string to column index
+	config.columnDefs = config.columnDefs.map(function(def) {
+		def.targets = columns.indexOf(def.targets);
+		return def;
 	})
 
 	// Format data for DataTable
@@ -77,4 +99,21 @@ function jsonFormatTable(json) {
 	});
 
 	return tab_data;
+}
+
+// Filter data frame by removing specified 'columns'
+// returns modified data
+function filterColumns(data, include) {
+
+	var new_data = [];
+	for (var i = 0; i < data.length; i++) {
+		new_data[i] = {};  // new row
+		for (k in include) {
+			key = include[k];
+			// copy data and key to new row
+			new_data[i][key] = data[i][key];
+		}
+	}
+
+	return(new_data);
 }

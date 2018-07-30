@@ -1,11 +1,33 @@
 $(document).ready(function() {
-
+	// Get genes found in module
 	$.get('/api/module',
 		{k: input.mod_id}
 	).done(function(data) {
 		renderModulePie(data);
 		renderModuleTable(data);
 	});
+
+	// Get GO enrichment tables
+	$.get('/api/go',
+		{k: input.mod_id, subtree: 'BP'}
+	).done(function(data) {
+		renderTableGO(data, '#go_bp_table');
+	});
+
+	// CC
+	$.get('/api/go',
+		{k: input.mod_id, subtree: 'CC'}
+	).done(function(data) {
+		renderTableGO(data, '#go_cc_table');
+	});
+
+	// MF
+	$.get('/api/go',
+		{k: input.mod_id, subtree: 'MF'}
+	).done(function(data) {
+		renderTableGO(data, '#go_mf_table');
+	});
+
 });
 
 function renderModulePie(data) {
@@ -52,9 +74,34 @@ function renderModuleTable(data) {
 			render: function(gene, type, row) {
 				return "<a href='/gene/" + gene + "'>" + gene + "</a>";
 			},
-			targets: gene_col_index
+			targets: 'ensembl'
 		}]
 	};
 
 	renderTable(data, '#mod_table', config);
+}
+
+function renderTableGO(data, dom_sel) {
+
+	var columns
+
+	var config = {
+		column_order: [
+			'termID',
+			'termName',
+			'termDefinition',
+			'enrichmentP',
+			'BonferoniP'
+		],
+		num_cols: [
+			'enrichmentP',
+			'BonferoniP'
+		],
+		orderby: 'enrichmentP',
+		precision: 5,
+		dom: 'Blfrtip',
+		buttons: ['copyHtml5', 'csvHtml5']
+	};
+
+	renderTable(data, dom_sel, config);
 }
