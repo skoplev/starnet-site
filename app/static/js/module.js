@@ -3,9 +3,28 @@ $(document).ready(function() {
 	$.get('/api/module',
 		{k: input.mod_id}
 	).done(function(data) {
+		renderModulePie(data);
 		renderModuleTable(data);
 	});
 });
+
+function renderModulePie(data) {
+	// Count transcripts from certain tissues
+	var tissue = data.map(function(row) {
+		return row['tissue']
+	})
+
+	// count using underscore.js
+	var tissue_counts = _.countBy(tissue);
+
+	pie_data = [{
+		values: Object.values(tissue_counts),
+		labels: Object.keys(tissue_counts),
+		type: 'pie'
+	}];
+
+	Plotly.newPlot('tissue_pie', pie_data)
+}
 
 function renderModuleTable(data) {
 	var columns = Object.keys(data[0]);
