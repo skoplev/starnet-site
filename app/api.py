@@ -111,11 +111,11 @@ def getgo():
 		# GO subtree
 		go_subtree = request.args['subtree']
 
-		sql = "SELECT * FROM go WHERE module = ? AND termOntology = ?"
+		sql = "SELECT * FROM go WHERE module = ? AND termOntology = ? AND bkgrTermSize < '1000'"
 		df = pd.read_sql_query(sql, db, params=[k, go_subtree])
 	else:
 		# get all GO subtrees
-		sql = "SELECT * FROM go WHERE module = ?"
+		sql = "SELECT * FROM go WHERE module = ? AND bkgrTermSize < '1000'"
 		df = pd.read_sql_query(sql, db, params=[k])
 
 	return jsonify(df.to_dict(orient='records'))
