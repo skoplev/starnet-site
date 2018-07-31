@@ -183,4 +183,20 @@ def pheno():
 
 	df = pd.read_sql_query(sql, db, params=[k])
 
+	# Rename columns
+	df = df.rename(columns={
+		'case_control_DEG': 'DEG',
+		'syntax_score': 'SYNTAX',
+		'ndv': 'Diseased vessels',
+		'BMI(kg/m2)': 'BMI',
+		'CRP(mg/l)': 'CRP',
+		'HbA1c(%)': 'HbA1c',
+		'P-Chol(mmol/l)': 'P-Chol',
+		'fP-LDL-Chol(mmol/l)': 'fP-LDL-Chol',
+		'fP-HDL-Chol(mmol/l)': 'fP-HDL-Chol',
+		'fP-TG(mmol/l)': 'fP-TG'
+	})
+
+	print(list(df))
+
 	return jsonify(df.to_dict(orient='records'))
