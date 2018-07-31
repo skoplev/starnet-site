@@ -36,6 +36,16 @@ $(document).ready(function() {
 
 });
 
+var brewer_pastel1 = [
+	'rgb(251,180,174)',
+	'rgb(179,205,227)',
+	'rgb(204,235,197)',
+	'rgb(222,203,228)',
+	'rgb(254,217,166)',
+	'rgb(229,216,189)',
+	'rgb(253,218,236)'
+]
+
 function renderModulePie(data) {
 	// Specify order of tissues for plotting
 	var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM'];
@@ -56,7 +66,16 @@ function renderModulePie(data) {
 		values: tissue_counts_ordered,
 		labels: tissue_order,
 		type: 'pie',
-		sort: false  // dont reorder and recolor tissues
+		sort: false,  // dont reorder and recolor tissues
+		hole: .4,
+		marker: {
+			// colors: brewer_pastel1
+			// outline color
+			line: {
+				color: 'rgba(50, 50, 50, 1.0)',
+				width: 1
+		    },
+		}
 	}];
 
 	Plotly.newPlot('tissue_pie', pie_data)
@@ -93,8 +112,6 @@ function renderPhenoAssoc(data) {
 	// Remove cluster column if present
 	data = filterColumns(data, 'clust', 'exclude');
 
-	// $('#pheno_assoc').text(JSON.stringify(data));
-
 	// dict to array of dict
 	data = Object.keys(data[0]).map(function(key) {
 		return { type: key, pval: data[0][key]}; 
@@ -114,17 +131,18 @@ function renderPhenoAssoc(data) {
 	  type: 'scatter',
 	  x: data.map(function(d) {return d.logp}),
 	  y: data.map(function(d) {return d.type}),
-
 	  mode: 'markers',
-	  name: 'Percent of estimated voting age population',
+	  // name: 'Percent of estimated voting age population',
 	  marker: {
-		color: 'rgba(156, 165, 196, 0.95)',
+		// color: 'rgba(156, 165, 196, 0.95)',
+		color: 'rgba(179, 205, 227, 1.00)',
 		line: {
-			color: 'rgba(156, 165, 196, 1.0)',
+			// color: 'rgba(156, 165, 196, 1.0)',
+			color: 'rgba(50, 50, 50, 1.0)',
 			width: 1
 	    },
 			symbol: 'circle',
-			size: 16
+			size: 12
 		}
 	}];
 
