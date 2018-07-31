@@ -7,6 +7,12 @@ $(document).ready(function() {
 		renderModuleTable(data);
 	});
 
+	$.get('/api/pheno',
+		{k: input.mod_id}
+	).done(function(data) {
+		renderPhenoAssoc(data);
+	});
+
 	// Get GO enrichment tables
 	$.get('/api/go',
 		{k: input.mod_id, subtree: 'BP'}
@@ -79,6 +85,93 @@ function renderModuleTable(data) {
 	};
 
 	renderTable(data, '#mod_table', config);
+}
+
+function renderPhenoAssoc(data) {
+	var max_logp = 100;
+
+	// Remove cluster column if present
+	data = filterColumns(data, 'clust', 'exclude');
+
+	// $('#pheno_assoc').text(JSON.stringify(data));
+
+	// dict to array of dict
+	data = Object.keys(data[0]).map(function(key) {
+		return { type: key, pval: data[0][key]}; 
+	});
+
+	// Sort by p-values
+	data = _.sortBy(data, function(d) {return d.pval}).reverse();
+
+	// calculate -log10 p values, capped at specified maximum
+	// alters data object
+	data.map(function(d) {
+		d.logp = Math.min(-Math.log10(d.pval), max_logp);
+	})
+
+
+	var plot_data = [{
+	  type: 'scatter',
+	  x: data.map(function(d) {return d.logp}),
+	  y: data.map(function(d) {return d.type}),
+
+	  mode: 'markers',
+	  name: 'Percent of estimated voting age population',
+	  marker: {
+		color: 'rgba(156, 165, 196, 0.95)',
+		line: {
+			color: 'rgba(156, 165, 196, 1.0)',
+			width: 1
+	    },
+			symbol: 'circle',
+			size: 16
+		}
+	}];
+
+	var layout = {
+	  // title: 'Votes cast for ten lowest voting age population in OECD countries',
+	  xaxis: {
+	  	title: '-log10 p',
+	    showgrid: false,
+	    showline: true,
+	    linecolor: 'rgb(102, 102, 102)',
+	    titlefont: {
+	      font: {
+	        color: 'rgb(204, 204, 204)'
+	      }
+	    },
+	    tickfont: {
+	      font: {
+	        color: 'rgb(102, 102, 102)'
+	      }
+	    },
+	    autotick: false,
+	    dtick: 10,
+	    ticks: 'outside',
+	    tickcolor: 'rgb(102, 102, 102)'
+	  },
+	  margin: {
+	    l: 140,
+	    r: 40,
+	    b: 50,
+	    t: 80
+	  },
+	  legend: {
+	    font: {
+	      size: 10,
+	    },
+	    yanchor: 'middle',
+	    xanchor: 'right'
+	  },
+	  width: 600,
+	  height: 600,
+	  // paper_bgcolor: 'rgb(254, 247, 234)',
+	  // plot_bgcolor: 'rgb(254, 247, 234)',
+	  hovermode: 'closest'
+	};
+
+
+	Plotly.newPlot('pheno_assoc', plot_data, layout);
 }
 
 function renderTableGO(data, dom_sel) {

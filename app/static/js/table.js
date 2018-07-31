@@ -103,13 +103,22 @@ function jsonFormatTable(json) {
 
 // Filter data frame by removing specified 'columns'
 // returns modified data
-function filterColumns(data, include) {
+// method: 'include', 'exclude'
+function filterColumns(data, columns, method='include') {
+
+	if (method === 'exclude') {
+		columns = _.difference(Object.keys(data[0]), [columns]);
+	} else if (method === 'include') {
+		// proceed with columns
+	} else {
+		throw new Error("filterColumns(): invalid method");
+	}
 
 	var new_data = [];
 	for (var i = 0; i < data.length; i++) {
 		new_data[i] = {};  // new row
-		for (k in include) {
-			key = include[k];
+		for (k in columns) {
+			key = columns[k];
 			// copy data and key to new row
 			new_data[i][key] = data[i][key];
 		}
