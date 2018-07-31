@@ -12,4 +12,13 @@
   <input type="submit" name="">
 </form>
 
+<div id='super_network'></div>
+
+{% endblock %}
+
+{% block script %}
+
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+<script src="{{ url_for('static', filename='js/supernetw.js') }}"></script>
+
 {% endblock %}
