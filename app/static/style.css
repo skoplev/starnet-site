@@ -1,4 +1,17 @@
 #super_network line {
-	stroke: rgb(180, 180, 180);
+	/*stroke: rgb(180, 180, 180);*/
+	stroke: rgb(200, 200, 200);
 	stroke-width: 1.5;
+}
+
+#super_network a > circle {
+	/*stroke: rgb(80, 80, 80);*/
+	stroke: rgb(125, 125, 125);
+	fill: rgb(185, 185, 185);
+	stroke-width: 1;
+	cursor: pointer;
+}
+
+#super_network text {
+	font-weight: bold;
 }
