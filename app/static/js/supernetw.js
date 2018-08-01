@@ -6,7 +6,7 @@ function superNetwork(data, id) {
 
 	// Plot dimensions
 	var width = 800,
-		height = 600;
+		height = 800;
 
 	var margin = 50;  // px
 
@@ -63,7 +63,8 @@ function superNetwork(data, id) {
 
 
 	// add lines for edges 
-	var line = svg.append("g").selectAll("line")
+	// var line = svg.append("g").selectAll("line")
+	var line = svg.selectAll("line")
 		.data(edges)
 		.enter().append("line")
 			.attr("x1", function(d) { return xscale(d.source.x); })
@@ -73,7 +74,8 @@ function superNetwork(data, id) {
 			.attr("marker-end", "url(#end)");
 
 	// references focus which is defined below
-	var circle = svg.append("g").selectAll("circle")
+	// var circle = svg.append("g").selectAll("circle")
+	var circle = svg.selectAll("circle")
 		.data(data.layout)
 		.enter().append("a")
 			// goto module page on click
@@ -83,17 +85,47 @@ function superNetwork(data, id) {
 			.attr("cx", function(d) {return xscale(d.x); })
 			.attr("cy", function(d) {return yscale(d.y); })
 			.attr("r", 5)  // radius
+
 			.on("mouseover", function(d) {
-				d3.select(this).style("fill", "rgb(251,180,174)");
-				d3.select(this).style("r", 10);
+				// change circle color and shape
+				d3.select(this).style("fill", "rgb(251,180,174)")
+					.style("r", 7);
+
+				// highlight edges
+				line.filter(
+					function(e) {
+						return e.source.id.toString() === d.module.toString() ||
+							e.target.id.toString() === d.module.toString();
+					})
+					.style('stroke', 'black')
+						.moveToFront();
+
+				// Move a > circle to front, over the highlighted lines
+				d3.select(this.parentNode).moveToFront();
+
+				// find neighboring nodes
+				var neigh = neighbors(d.module.toString(), data);
+
+				// move a > circle of neighbors to top
+				circle.filter(function(d_sub) {
+						return neigh.includes(d_sub.module.toString());  // returns boolean for kth modules is contained in neighbor array
+					})
+					.each(function() {
+						d3.select(this.parentNode).moveToFront();
+					});
+
+				// position and show module ID text
 				focus.attr("transform", "translate(" + xscale(d.x) + "," + yscale(d.y) + ")");
 				focus.select("text").text(d.module);
 				focus.style("display", null);  // show
 			})
 			.on("mouseout", function(d) {
+				// reset circle and text
 				d3.select(this).style("fill", null);
 				d3.select(this).style("r", 5);
 				focus.style("display", "none");  // hide
+				line.style('stroke', null);  // reset
+				line.moveToBack();  // move all lines (including highlights) to back
 			});
 
 	// text information when hovering over nodes
@@ -105,5 +137,45 @@ function superNetwork(data, id) {
 		.attr("text-anchor", "middle")
 		.style("fill", "black")
 		.attr("dy", "-1em");
+}
 
+
+// Reorder svg elements within parent object -- such as 'g'
+// https://github.com/wbkd/d3-extended
+d3.selection.prototype.moveToFront = function() {  
+  return this.each(function(){
+    this.parentNode.appendChild(this);
+  });
+};
+d3.selection.prototype.moveToBack = function() {  
+    return this.each(function() { 
+        var firstChild = this.parentNode.firstChild; 
+        if (firstChild) { 
+            this.parentNode.insertBefore(this, firstChild); 
+        } 
+    });
+};
+
+// Find neighboring nodes to the kth node
+// returns array of neighbors
+function neighbors(k, data) {
+
+	// find neighboring node of kth node
+	// returns null if edge does not involve kth node
+	var nodes = data.edges.map(function(e) {
+		if (e[0] == k) {
+			return e[1];
+		} else if (e[1] == k) {
+			return e[0];
+		} else {
+			return null;
+		}
+	});
+
+	// filter out eges not involving k
+	nodes = nodes.filter(function(k) {
+		return k !== null;
+	});
+
+	return nodes;
 }
