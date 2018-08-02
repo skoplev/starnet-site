@@ -1,3 +1,19 @@
+// return color_by object, used for keeping track of current colorscale
+function setColorBy(feature, annot, transform) {
+	return {
+		feature: feature,
+		transform: transform,
+		max: _.max(annot.map(function(d) {
+			return transform(d[feature]);
+		}))
+	}
+}
+
+// -log10 p, capped at min p = 1e-16
+function neglog10(x) {
+	return Math.min(-Math.log10(x), 16);
+}
+
 // Interactive eigengene supernetwork
 // id: DOM identifier of <div> to load
 function superNetwork(data, id) {
@@ -18,8 +34,6 @@ function superNetwork(data, id) {
 	var max_x = _.max(data.layout.map(function(d) {return d.x}));
 	var max_y = _.max(data.layout.map(function(d) {return d.y}));
 
-	var scale = _.min([width / max_x, height / max_y]);
-
 	var xscale = d3.scaleLinear()
 		.domain([0, max_x])  // input domain
 		.range([margin, width - margin]);
@@ -28,6 +42,12 @@ function superNetwork(data, id) {
 		.domain([0, max_y])  // input domain
 		.range([height - margin, margin]);  // inverted y-axis
 
+	// Define color scale
+	var color_by = setColorBy(
+		"case_control_DEG",
+		data.annot,
+		neglog10
+	);
 
 	// Include edge data in edges			
 	var edges = data.edges.map(function(e) {
@@ -102,7 +122,8 @@ function superNetwork(data, id) {
 
 			.on("mouseover", function(d) {
 				// change circle color and shape
-				d3.select(this).style("fill", "rgb(77,175,74)")
+				d3.select(this)
+					// .style("fill", "rgb(77,175,74)")
 					.style("r", 7);
 
 				// get node color of hover circle
@@ -116,12 +137,14 @@ function superNetwork(data, id) {
 							e.target.id.toString() === d.module.toString();
 					})
 					// .style('stroke', 'black')
-					.style("stroke", node_color)
+					.style('stroke', 'rgb(70,70,70)')
+					// .style("stroke", node_color)
 					.attr("marker-end", "url(#focus)")  // set arrow head to focus def
 					.moveToFront();  // show above other elements
 
 				// change color of focus marker-end to that of hover circle
-				focus_marker.style("fill", node_color);
+				// focus_marker.style("fill", node_color);
+				focus_marker.style("fill", 'rgb(70,70,70)');
 
 				// Move a > circle to front, over the highlighted lines
 				d3.select(this.parentNode).moveToFront();
@@ -145,13 +168,21 @@ function superNetwork(data, id) {
 			})
 			.on("mouseout", function(d) {
 				// reset circle and text
-				d3.select(this).style("fill", null);
+				// d3.select(this).style("fill", null);
 				d3.select(this).style("r", 5);
 				focus.style("display", "none");  // hide
 				line.style("stroke", null);  // reset
 				line.attr("marker-end", "url(#subtle)");  // reset arrow heads
 				line.moveToBack();  // move all lines (including highlights) to back
 			});
+
+	// Set color of circle
+	// circle.style("fill", d3.interpolateGreens(0.4));
+	circle.style("fill", function(d) {
+		var val = data.annot[d.module - 1][color_by.feature];
+		var frac = color_by.transform(val) / color_by.max;
+		return d3.interpolateGreens(frac);
+	});
 
 	// text information when hovering over nodes
 	var focus = svg.append("g")
