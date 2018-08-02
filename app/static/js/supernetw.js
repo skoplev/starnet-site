@@ -50,7 +50,7 @@ function superNetwork(data, id) {
     // see http://bl.ocks.org/d3noob/5141278 for adding data bindings
     svg.append("svg:defs")
  		.append("svg:marker")    // This section adds in the arrows
-			.attr("id", "end")
+			.attr("id", "subtle")  // 
 			.attr("viewBox", "0 -5 10 10")
 			.attr("refX", 15)
 			.attr("refY", 0.0)
@@ -61,9 +61,23 @@ function superNetwork(data, id) {
 			.attr("d", "M0,-5L10,0L0,5")
 			.style("fill", "rgb(180,180,180)");
 
+	// arrow head definition on focus
+	// Used for changing colors of edge arrow heads
+	var focus_marker = svg.append("svg:defs")
+		.append("svg:marker")
+			.attr("id", "focus")
+			.attr("viewBox", "0 -5 10 10")
+			.attr("refX", 15)
+			.attr("refY", 0.0)
+			.attr("markerWidth", 5)
+			.attr("markerHeight", 5)
+			.attr("orient", "auto")
+		.append("svg:path")
+			.attr("d", "M0,-5L10,0L0,5")
+			.style("fill", "rgb(0,0,0)");
+
 
 	// add lines for edges 
-	// var line = svg.append("g").selectAll("line")
 	var line = svg.selectAll("line")
 		.data(edges)
 		.enter().append("line")
@@ -71,7 +85,7 @@ function superNetwork(data, id) {
 			.attr("y1", function(d) { return yscale(d.source.y); })
 			.attr("x2", function(d) { return xscale(d.target.x); })
 			.attr("y2", function(d) { return yscale(d.target.y); })
-			.attr("marker-end", "url(#end)");
+			.attr("marker-end", "url(#subtle)");  // set customly defined arrow head
 
 	// references focus which is defined below
 	// var circle = svg.append("g").selectAll("circle")
@@ -88,17 +102,26 @@ function superNetwork(data, id) {
 
 			.on("mouseover", function(d) {
 				// change circle color and shape
-				d3.select(this).style("fill", "rgb(251,180,174)")
+				d3.select(this).style("fill", "rgb(77,175,74)")
 					.style("r", 7);
+
+				// get node color of hover circle
+				var node_color = d3.select(this).style("fill");
 
 				// highlight edges
 				line.filter(
+					// does edge go to or from circle node?
 					function(e) {
 						return e.source.id.toString() === d.module.toString() ||
 							e.target.id.toString() === d.module.toString();
 					})
-					.style('stroke', 'black')
-						.moveToFront();
+					// .style('stroke', 'black')
+					.style("stroke", node_color)
+					.attr("marker-end", "url(#focus)")  // set arrow head to focus def
+					.moveToFront();  // show above other elements
+
+				// change color of focus marker-end to that of hover circle
+				focus_marker.style("fill", node_color);
 
 				// Move a > circle to front, over the highlighted lines
 				d3.select(this.parentNode).moveToFront();
@@ -118,13 +141,15 @@ function superNetwork(data, id) {
 				focus.attr("transform", "translate(" + xscale(d.x) + "," + yscale(d.y) + ")");
 				focus.select("text").text(d.module);
 				focus.style("display", null);  // show
+				focus.moveToFront();
 			})
 			.on("mouseout", function(d) {
 				// reset circle and text
 				d3.select(this).style("fill", null);
 				d3.select(this).style("r", 5);
 				focus.style("display", "none");  // hide
-				line.style('stroke', null);  // reset
+				line.style("stroke", null);  // reset
+				line.attr("marker-end", "url(#subtle)");  // reset arrow heads
 				line.moveToBack();  // move all lines (including highlights) to back
 			});
 
