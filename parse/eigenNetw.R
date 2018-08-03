@@ -53,14 +53,20 @@ edges = as_edgelist(g)
 # toJSON(unname(split(edges, 1:nrow(edges))))
 # writeToJSON(edges, "app/static/data/edges.json")
 
-# combine annotations for the supernetwork json file
-annot = pheno_pval
 
 
 # primary tissue or cross-tissue labels
 tissues = c("AOR", "BLOOD", "LIV", "MAM", "SKLM", "SF", "VAF")
-annot$tissue = tissues[apply(data.frame(mod_tab)[, tissues], 1, which.max)]
-annot$tissue[mod_tab$purity < 0.95]  = "Cross-tissue"
+annot = data.frame(
+	Tissue=tissues[apply(data.frame(mod_tab)[, tissues], 1, which.max)],
+	stringsAsFactors=FALSE
+)
+
+# annot$Tissue = tissues[apply(data.frame(mod_tab)[, tissues], 1, which.max)]
+annot$Tissue[mod_tab$purity < 0.95]  = "Cross-tissue"
+
+# combine annotations for the supernetwork json file
+annot = cbind(annot, pheno_pval)
 
 # Renane columns
 annot = rename(annot, c(

@@ -10,6 +10,11 @@ $(document).ready(function() {
 					value: item,
 					text: item
 				}));
+
+				if (item === "Tissue") {
+					// insert separator
+					$("#annot_opts").append("<option disabled>──────────</option>");
+				}
 			}
 		});
 

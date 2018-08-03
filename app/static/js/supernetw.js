@@ -30,7 +30,7 @@ function superNetwork(data, id) {
 	// assumes that the data object is available in scope
 	function colorCircles(circle, feature, transform) {
 
-		if (feature === "tissue") {
+		if (feature === "Tissue") {
 			var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM', 'Cross-tissue'];
 			// Ordinal color scale
 			var colors = d3.schemeCategory10;
