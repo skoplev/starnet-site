@@ -6,6 +6,7 @@ rm(list=ls())
 library(rjson)
 library(igraph)
 library(data.table)
+library(plyr)
 
 # Load supernetwork environment
 load("~/GoogleDrive/projects/STARNET/cross-tissue/co-expression/eigenNetw/Rworkspace/bayesNet2.RData")
@@ -35,7 +36,14 @@ writeToJSON = function(df, file) {
 # Write layout to .csv and .json file
 lay_json = lay
 colnames(lay_json) = c('x', 'y')
+
+
 lay_json = data.frame(module=1:nrow(lay_json), lay_json)
+
+# trim coordinates of layout
+margin = 1
+lay_json$x = lay_json$x - min(lay_json$x) + margin
+lay_json$y = lay_json$y - min(lay_json$y) + margin
 
 # write.csv(lay_json, "app/static/data/sugiyama_layout.csv")
 # writeToJSON(lay_json, "app/static/data/sugiyama_layout.json")
@@ -48,10 +56,28 @@ edges = as_edgelist(g)
 # combine annotations for the supernetwork json file
 annot = pheno_pval
 
+
 # primary tissue or cross-tissue labels
 tissues = c("AOR", "BLOOD", "LIV", "MAM", "SKLM", "SF", "VAF")
 annot$tissue = tissues[apply(data.frame(mod_tab)[, tissues], 1, which.max)]
 annot$tissue[mod_tab$purity < 0.95]  = "Cross-tissue"
+
+# Renane columns
+annot = rename(annot, c(
+	"case_control_DEG"="DEG",
+	"syntax_score"="SYNTAX",
+	"ndv"="Diseased vessels",
+	"BMI(kg/m2)"="BMI",
+	"CRP(mg/l)"="CRP(mg/l)",
+	"HbA1c(%)"="HbA1c",
+	"P-Chol(mmol/l)"="P-Chol",
+	"fP-LDL-Chol(mmol/l)"="fP-LDL-Chol",
+	"fP-HDL-Chol(mmol/l)"="fP-HDL-Chol",
+	"fP-TG(mmol/l)"="fP-TG"
+))
+
+# rename(annot, c("DEG"="case_control_DEG"))
+
 
 # Write as combined json file
 cat(

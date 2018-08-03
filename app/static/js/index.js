@@ -12,7 +12,7 @@ $(document).ready(function() {
 		});
 
 		// Set default option
-		$("#annot_opts").val("case_control_DEG");
+		$("#annot_opts").val("DEG");
 
 		// invoke change event
 		var event = new Event('change');

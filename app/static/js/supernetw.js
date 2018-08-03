@@ -1,9 +1,3 @@
-// -log10 p, capped at min p = 1e-16
-function neglog10(x) {
-	// return Math.min(-Math.log10(x), 16);
-	return Math.min(-Math.log10(x), 32);
-}
-
 // Interactive eigengene supernetwork
 // id: DOM identifier of <div> to load
 function superNetwork(data, id) {
@@ -14,7 +8,7 @@ function superNetwork(data, id) {
 	var width = 800,
 		height = 800;
 
-	var margin = 50;  // px
+	var margin = 30;  // px
 
 	var svg = d3.select(id).append('svg')
 		.attr('width', width)
@@ -189,6 +183,13 @@ function superNetwork(data, id) {
 		.attr("text-anchor", "middle")
 		.style("fill", "black")
 		.attr("dy", "-1em");
+}
+
+
+// -log10 p, capped at min p = 1e-16
+function neglog10(x) {
+	// return Math.min(-Math.log10(x), 16);
+	return Math.min(-Math.log10(x), 32);
 }
 
 
