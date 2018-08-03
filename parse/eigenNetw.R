@@ -68,16 +68,13 @@ annot = rename(annot, c(
 	"syntax_score"="SYNTAX",
 	"ndv"="Diseased vessels",
 	"BMI(kg/m2)"="BMI",
-	"CRP(mg/l)"="CRP(mg/l)",
+	"CRP(mg/l)"="CRP",
 	"HbA1c(%)"="HbA1c",
 	"P-Chol(mmol/l)"="P-Chol",
 	"fP-LDL-Chol(mmol/l)"="fP-LDL-Chol",
 	"fP-HDL-Chol(mmol/l)"="fP-HDL-Chol",
 	"fP-TG(mmol/l)"="fP-TG"
 ))
-
-# rename(annot, c("DEG"="case_control_DEG"))
-
 
 # Write as combined json file
 cat(

@@ -5,21 +5,19 @@ $(document).ready(function() {
 
 		// Populate options based on all annotations
 		$.each(Object.keys(data.annot[0]), function(i, item) {
-			$("#annot_opts").append($("<option>", {
-				value: item,
-				text: item
-			}));
+			if (item !== "clust") {
+				$("#annot_opts").append($("<option>", {
+					value: item,
+					text: item
+				}));
+			}
 		});
 
 		// Set default option
 		$("#annot_opts").val("DEG");
 
-		// invoke change event
+		// invoke change event to set color
 		var event = new Event('change');
 		document.getElementById("annot_opts").dispatchEvent(event);
-
-
-		// d3.select("#annot_opts").property("value", "case_control_DEG");
-
 	});
 });

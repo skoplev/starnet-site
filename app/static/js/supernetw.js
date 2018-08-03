@@ -1,7 +1,7 @@
 // Interactive eigengene supernetwork
 // id: DOM identifier of <div> to load
 function superNetwork(data, id) {
-	// console.log(data);
+	console.log(data);
 	// d3.select(id).text(JSON.stringify(data));
 
 	// Plot dimensions
@@ -29,17 +29,32 @@ function superNetwork(data, id) {
 	// Color circles based on annotation feature
 	// assumes that the data object is available in scope
 	function colorCircles(circle, feature, transform) {
-		// find max value for scaling
-		var max_val = _.max(data.annot.map(function(d) {
-			return transform(d[feature]);
-		}))
 
-		circle.style("fill", function(d) {
-			var val = data.annot[d.module - 1][feature];
-			var frac = transform(val) / max_val;
-			// return d3.interpolateGreens(frac);
-			return d3.interpolateYlGnBu(frac);
-		});
+		if (feature === "tissue") {
+			var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM', 'Cross-tissue'];
+			// Ordinal color scale
+			var colors = d3.schemeCategory10;
+			colors[7] = "white";  // cross-tissue
+
+			circle.style("fill", function(d) {
+				// get value for nominal feature (tissue)
+				var val = data.annot[d.module - 1][feature];
+				var index = tissue_order.indexOf(val);
+				return colors[index];
+			});
+		} else {
+			// find max value for scaling
+			var max_val = _.max(data.annot.map(function(d) {
+				return transform(d[feature]);
+			}));
+
+			circle.style("fill", function(d) {
+				var val = data.annot[d.module - 1][feature];
+				var frac = transform(val) / max_val;
+				// return d3.interpolateGreens(frac);
+				return d3.interpolateYlGnBu(frac);
+			});
+		}
 	}
 
 	// Select dropdown callback function
