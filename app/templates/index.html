@@ -2,17 +2,28 @@
 
 {% block content %}
 
-<form action="/search" method="get">
-  <input type="text" name="q" placeholder="Search for genes...">
-  <!-- <button type="button">go</button> -->
-  <select name="type">
-    <option>Gene</option>
-    <option>SNP</option>
-  </select>
-  <input type="submit" name="">
-</form>
+<br>
+<br>
+<div style="text-align: center;">
+	<form action="/search" method="get">
+	  <input type="text" name="q" placeholder="Search for genes...">
+	  <!-- <button type="button">go</button> -->
+	  <select name="type">
+	    <option>Gene</option>
+	    <option>SNP</option>
+	  </select>
+	  <input type="submit" name="">
+	</form>
 
-<div id='super_network'></div>
+</div>
+
+
+<div style="text-align: right;">
+	<!-- <select id="annot_opts" onchange="setFeature(this);"></select> -->
+	Annotation: <select id="annot_opts"></select>
+</div>
+
+<div id='super_network' style="text-align: center;"></div>
 
 {% endblock %}
 
