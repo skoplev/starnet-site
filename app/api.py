@@ -197,6 +197,4 @@ def pheno():
 		'fP-TG(mmol/l)': 'fP-TG'
 	})
 
-	print(list(df))
-
 	return jsonify(df.to_dict(orient='records'))

@@ -1,8 +1,7 @@
 // Interactive eigengene supernetwork
 // id: DOM identifier of <div> to load
 function superNetwork(data, id) {
-	console.log(data);
-	// d3.select(id).text(JSON.stringify(data));
+	// console.log(data);
 
 	// Plot dimensions
 	var width = 800,
@@ -27,8 +26,9 @@ function superNetwork(data, id) {
 		.range([height - margin, margin]);  // inverted y-axis
 
 	// Color circles based on annotation feature
-	// assumes that the data object is available in scope
+	// assumes that the data object and svg is in scope
 	function colorCircles(circle, feature, transform) {
+		clearLegend();
 
 		if (feature === "Tissue") {
 			var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM', 'Cross-tissue'];
@@ -42,6 +42,9 @@ function superNetwork(data, id) {
 				var index = tissue_order.indexOf(val);
 				return colors[index];
 			});
+
+			renderTissueLegend(svg, tissue_order, colors);
+
 		} else {
 			// find max value for scaling
 			var max_val = _.max(data.annot.map(function(d) {
@@ -246,4 +249,49 @@ function neighbors(k, data) {
 	});
 
 	return nodes;
+}
+
+
+function renderTissueLegend(svg, tissue_order, colors) {
+	// add legend
+	var legend = svg.append("g")
+		.attr("id", "legend")
+		.attr("height", 100)
+		.attr("width", 100)
+		.attr('transform', 'translate(700,20)');
+
+	var legend_line_width = 14;
+	// bind legend to
+	legend.selectAll("circle")
+		.data(tissue_order).enter()
+		.append("circle")
+			.attr("r", 5)
+			.attr("cx", 0)
+			.attr("cy", function(d, i) {
+				return i * legend_line_width;
+			})
+			.style("fill", function(d, i) {
+				return colors[i];
+			})
+			.style("stroke", "rgb(125,125,125)");
+
+	// adjacent text
+	legend.selectAll("text")
+		.data(tissue_order).enter()
+		.append("text")
+			.attr("x", 10)
+			.attr("y", function(d, i) {
+				return i * legend_line_width + 4;
+			})
+			.style("font-size", "14px")
+			.style("fill", "rgb(100,100,100)")
+			.text(function(d) {return d;})
+
+			.append("svg-title")
+				.text("this is an apple.");
+
+}
+
+function clearLegend() {
+	d3.select("#legend").remove();
 }

@@ -2,8 +2,12 @@
 
 {% block content %}
 
-<br>
-<br>
+<div style="text-align: right;">
+	Annotation: <select id="annot_opts"></select>
+</div>
+
+<div id='super_network' style="text-align: center;"></div>
+
 <div style="text-align: center;">
 	<form action="/search" method="get">
 	  <input type="text" name="q" placeholder="Search for genes...">
@@ -14,16 +18,7 @@
 	  </select>
 	  <input type="submit" name="">
 	</form>
-
 </div>
-
-
-<div style="text-align: right;">
-	<!-- <select id="annot_opts" onchange="setFeature(this);"></select> -->
-	Annotation: <select id="annot_opts"></select>
-</div>
-
-<div id='super_network' style="text-align: center;"></div>
 
 {% endblock %}
 
