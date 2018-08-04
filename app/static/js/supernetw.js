@@ -1,3 +1,15 @@
+// Used for tooltip
+var tissue_description = {
+	"AOR": "Atherosclerotic aortic root",
+	"MAM": "Lesion-free internal mammary artery",
+	"VAF": "Visceral abdominal fat",
+	"SF": "Subcutaneous fat",
+	"BLOOD": "Whole blood",
+	"LIV": "Liver",
+	"SKLM": "Skeletal muscle",
+	"Cross-tissue": ">5% transcripts from heterogenous tissues"
+};
+
 // Interactive eigengene supernetwork
 // id: DOM identifier of <div> to load
 function superNetwork(data, id) {
@@ -295,9 +307,12 @@ function renderTissueLegend(svg, tissue_order, colors) {
 			.style("font-size", "14px")
 			.style("fill", "rgb(100,100,100)")
 			.text(function(d) {return d;})
-
-			.append("svg-title")
-				.text("this is an apple.");
+			// html tooltip on hover explaining tissue codes
+			.append("svg:title").text(function(d) {
+				// console.log(d);
+				// console.log(tissue_description[d]);
+				return tissue_description[d];
+			});
 
 }
 
