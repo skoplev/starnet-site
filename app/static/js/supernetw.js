@@ -196,6 +196,15 @@ function superNetwork(data, id) {
 	var focus = svg.append("g")
 		.style("display", "none");
 
+	// translucent box to ensure text contrast
+	focus.append("rect")
+		.attr("width", "2em")
+		.attr("height", "1.2em")
+		.attr("y", "-2em")
+		.attr("x", "-1em")
+		.attr("rx", 5)  // round edges
+		.style("fill", "rgba(200,200,200,0.7)");
+
 	focus.append("text")
 		// relative position of hover text
 		.attr("text-anchor", "middle")
