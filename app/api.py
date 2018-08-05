@@ -139,6 +139,21 @@ def deg():
 
 	return jsonify(df.to_dict(orient='records'))
 
+@app.route('/api/kda', methods=['GET'])
+def kda():
+	'''
+	Key driver analysis table for kth co-expression module.
+	'''
+
+	db = getDB()
+
+	query = request.args['k']
+
+	sql = "SELECT * FROM kda WHERE MODULE = ?"
+
+	df = pd.read_sql_query(sql, db, params=[query])
+
+	return jsonify(df.to_dict(orient='records'))
 
 @app.route('/api/eqtl', methods=['GET'])
 def eqtl():
