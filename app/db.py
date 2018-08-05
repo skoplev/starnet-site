@@ -236,6 +236,28 @@ def loadKDA():
 	db.commit()
 	closeDB()
 
+
+def loadEnsembl():
+	'''
+	Loads Ensembl gene annotations from R biomaRt.
+	'''
+
+	db = getDB()
+	click.echo("Loading Ensembl gene annotations...")
+
+	df = pd.read_csv("data/ensembl/genes.csv")
+	# print(df)
+
+	df.to_sql("ensembl",
+		db,
+		index=False,
+		if_exists='replace'
+	)
+
+	db.commit()
+	closeDB()
+
+
 def loadPhenoAssoc():
 	db = getDB()
 	click.echo("Loading phenotype associations...")
@@ -269,6 +291,7 @@ def cmdInitDB():
     # loadDEG()  # differential expression
     # loadPhenoAssoc()
     loadKDA()
+    loadEnsembl()
 
 
 # Registration with app
