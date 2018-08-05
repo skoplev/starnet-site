@@ -203,6 +203,39 @@ def loadDEG():
 	closeDB()
 
 
+def loadKDA():
+	"""
+	Load key driver analysis results.
+	"""
+	db = getDB()
+	click.echo("Loading key driver analysis...")
+
+	kda = pd.read_csv("data/kda/modules.results.txt", sep="\t")
+
+	# Format node ID string
+	tissue, gene, ensembl_versioned, extra = kda['NODE'].str.split('_').str
+
+	# Fix 4 entries of gene: Metazoa_SRP
+	# using Boolean array indexing
+	idx = gene == "Metazoa"
+	gene[idx] = "Metazoa_SRP"
+	ensembl_versioned[idx] = extra[idx]
+
+	kda['tissue'] = tissue
+	kda['gene'] = gene
+
+	# Format ensembl ID
+	kda['ensembl'], ensembl_version = ensembl_versioned.str.split('.').str
+
+	kda.to_sql("kda",
+		db,
+		index=False,
+		if_exists='replace'
+	)
+
+	db.commit()
+	closeDB()
+
 def loadPhenoAssoc():
 	db = getDB()
 	click.echo("Loading phenotype associations...")
@@ -232,9 +265,10 @@ def cmdInitDB():
     # loadCPM()
     # loadeQTL()
     # loadModules()  # co-expression modules
-    loadModuleGO()  # gene ontology tables
+    # loadModuleGO()  # gene ontology tables
     # loadDEG()  # differential expression
-    loadPhenoAssoc()
+    # loadPhenoAssoc()
+    loadKDA()
 
 
 # Registration with app

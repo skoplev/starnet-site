@@ -13,29 +13,6 @@ var tissue_description = {
 // Interactive eigengene supernetwork
 // id: DOM identifier of <div> to load
 function superNetwork(data, id) {
-	// console.log(data);
-
-	// Plot dimensions
-	var width = 800,
-		height = 800;
-
-	var margin = 30;  // px
-
-	var svg = d3.select(id).append('svg')
-		.attr('width', width)
-		.attr('height', height);
-
-	// Scales
-	var max_x = _.max(data.layout.map(function(d) {return d.x}));
-	var max_y = _.max(data.layout.map(function(d) {return d.y}));
-
-	var xscale = d3.scaleLinear()
-		.domain([0, max_x])  // input domain
-		.range([margin, width - margin]);
-
-	var yscale = d3.scaleLinear()
-		.domain([0, max_y])  // input domain
-		.range([height - margin, margin]);  // inverted y-axis
 
 	// Color circles based on annotation feature
 	// assumes that the data object and svg is in scope
@@ -71,6 +48,30 @@ function superNetwork(data, id) {
 			});
 		}
 	}
+
+	// console.log(data);
+
+	// Plot dimensions
+	var width = 800,
+		height = 800;
+
+	var margin = 30;  // px
+
+	var svg = d3.select(id).append('svg')
+		.attr('width', width)
+		.attr('height', height);
+
+	// Scales
+	var max_x = _.max(data.layout.map(function(d) {return d.x}));
+	var max_y = _.max(data.layout.map(function(d) {return d.y}));
+
+	var xscale = d3.scaleLinear()
+		.domain([0, max_x])  // input domain
+		.range([margin, width - margin]);
+
+	var yscale = d3.scaleLinear()
+		.domain([0, max_y])  // input domain
+		.range([height - margin, margin]);  // inverted y-axis
 
 	// Select dropdown callback function
 	d3.select("#annot_opts").on("change", function() {
@@ -125,7 +126,6 @@ function superNetwork(data, id) {
 			.attr("d", "M0,-5L10,0L0,5")
 			.style("fill", "rgb(0,0,0)");
 
-
 	// add lines for edges 
 	var line = svg.selectAll("line")
 		.data(edges)
@@ -137,7 +137,6 @@ function superNetwork(data, id) {
 			.attr("marker-end", "url(#subtle)");  // set customly defined arrow head
 
 	// references focus which is defined below
-	// var circle = svg.append("g").selectAll("circle")
 	var circle = svg.selectAll("circle")
 		.data(data.layout)
 		.enter().append("a")
@@ -309,8 +308,6 @@ function renderTissueLegend(svg, tissue_order, colors) {
 			.text(function(d) {return d;})
 			// html tooltip on hover explaining tissue codes
 			.append("svg:title").text(function(d) {
-				// console.log(d);
-				// console.log(tissue_description[d]);
 				return tissue_description[d];
 			});
 
