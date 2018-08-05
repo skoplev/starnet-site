@@ -34,6 +34,14 @@ $(document).ready(function() {
 		renderTableGO(data, '#go_mf_table');
 	});
 
+	// Key driver analysis
+	$.get('/api/kda',
+		{k: input.mod_id}
+	).done(function(data) {
+		// console.log(data);
+		renderTableKDA(data);
+	});
+
 });
 
 var brewer_pastel1 = [
@@ -194,8 +202,6 @@ function renderPhenoAssoc(data) {
 
 function renderTableGO(data, dom_sel) {
 
-	var columns
-
 	var config = {
 		column_order: [
 			'termID',
@@ -215,4 +221,32 @@ function renderTableGO(data, dom_sel) {
 	};
 
 	renderTable(data, dom_sel, config);
+}
+
+function renderTableKDA(data) {
+	var config = {
+		column_order: [
+			'ensembl',
+			'tissue',
+			'gene',
+			'P',
+			'FDR'
+		],
+		num_cols: [
+			'P',
+			'FDR'
+		],
+		precision: 5,
+		orderby: 'P',
+		dom: 'Blfrtip',
+		buttons: ['copyHtml5', 'csvHtml5'],
+		columnDefs: [{
+			render: function(gene, type, row) {
+				return "<a href='/gene/" + gene + "'>" + gene + "</a>";
+			},
+			targets: 'ensembl'
+		}]
+	};
+
+	renderTable(data, "#kda_table", config);
 }
