@@ -65,8 +65,32 @@ annot = data.frame(
 # annot$Tissue = tissues[apply(data.frame(mod_tab)[, tissues], 1, which.max)]
 annot$Tissue[mod_tab$purity < 0.95]  = "Cross-tissue"
 
+# GWAS enrichments
+gwas_pvals = mod_tab[, c(
+		'CAD_pval',
+		'Type 2 diabetes_pval',
+		'Lipid metabolism phenotypes_pval',
+		'LDL cholesterol_pval',
+		'HDL cholesterol_pval',
+		'Cholesterol, total_pval',
+		'Waist-to-hip ratio adjusted for body mass index_pval',
+		'Glucose homeostasis traits_pval',
+		'Body mass index_pval',
+		'Systolic blood pressure_pval',
+		'Diastolic blood pressure_pval',
+		'Hypertension_pval',
+		'Myocardial infarction_pval'
+	)
+]
+
+colnames(gwas_pvals) = sapply(strsplit(colnames(gwas_pvals), "_"), function(x) x[1])
+
+gwas_pvals = rename(gwas_pvals, c(
+	"Waist-to-hip ratio adjusted for body mass index"="Waist-to-hip ratio adjusted for BMI")
+)
+
 # combine annotations for the supernetwork json file
-annot = cbind(annot, pheno_pval)
+annot = cbind(annot, pheno_pval, gwas_pvals)
 
 # Renane columns
 annot = rename(annot, c(

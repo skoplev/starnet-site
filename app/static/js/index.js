@@ -5,15 +5,23 @@ $(document).ready(function() {
 
 		// Populate options based on all annotations
 		$.each(Object.keys(data.annot[0]), function(i, item) {
+
 			if (item !== "clust") {
+
 				$("#annot_opts").append($("<option>", {
 					value: item,
 					text: item
 				}));
 
+				// Introduce separators in option selector by order
 				if (item === "Tissue") {
 					// insert separator
-					$("#annot_opts").append("<option disabled>──────────</option>");
+					$("#annot_opts").append("<option disabled>─────Phenotypes─────</option>");
+				}
+
+				if (item === "fP-TG") {
+					// last phenotype feature
+					$("#annot_opts").append("<option disabled>──────GWAS──────</option>");
 				}
 			}
 		});
