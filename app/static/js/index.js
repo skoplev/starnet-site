@@ -19,7 +19,7 @@ $(document).ready(function() {
 		});
 
 		// Set default option
-		$("#annot_opts").val("DEG");
+		$("#annot_opts").val("Tissue");
 
 		// invoke change event to set color
 		var event = new Event('change');

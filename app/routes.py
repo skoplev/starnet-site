@@ -48,12 +48,14 @@ def module(mod_id):
 @app.route('/search', methods=['GET'])
 def search():
 
-	query = request.args['q']
+	query = request.args['gene_snp_query']
 
 	db = getDB()
 
 	# Redirect to page
 	if request.args['type'] == "Gene":
+		query = query.upper()
+
 		if query[0:4] == "ENSG":
 			# assume ENSEMBL ID
 			ensembl_id = query
@@ -71,6 +73,7 @@ def search():
 		return redirect(url_for("gene", ensembl=ensembl_id))
 
 	elif request.args['type'] == "SNP":
+		query = query.lower()
 		return redirect(url_for("variant", snp_id=query))
 	else:
 		warnings.warn("Unrecognized GET type")

@@ -1,16 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<div style="text-align: right;">
-	Annotation: <select id="annot_opts"></select>
-</div>
-
-<div id='super_network' style="text-align: center;"></div>
+<br>
+<br>
 
 <div style="text-align: center;">
 	<form action="/search" method="get">
-	  <input type="text" name="q" placeholder="Search for genes...">
+	  <input type="text" name="gene_snp_query" placeholder="Search for genes...">
 	  <!-- <button type="button">go</button> -->
 	  <select name="type">
 	    <option>Gene</option>
@@ -19,6 +15,16 @@
 	  <input type="submit" name="">
 	</form>
 </div>
+
+<hr>
+
+<div style="text-align: right;">
+	Annotation: <select id="annot_opts"></select>
+</div>
+
+<div id='super_network' style="text-align: center;"></div>
+
+<hr>
 
 {% endblock %}
 
