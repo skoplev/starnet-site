@@ -3,8 +3,21 @@
 
 {% block content %}
 
-<h1>Gene page for: {{symbol}}</h1>
-Description of gene
+<h1>{{ensembl}}</h1>
+
+<div class="card">
+  <div class="card-header">
+    <b>HGNC symbol:</b> {{symbol}}
+  </div>
+  <div class="card-body">
+    <!-- <h5 class="card-title">Special title treatment</h5> -->
+    <p class="card-text"><b>Description:</b> {{description}}</p>
+    <p class="card-text"><b>Type:</b> {{gene_biotype}}</p>
+    <p class="card-text"><b>Genomic coordinate (hg38):</b> chr{{chromosome}}: {{start_position}} - {{end_position}}</p>
+  </div>
+</div>
+
+<br>
 
 <h2>Absolute expression</h2>
 <!-- Boxplot to be populated by plotly.js -->
@@ -44,7 +57,7 @@ Description of gene
 
 	// User input for page, passed by Jinja variables
 	var input = {
-		gene: '{{symbol}}'
+		gene: '{{ensembl}}'
 	};
 </script>
 

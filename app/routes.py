@@ -1,8 +1,8 @@
 from flask import (
-	render_template, request, redirect, url_for, g
+	render_template, request, redirect, url_for, g, abort
 )
 
-# from app.db import getDB, queryDB, closeDB
+from app.db import getDB, queryDB, closeDB
 
 from app import app  # required
 
@@ -14,9 +14,25 @@ def index():
 	return render_template("index.html")
 
 # Gene page
-@app.route('/gene/<symbol>')
-def gene(symbol):
-	return render_template('gene.html', symbol=symbol)
+@app.route('/gene/<ensembl>')
+def gene(ensembl):
+
+	# find ensembl annotation
+	sql = "SELECT * FROM ensembl WHERE ensembl_gene_id = ?"
+	results = queryDB(sql, [ensembl])
+
+	if len(results) == 0:
+		abort(404)  # not found
+
+	return render_template('gene.html',
+		ensembl=ensembl,
+		symbol=results[0]['hgnc_symbol'],
+		description=results[0]['description'].split(" [")[0],
+		gene_biotype=results[0]['gene_biotype'],
+		chromosome=results[0]['chromosome_name'],
+		start_position=results[0]['start_position'],
+		end_position=results[0]['end_position']
+	)
 
 # SNP variant page
 @app.route('/variant/<snp_id>')
@@ -34,9 +50,26 @@ def search():
 
 	query = request.args['q']
 
+	db = getDB()
+
 	# Redirect to page
 	if request.args['type'] == "Gene":
-		return redirect(url_for("gene", symbol=query))
+		if query[0:4] == "ENSG":
+			# assume ENSEMBL ID
+			ensembl_id = query
+		else:
+			# query ensembl data for HGNC symbol
+			sql = "SELECT * FROM ensembl WHERE hgnc_symbol = ?"
+
+			results = queryDB(sql, [query])
+
+			if len(results) == 0:
+				abort(404)  # not found
+
+			ensembl_id = results[0]['ensembl_gene_id']
+
+		return redirect(url_for("gene", ensembl=ensembl_id))
+
 	elif request.args['type'] == "SNP":
 		return redirect(url_for("variant", snp_id=query))
 	else:
