@@ -1,7 +1,14 @@
 $(document).ready(function() {
 	// Load supernetwork data, for visualization
 	$.getJSON('/static/data/eigen_network.json', function(data) {
-		superNetwork(data, "#super_network");
+
+		var netw = new SuperNetwork(data, "#super_network");
+
+		// Select dropdown callback function
+		d3.select("#annot_opts").on("change", function() {
+			var selected_value = d3.select("#annot_opts").property("value")
+			netw.colorCircles(selected_value, neglog10);
+		});
 
 		// Populate options based on all annotations
 		$.each(Object.keys(data.annot[0]), function(i, item) {
@@ -14,7 +21,7 @@ $(document).ready(function() {
 				}));
 
 				// Introduce separators in option selector by order
-				if (item === "Tissue") {
+				if (item === "Secreted proteins") {
 					// insert separator
 					$("#annot_opts").append("<option disabled>─────Phenotypes─────</option>");
 				}
@@ -32,5 +39,8 @@ $(document).ready(function() {
 		// invoke change event to set color
 		var event = new Event('change');
 		document.getElementById("annot_opts").dispatchEvent(event);
+
+
+
 	});
 });

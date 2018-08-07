@@ -1,17 +1,29 @@
 $(document).ready(function() {
+
+	// multiple AJAX calls and dependencies
+	$.when(
+		// Load supernetwork
+		$.getJSON("/static/data/eigen_network.json", function(data) {
+			var netw = new SuperNetwork(data, "#super_network");
+		}),
+
+		// Load co-expression modules of input gene
+		$.get('/api/in-module',
+			{q: input.gene}
+		).done(function(data) {
+			addModuleLinks(data);
+			moduleBarplot(data);
+		})
+	).then(function() {
+		// color in supernetwork
+		console.log("both");
+	});
+
 	// Ajax get request for CPM data
 	$.get('/api/cpm', 
 		{q: input.gene}
 	).done(function(data) {
 		cpmBoxplot(data);
-	});
-
-	// Load co-expression modules of input gene
-	$.get('/api/in-module',
-		{q: input.gene}
-	).done(function(data) {
-		addModuleLinks(data);
-		moduleBarplot(data);
 	});
 
 	// Differential expression statistics
