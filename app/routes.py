@@ -31,7 +31,9 @@ def gene(ensembl):
 		gene_biotype=results[0]['gene_biotype'],
 		chromosome=results[0]['chromosome_name'],
 		start_position=results[0]['start_position'],
-		end_position=results[0]['end_position']
+		end_position=results[0]['end_position'],
+		strand=results[0]['strand'],
+		uniprot=results[0]['uniprot_gn']
 	)
 
 # SNP variant page

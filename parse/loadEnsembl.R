@@ -12,10 +12,13 @@ gene_tab = getBM(attributes=c(
 		'ensembl_gene_id',
 		'description',
 		'gene_biotype',
+		'transcript_biotype',
 		'hgnc_symbol',
 		'chromosome_name',
 		'start_position',
-		'end_position'
+		'end_position',
+		'strand',
+		'uniprot_gn'
 	),
 	mart = ensembl
 )

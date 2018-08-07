@@ -179,7 +179,8 @@ function moduleBarplot(data) {
 		yaxis: {
 			title: 'Transcripts',
 			showline: true
-		}
+		},
+		width: 500
 	};
 
 	Plotly.plot('module_barplot', plt_data, layout);

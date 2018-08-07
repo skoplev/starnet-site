@@ -7,7 +7,8 @@
 #super_network a > circle {
 	/*stroke: rgb(80, 80, 80);*/
 	stroke: rgb(125, 125, 125);
-	fill: rgb(185, 185, 185);
+	/*fill: rgb(185, 185, 185);*/
+	fill: rgb(240, 240, 240);
 	stroke-width: 1;
 	cursor: pointer;
 }

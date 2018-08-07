@@ -290,7 +290,7 @@ def cmdInitDB():
     # loadModuleGO()  # gene ontology tables
     # loadDEG()  # differential expression
     # loadPhenoAssoc()
-    loadKDA()
+    # loadKDA()
     loadEnsembl()
 
 

@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h1>{{ensembl}}</h1>
+<h1>{{symbol}} –– {{ensembl}} </h1>
 
 <div class="card">
   <div class="card-header">
@@ -14,6 +14,9 @@
     <p class="card-text"><b>Description:</b> {{description}}</p>
     <p class="card-text"><b>Type:</b> {{gene_biotype}}</p>
     <p class="card-text"><b>Genomic coordinate (hg38):</b> chr{{chromosome}}: {{start_position}} - {{end_position}}</p>
+    <p class="card-text"><b>Uniprot: </b>
+      <a href="https://www.uniprot.org/uniprot/{{uniprot}}" target="_blank">{{uniprot}}</a>
+    </p>
   </div>
 </div>
 
@@ -25,14 +28,16 @@
 <div class='row'>
   <div class='col-sm'>
     <div id="super_network"></div>
-
   </div>
+
   <div class='col-sm'>
     <div id='module_barplot' ></div>
   </div>
 </div>
 
-<div id='module_links' ></div>
+<div class='row'>
+  <div id='module_links' ></div>
+</div>
 
 
 <br>
