@@ -14,13 +14,13 @@ var tissue_description = {
 // Interactive eigengene supernetwork class
 // id: DOM identifier of <div> to load
 class SuperNetwork {
-	constructor(data, id) {
+	constructor(data, id, width=800, height=800) {
 
 		this.data = data;  // store network data in object
 
 		// Plot dimensions
-		this.width = 800;
-		this.height = 800;
+		this.width = width;
+		this.height = height;
 
 		var margin = 30;  // px
 
@@ -165,7 +165,8 @@ class SuperNetwork {
 					line.moveToBack();  // move all lines (including highlights) to back
 				});
 
-		// stored in ojbect after initialization
+		// store circle reference in object.
+		// Done  after initializations fue to circular initilization definition.
 		this.circle = circle;
 
 		// text information when hovering over nodes
@@ -188,7 +189,7 @@ class SuperNetwork {
 			.attr("dy", "-1em");
 	}
 
-	// SuperNetork class methods
+	// SuperNetwork methods
 	// ---------------------------------------------------------
 
 	// Color circles based on annotation feature
@@ -205,15 +206,13 @@ class SuperNetwork {
 			colors[7] = "white";  // cross-tissue
 
 			this.circle.style("fill", function(d) {
-				// console.log(this.data);
-				// console.log(this.data.annot);
 				// get value for nominal feature (tissue)
 				var val = data.annot[d.module - 1][feature];
 				var index = tissue_order.indexOf(val);
 				return colors[index];
 			});
 
-			this.renderTissueLegend(tissue_order, colors);
+			this.renderLegend(tissue_order, colors);
 
 		} else {
 			// find max value for scaling
@@ -230,18 +229,47 @@ class SuperNetwork {
 		}
 	}
 
-	renderTissueLegend(tissue_order, colors) {
+	// Color supernetork nodes based on tissue search
+	// Only supports one color per module
+	// tissue_search: [{gene_tissue: , module: }]
+	// as returned by /api/in-module?q=gene
+	colorCirclesTissueSearch(tissue_search) {
+		// format search data to arrays
+		var found_modules = tissue_search.map(function(d) {return d.module});
+		var found_tissues = tissue_search.map(function(d) {return d.gene_tissue});
+
+
+		// Ordinal tissue color scale
+		var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM'];
+		var colors = d3.schemeCategory10;
+
+		// Color circles
+		this.circle.style("fill", function(d) {
+			// get tissue if any
+			var tissue = found_tissues[found_modules.indexOf(d.module)];
+
+			var col_index = tissue_order.indexOf(tissue);
+			return colors[col_index];
+		});
+
+		// Tissue color legend
+		this.renderLegend(tissue_order, colors);
+	}
+
+	renderLegend(label_order, colors) {
 		// add legend
 		var legend = this.svg.append("g")
 			.attr("id", "legend")
 			.attr("height", 100)
 			.attr("width", 100)
-			.attr('transform', 'translate(700,20)');
+			// .attr('transform', 'translate(700,20)');
+			.attr('transform', 'translate(' + (this.width - 100) + ',20)');
+
 
 		var legend_line_width = 14;
 		// bind legend to
 		legend.selectAll("circle")
-			.data(tissue_order).enter()
+			.data(label_order).enter()
 			.append("circle")
 				.attr("r", 5)
 				.attr("cx", 0)
@@ -255,7 +283,7 @@ class SuperNetwork {
 
 		// adjacent text
 		legend.selectAll("text")
-			.data(tissue_order).enter()
+			.data(label_order).enter()
 			.append("text")
 				.attr("x", 10)
 				.attr("y", function(d, i) {

@@ -4,7 +4,7 @@ $(document).ready(function() {
 	$.when(
 		// Load supernetwork
 		$.getJSON("/static/data/eigen_network.json", function(data) {
-			var netw = new SuperNetwork(data, "#super_network");
+			// netw = new SuperNetwork(data, "#super_network");
 		}),
 
 		// Load co-expression modules of input gene
@@ -14,9 +14,14 @@ $(document).ready(function() {
 			addModuleLinks(data);
 			moduleBarplot(data);
 		})
-	).then(function() {
-		// color in supernetwork
-		console.log("both");
+	).then(function(netw_data, tissue_search_data) {
+
+		// netw = new SuperNetwork(netw_data[0], "#super_network");
+		netw = new SuperNetwork(netw_data[0], "#super_network", 500, 500);
+		// netw = new SuperNetwork(netw_data[0], "#super_network");
+
+		// Color supernetwork by
+		netw.colorCirclesTissueSearch(tissue_search_data[0])
 	});
 
 	// Ajax get request for CPM data
