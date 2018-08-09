@@ -1,13 +1,5 @@
-<VirtualHost *>
-    ServerName koples01.u.hpc.mssm.edu
-
-    WSGIDaemonProcess starnet user=user1 group=group1 threads=5
-    WSGIScriptAlias /starnet /hpc/users/koples01/www/starnet-site/starnet.wsgi
-
-    <Directory /hpc/users/koples01/www/starnet-site>
-        WSGIProcessGroup starnet
-        WSGIApplicationGroup %{GLOBAL}
-        Order deny,allow
-        Allow from all
-    </Directory>
-</VirtualHost>
+AddHandler wsgi-script .wsgi
+DirectoryIndex index.wsgi
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.wsgi/$1 [QSA,PT,L]

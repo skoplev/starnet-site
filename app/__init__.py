@@ -6,7 +6,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bower import Bower
 
-
 def createApp(test_config=None):
 	# create and configure the app
 	app = Flask(__name__, instance_relative_config=True)

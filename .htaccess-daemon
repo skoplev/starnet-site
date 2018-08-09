@@ -1,0 +1,19 @@
+# adopted from the Flask tutorial:
+# http://flask.pocoo.org/docs/1.0/deploying/mod_wsgi/
+# not read by Apache unless renamed to .htaccess
+
+<VirtualHost *>
+    ServerName www.koples01.u.hpc.mssm.edu
+    ServerAdmin simon.koplev@mssm.edu
+
+    WSGIDaemonProcess starnet user=koples01 group=bjorkj01a threads=5
+    WSGIScriptAlias /starnet /hpc/users/koples01/www/starnet-site/index.wsgi
+    WSGIRestrictStdout Off
+
+    <Directory /hpc/users/koples01/www/starnet-site>
+        WSGIProcessGroup starnet
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+    </Directory>
+</VirtualHost>
