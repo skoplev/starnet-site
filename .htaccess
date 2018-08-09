@@ -4,7 +4,7 @@
     WSGIDaemonProcess yourapplication user=user1 group=group1 threads=5
     WSGIScriptAlias /starnet /var/www/starnet-site/starnet.wsgi
 
-    <Directory /var/www/starnet-site>
+    <Directory /hpc/users/koples01/www/starnet-site>
         WSGIProcessGroup yourapplication
         WSGIApplicationGroup %{GLOBAL}
         Order deny,allow
