@@ -1,11 +1,11 @@
 <VirtualHost *>
     ServerName koples01.u.hpc.mssm.edu
 
-    WSGIDaemonProcess yourapplication user=user1 group=group1 threads=5
+    WSGIDaemonProcess starnet user=user1 group=group1 threads=5
     WSGIScriptAlias /starnet /hpc/users/koples01/www/starnet-site/starnet.wsgi
 
     <Directory /hpc/users/koples01/www/starnet-site>
-        WSGIProcessGroup yourapplication
+        WSGIProcessGroup starnet
         WSGIApplicationGroup %{GLOBAL}
         Order deny,allow
         Allow from all
