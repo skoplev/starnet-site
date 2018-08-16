@@ -1,7 +1,7 @@
 from flask import Flask
 import os
 
-# from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
 # Minimal test app for testing Apache web server
 app = Flask(__name__)
