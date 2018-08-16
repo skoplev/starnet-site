@@ -15,3 +15,6 @@ http://thelazylog.com/install-python-as-local-user-on-linux/
 
 ## Install pipenv
 pip install pipenv --user 
+
+## Install libraries
+pipenv install
