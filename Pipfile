@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+name = "pypi"
+verify_ssl = true
+
+[dev-packages]
+
+[requires]
+python_version = "3.5"
+
+[packages]
+flask = "*"
+flask-sqlalchemy = "*"
+scidb-py = "*"
+numpy = "*"
+pymonetdb = "*"
+flask-assets = "*"
+jsmin = "*"
+cssmin = "*"
+flask-bower = "*"
