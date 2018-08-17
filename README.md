@@ -116,16 +116,21 @@ cd /var/www/starnet-site
 pipenv install
 
 
-Graveyard
--------------------------------------------
+## Parse database on local machine
 
-## add to /etc/apache2/apache2.conf the following directive:
+### Prepare data
+Rscript parse/cpm.R
+Rscript parse/eigenNetw.R
+Rscript loadEnsembl.R
 
-<Directory /home/sk/www/>
-        Options Indexes FollowSymLinks
-        AllowOverride None
-        Require all granted
-</Directory>
+### Run python scripts specified in Flask app, in app/db.py
+flask init-db
 
-Restart server
-sudo systemctl restart apache2
+Creates the sqlite3 database file in instance/STARNET.sqlite
+
+## Copy database from local machine to server
+
+### Eigenentwork layout and annotation data
+scp app/static/data/eigen_network.json neptune:/var/www/starnet-site/app/static/data/eigen_network.json
+
+
