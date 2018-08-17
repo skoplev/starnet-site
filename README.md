@@ -62,6 +62,9 @@ Follow rest of guide...
 ## Install mod_wsgi
 sudo apt-get install libapache2-mod-wsgi
 
+### enable wsgi
+https://devops.profitbricks.com/tutorials/deploy-a-flask-application-on-ubuntu-1404/
+sudo a2enmod wsgi
 
 
 ## Clone repository for website into Apache directory
@@ -80,7 +83,7 @@ sudo cp /var/www/starnet-site/apache/base_wsgi.conf /etc/apache2/sites-available
 
 ### Enable site
 sudo a2ensite starnet-site
-sudo systemctl restart apache2
+sudo apachectl restart
 
 
 
