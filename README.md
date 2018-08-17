@@ -73,6 +73,16 @@ git clone https://skoplev@bitbucket.org/skoplev/starnet-site.git
 
 sudo a2dissite 000-default.conf
 
+### Copy configuration file
+sudo cp ~/www/starnet-site/starnet-site.conf /etc/apache2/sites-available/starnet-site.conf
+
+mkdir ~/www/starnet-site/error.log
+mkdir ~/www/starnet-site/access.log
+
+### Enable site
+sudo a2ensite starnet-site
+sudo systemctl restart apache2
+
 
 
 
