@@ -3,4 +3,3 @@ DirectoryIndex index.wsgi
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.wsgi/$1 [QSA,PT,L]
-
