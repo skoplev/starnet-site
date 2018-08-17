@@ -64,20 +64,18 @@ sudo apt-get install libapache2-mod-wsgi
 
 
 
-## Clone repository for website
-cd ~/www
+## Clone repository for website into Apache directory
+cd /var/www
 git clone https://skoplev@bitbucket.org/skoplev/starnet-site.git
 
 
-## Setup virtual hosts
+## Setup virtual host
 
+### Disable previous host
 sudo a2dissite 000-default.conf
 
-### Copy configuration file
-sudo cp ~/www/starnet-site/starnet-site.conf /etc/apache2/sites-available/starnet-site.conf
-
-mkdir ~/www/starnet-site/error.log
-mkdir ~/www/starnet-site/access.log
+### Install Apache configuration file
+sudo cp /var/www/starnet-site/apache/base.conf /etc/apache2/sites-available/starnet-site.conf
 
 ### Enable site
 sudo a2ensite starnet-site
@@ -86,9 +84,8 @@ sudo systemctl restart apache2
 
 
 
-
-
 Graveyard
+-------------------------------------------
 
 ## add to /etc/apache2/apache2.conf the following directive:
 

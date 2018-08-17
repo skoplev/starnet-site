@@ -1,0 +1,1 @@
+# This directory is used for Apache2 to write error logs
