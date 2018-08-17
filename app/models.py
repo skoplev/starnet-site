@@ -8,5 +8,5 @@ def geneExprSerialize(sql_row, num_col=5):
 		'id': sql_row['id'],
 		'hgnc_symbol': sql_row['hgnc_symbol'],
 		'tissue': sql_row['tissue'],
-		'cpm': sql_row[num_col:len(sql_row.keys())]
+		'cpm': [sql_row[i] for i in range(len(sql_row.keys()))]
 	}

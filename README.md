@@ -104,6 +104,13 @@ export PATH=$HOME/.local/bin:$PATH
 source ~/.bashrc
 
 
+### Configure Python
+if version specified in Pipfile if different from system:
+pyenv install 2.7.13
+
+ALternatively, overwrite Pipfile config by (see below):
+pipenv install --python 2.7.10
+
 ### Install dependencies in virtual environment
 cd /var/www/starnet-site
 pipenv install
