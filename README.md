@@ -86,6 +86,27 @@ sudo a2ensite starnet-site
 sudo apachectl restart
 
 
+## Setup python virtual environment
+
+### Install pip
+
+sudo apt-get install python-pip
+
+
+### Install pipenv for user
+pip install --user pipenv
+
+
+### Setup local path
+add to ~/.bashrc:
+export PATH=$HOME/.local/bin:$PATH
+
+source ~/.bashrc
+
+
+### Install dependencies in virtual environment
+cd /var/www/starnet-site
+pipenv install
 
 
 Graveyard
