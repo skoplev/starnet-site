@@ -78,7 +78,6 @@ sudo a2dissite 000-default.conf
 sudo cp /var/www/starnet-site/apache/base.conf /etc/apache2/sites-available/starnet-site.conf
 sudo cp /var/www/starnet-site/apache/base_wsgi.conf /etc/apache2/sites-available/starnet-site.conf
 
-
 ### Enable site
 sudo a2ensite starnet-site
 sudo systemctl restart apache2
