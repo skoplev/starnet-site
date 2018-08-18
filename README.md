@@ -71,6 +71,12 @@ sudo a2ensite starnet-site
 sudo apachectl restart
 
 
+
+# Configure Apache on Minerva (does not work)
+cd www/starnet-site
+cp apache/wsgi.conf .htaccess
+
+
 # Setup python environment
 
 Several options are available depending on the system (Debian, OSX, or Minerva).
@@ -122,6 +128,8 @@ pipenv install
 
 
 
+
+
 # Setup python virtual environment using pipenv
 
 ## Install pipenv for user
@@ -137,10 +145,15 @@ source ~/.bashrc
 Setups python virtual environment as specified in Pipfile
 
 cd www/starnet-site
+
+If using custom Python install, first configure pipenv:
+pipenv --python ~/python/bin/python2
+
 pipenv install
 
 ALternatively, overwrite Pipfile config:
 pipenv install --python 2.7.10
+
 
 
 # Parse database on local machine
