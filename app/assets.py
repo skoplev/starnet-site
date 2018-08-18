@@ -8,7 +8,9 @@ from flask_assets import Bundle, Environment
 assets = Environment(app)
 
 # add bower directory to allow custom installs
-assets.load_path = ['bower_components', 'app/static']
+# assets.load_path = ['bower_components', 'app/static']
+assets.load_path = ['app/static']
+# raise Exception("cdw: " + os.getcwd())
 
 # Define bundles of js code to be minfied
 bundles = {
