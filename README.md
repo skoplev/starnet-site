@@ -9,6 +9,7 @@ Rscript parse/cpm.R
 
 
 # Deployment on Minerva
+Warning: deprecated.
 
 ## Install newer version of Python 3 and pip according to:
 http://thelazylog.com/install-python-as-local-user-on-linux/
@@ -108,6 +109,9 @@ source ~/.bashrc
 if version specified in Pipfile if different from system:
 pyenv install 2.7.13
 
+Or install specific Python version manually:
+http://thelazylog.com/install-python-as-local-user-on-linux/
+
 ALternatively, overwrite Pipfile config by (see below):
 pipenv install --python 2.7.10
 
@@ -131,6 +135,7 @@ Creates the sqlite3 database file in instance/STARNET.sqlite
 ## Copy database from local machine to server
 
 ### Eigenentwork layout and annotation data
-scp app/static/data/eigen_network.json neptune:/var/www/starnet-site/app/static/data/eigen_network.json
+scp app/static/data/eigen_network.json neptune:/var/www/starnet-site/app/static/data/
 
-
+### sqlite3 database file
+scp instance/STARNET.sqlite neptune:/var/www/starnet-site/instance
