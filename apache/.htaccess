@@ -1,3 +1,4 @@
+# Old file for the Minerva apache server (doesn't work)
 AddHandler wsgi-script .wsgi
 DirectoryIndex index.wsgi
 RewriteEngine On
