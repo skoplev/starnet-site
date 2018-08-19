@@ -24,19 +24,27 @@ netw$kda_FDR = kda$FDR[match(netw$TAIL, kda$NODE)]
 # Format edge list
 netw = rename(netw,
 	replace=c(
-		"TAIL"="from",
-		"HEAD"="to"
+		"TAIL"="source",
+		"HEAD"="target"
 	)
 )
 
 # Remove ensembl version from ndoe ids
-netw$from = sapply(strsplit(netw$from, "[.]"), function(x) x[1])
-netw$to = sapply(strsplit(netw$to, "[.]"), function(x) x[1])
+# WARNING: does not work with gene names containing '.'
+# netw$from = sapply(strsplit(netw$from, "[.]"), function(x) x[1])
+# netw$to = sapply(strsplit(netw$to, "[.]"), function(x) x[1])
 
 netw = data.frame(netw)
 
 # Drop columns
 netw = netw[, !(colnames(netw) %in% c("WEIGHT"))]
+
+netw = netw[which(netw$kda_FDR < 0.05), ]
+
+# Sort by FDR
+netw = netw[order(netw$kda_FDR), ]
+
+# netw[netw$module == 98, ]
 
 
 # Print data per co-expression modules as .csv files

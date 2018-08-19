@@ -7,11 +7,24 @@ $(document).ready(function() {
 		renderModuleTable(data);
 	});
 
+	// Get phenotype associations
 	$.get('/api/pheno',
 		{k: input.mod_id}
 	).done(function(data) {
 		renderPhenoAssoc(data);
 	});
+
+	// Get Bayesian network
+	url = "/static/data/rgn/" + input.mod_id + ".csv";
+	$.get(url)
+		.done(function(data) {
+			// Parse data
+			// data = $.csv.toArrays(data);
+			data = $.csv.toObjects(data);
+			// console.log(data);
+			renderRGN(data);
+		}
+	);
 
 	// Get GO enrichment tables
 	$.get('/api/go',
@@ -249,4 +262,100 @@ function renderTableKDA(data) {
 	};
 
 	renderTable(data, "#kda_table", config);
+}
+
+function renderRGN(edges) {
+	var height = 600;
+	var width = 960;
+	var radius = 5;
+
+	// Filter edges based on number of edges that can be shown
+	var max_edges = 300;
+	if (edges.length > max_edges) {
+		// Assumes that edges data is ordered by kda_FDR
+		var fdr_cutoff = edges[max_edges - 1].kda_FDR
+
+		// Filter edges
+		edges_filter = edges.filter(function(elem) {
+			return Number(elem.kda_FDR) < Number(fdr_cutoff);
+		});
+	} else {
+		// use all
+		edges_filter = edges;
+	}
+
+	var nodes_from = edges_filter.map(function(d) {return d.source; });
+	var nodes_to = edges_filter.map(function(d) {return d.target; });
+
+	var nodes = _.unique(nodes_from.concat(nodes_to));
+
+	nodes = nodes.map(function(d) { return {id: d }; })
+
+	// Init network layout simulation
+	var simulation = d3.forceSimulation()
+	    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+	    .force("charge", d3.forceManyBody())
+	    .force("gravity", d3.forceManyBody().strength(10))
+	    .force("center", d3.forceCenter(width / 2, height / 2));
+
+	// Init svg canvas
+	var svg = d3.select("#rgn").append("svg")
+		.attr("width", width)
+		.attr("height", height);
+
+	var link = svg.append("g")
+		.attr("class", "links")
+		.selectAll("line")
+		.data(edges_filter)
+		.enter().append("line")
+			.attr("stroke-width", 2);
+
+	var node = svg.append("g")
+		.attr("class", "nodes")
+		.selectAll("circles")
+		.data(nodes)
+		.enter().append("circle")
+			.attr("r", radius)
+			.attr("fill", "black")
+			.call(d3.drag()
+			    .on("start", dragstarted)
+			    .on("drag", dragged)
+			    .on("end", dragended));
+
+	simulation
+		.nodes(nodes)
+		.on("tick", ticked);
+
+	simulation.force("link")
+		.links(edges_filter);
+
+	function ticked() {
+	  link
+	      .attr("x1", function(d) { return d.source.x; })
+	      .attr("y1", function(d) { return d.source.y; })
+	      .attr("x2", function(d) { return d.target.x; })
+	      .attr("y2", function(d) { return d.target.y; });
+
+	  node
+	      .attr("cx", function(d) { return Math.max(radius, Math.min(width - radius, d.x)); })
+	      .attr("cy", function(d) { return Math.max(radius, Math.min(height - radius, d.y)); });
+	}
+
+	// Dragging functions
+	function dragstarted(d) {
+		if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+		d.fx = d.x;
+		d.fy = d.y;
+	}
+
+	function dragged(d) {
+		d.fx = d3.event.x;
+		d.fy = d3.event.y;
+	}
+
+	function dragended(d) {
+		if (!d3.event.active) simulation.alphaTarget(0);
+		d.fx = null;
+		d.fy = null;
+	}
 }
