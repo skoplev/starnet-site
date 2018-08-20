@@ -41,10 +41,13 @@ var links = [];
 
 // Force layout simulation
 var simulation = d3.forceSimulation(nodes)
-    .force("charge", d3.forceManyBody().strength(-100))
-    .force("link", d3.forceLink(links).distance(20))
-    .force("gravity", d3.forceManyBody().strength(20))
+    .force("charge", d3.forceManyBody().strength(-10))
+    .force("link", d3.forceLink(links).distance(30))
+    .force("collide", d3.forceCollide().radius(5))
+    .force("gravity", d3.forceManyBody().strength(5))
     .force("center", d3.forceCenter(width / 2, height / 2))
+    // .force("forceX", d3.forceX().strength(1).x(width * .5))
+    // .force("forceY", d3.forceY().strength(1).y(height * .5))
     // .alphaTarget(1)
     .on("tick", ticked);
 
