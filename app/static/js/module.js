@@ -1,4 +1,9 @@
 // Global variables for dynamic network visualization of regulatory gene networks (Bayesian network)
+// Aproach is based on:
+// https://bl.ocks.org/mbostock/1095795
+// https://bl.ocks.org/mbostock/950642
+// https://bl.ocks.org/mbostock/1129492
+
 var height = 600;
 var width = 960;
 var radius = 5;
@@ -23,19 +28,58 @@ var simulation = d3.forceSimulation(nodes)
     // .alphaTarget(1)
     .on("tick", ticked);
 
-var g = svg.append("g")
-    link = g.append("g").attr("stroke", "#000").attr("stroke-width", 1.0).selectAll(".link"),
-    node = g.append("g").attr("stroke", "#fff").attr("stroke-width", 1.0).selectAll(".node");
+// Declare D3 selections available to updateNetwork()
+var svg_group = svg.append("g");
+
+var link = svg_group.append("g")
+    	.attr("stroke", "#000")
+    	.attr("stroke-width", 1.0)
+    	.selectAll(".link");
+
+// Network nodes containing circle with href span and a node label
+var node = svg_group.append("g")
+    	// .attr("stroke", "#fff")
+    	// .attr("stroke-width", 1.0)
+    	.selectAll(".node");
 
 // update network based on nodes and links objects
 function updateNetwork() {
+
 	// Apply the general update pattern to the nodes.
 	node = node.data(nodes, function(d) { return d.id;});
 	node.exit().remove();
-	node = node.enter().append("circle")
-		.attr("fill", function(d) { return color(d.id); })
-		.attr("r", radius)
-		.merge(node);
+
+	var node_new = node.enter().append("g")
+		.attr("class", "node");
+
+
+	var circle = node_new.append("a")
+		// link when clicking nodes
+		.attr("xling:href", function(d) {
+			var elems = d.id.split("_");
+			var ensembl = elems[2].split(".")[0];
+			return "/gene/" + ensembl;
+		})
+		.append("circle")
+			.attr("fill", function(d) { return color(d.id); })
+			.attr("r", radius)
+			.on("mouseover", function(d) {
+				console.log(d);
+			});
+
+	var label = node_new.append("text")
+		.attr("text-anchor", "middle")
+		.attr("dy", "-0.5em")
+		.style("font-size", "10px")
+		.style("fill", "rgb(100,100,100)")
+		.style("stroke", "none")
+		.text(function(d) {
+			var elems = d.id.split("_");
+			return elems[1];
+		});
+
+	node = node_new.merge(node);
+
 
 	// Apply the general update pattern to the links.
 	link = link.data(links, function(d) { return d.source.id + "-" + d.target.id; });
@@ -49,15 +93,21 @@ function updateNetwork() {
 }
 
 function ticked() {
-  node
-  	// Bounded by svg box
-	.attr("cx", function(d) { return Math.max(radius, Math.min(width - radius, d.x)); })
-	.attr("cy", function(d) { return Math.max(radius, Math.min(height - radius, d.y)); });
+	// circle
+	node.selectAll("circle")
+		// Bounded by svg box
+		.attr("cx", function(d) { return Math.max(radius, Math.min(width - radius, d.x)); })
+		.attr("cy", function(d) { return Math.max(radius, Math.min(height - radius, d.y)); });
 
-  link.attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
+	// label
+	node.selectAll("text")
+		.attr("x", function(d) {return d.x; })
+		.attr("y", function(d) {return d.y; });
+
+	link.attr("x1", function(d) { return d.source.x; })
+		.attr("y1", function(d) { return d.source.y; })
+		.attr("x2", function(d) { return d.target.x; })
+		.attr("y2", function(d) { return d.target.y; });
 }
 
 
@@ -85,6 +135,7 @@ $(document).ready(function() {
 			data = $.csv.toObjects(data);
 
 			var fdr_cutoff = calcFdrCutoff(data);
+
 			renderSlider(data, fdr_cutoff);
 
 			// Render network
@@ -340,12 +391,14 @@ function calcFdrCutoff(data) {
 		// Assumes that edges data is ordered by kda_FDR
 		var fdr_cutoff = data[max_edges - 1].kda_FDR
 	} else {
-		fdr_cutoff == undefined;
+		var fdr_cutoff = 1.0;  // show all
 	}
 
 	return(fdr_cutoff)
 }
 
+// extended from example at
+// https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
 function renderSlider(data, fdr_cutoff) {
 	// log transformed FDR values
 	var fdr_vals = data.map(function(d) { return -Math.log10(d.kda_FDR); })
@@ -382,21 +435,21 @@ function renderSlider(data, fdr_cutoff) {
 
 
 // Updates state variables of dynamic networks
-function setNetwork(edges_data, fdr_cutoff) {
+function setNetwork(edges, fdr_cutoff) {
 
+	// filter edges if fdr_cutoff is provided
 	if (fdr_cutoff !== undefined) {
 		// Filter edges
-		edges_filter = edges_data.filter(function(elem) {
+		edges = edges.filter(function(elem) {
 			return Number(elem.kda_FDR) < Number(fdr_cutoff);
 		});
-	} else {
-		edges_filter = edges_data;
 	}
 
-	var nodes_from = edges_filter.map(function(d) {return d.source; });
-	var nodes_to = edges_filter.map(function(d) {return d.target; });
+	var nodes_from = edges.map(function(d) {return d.source; });
+	var nodes_to = edges.map(function(d) {return d.target; });
 
 	// Get nodes as array if ids
+	// desired node array
 	var new_nodes = _.unique(nodes_from.concat(nodes_to));
 
 	// Get array of existing node ids
@@ -407,16 +460,14 @@ function setNetwork(edges_data, fdr_cutoff) {
 
 	// remove nodes previously in network that are not specified
 	var del_nodes = _.difference(node_ids, new_nodes);
+	// console.log("Removing : ", del_nodes);
 
 	// delete nodes globally
 	del_nodes.map(function(id) {
-		index = node_ids.indexOf(id);
+		index = nodes.findIndex(function(d) {return d.id === id; })
+
 		nodes.splice(index, 1);  // delete from array
 	})
-
-	// console.log(nodes);
-	// del_nodes = del_nodes.map(function(d) { return {id: d }; })
-
 
 	// Convert to node format, such that new nodes can be added
 	add_nodes = add_nodes.map(function(d) { return {id: d }; })
@@ -424,47 +475,24 @@ function setNetwork(edges_data, fdr_cutoff) {
 	// Add new nodes permanently to global node variable
 	nodes = nodes.concat(add_nodes);
 
-
 	// get list of references to nodes array
 	// Edges only work if they are passed (by reference?) with respect to
 	// the objects in the global nodes variable
-	var node_ids = nodes.map(function(d) { return d.id })
+	var new_edges = edges.map(function(edge) {
+		// Get current node indices of source and target 
+		var source_index = nodes.findIndex(function(d) { return d.id === edge.source; });
+		var target_index = nodes.findIndex(function(d) { return d.id === edge.target; });
 
-	var new_edges = edges_filter.map(function(edge) {
-		var source_index = node_ids.indexOf(edge.source);
-		var target_index = node_ids.indexOf(edge.target);
 		return {source: nodes[source_index], target: nodes[target_index]}
 	});
 
-	// Get unique string IDs of present edges
-	links_ids = links.map(edgeID);
-
-	// Only add edges that are not already present in network
-	new_edges = new_edges.filter(function(edge) {
-		return links_ids.indexOf(edgeID(edge)) === -1;
-	});
-
-
-	// Edges to remove
-	var del_edges = _.difference(links_ids, new_edges.map(edgeID));
-
-	// Delete edges
-	del_edges.map(function(id) {
-		var index = links_ids.indexOf(id);
-		links.splice(index, 1);
-	});
-
-	// add new edges
-	links = links.concat(new_edges);
-
-	// links = new_edges;
-
-	// restart()
-
+	// Overwrite previous edges
+	links = new_edges;
 }
 
 // Generates unique string ID for network edges
 function edgeID(edge) {
+	// console.log(edge);
 	return edge.source.id + "-" + edge.target.id;
 }
 
