@@ -20,6 +20,32 @@ var svg = d3.select("#rgn").append("svg")
 	.attr("width", width)
 	.attr("height", height);
 
+
+// Emtpy rectangle for catching zoom events
+// And for defining 
+svg.append("rect")
+	.attr("width", width)
+	.attr("height", height)
+	.style("fill", "none")
+	// border
+	.style("stroke", "rgb(180,180,180)")
+	.attr("rx", 5)  // rounded corners
+	// .style("border-radius", "5px")
+	.style("cursor", "grab")  // grabby cursor
+	.style("pointer-events", "all")
+	.call(d3.zoom()
+		.scaleExtent([1 / 2, 4])
+		.on("zoom", zoomed));
+
+function zoomed() {
+	console.log("zoom");
+	svg_group.attr("transform", d3.event.transform);
+}
+
+// Content svg group
+var svg_group = svg.append("g");
+
+
 // Define arrowheads on directed edges
 svg.append("svg:defs")
 	.append("svg:marker")
@@ -46,13 +72,9 @@ var simulation = d3.forceSimulation(nodes)
     .force("collide", d3.forceCollide().radius(5))
     .force("gravity", d3.forceManyBody().strength(5))
     .force("center", d3.forceCenter(width / 2, height / 2))
-    // .force("forceX", d3.forceX().strength(1).x(width * .5))
-    // .force("forceY", d3.forceY().strength(1).y(height * .5))
-    // .alphaTarget(1)
     .on("tick", ticked);
 
 // Declare D3 selections available to updateNetwork()
-var svg_group = svg.append("g");
 
 var link = svg_group.append("g")
     	.attr("stroke", "#000")
@@ -64,6 +86,7 @@ var node = svg_group.append("g")
     	// .attr("stroke", "#fff")
     	// .attr("stroke-width", 1.0)
     	.selectAll(".node");
+
 
 // update network based on nodes and links objects
 function updateNetwork() {
@@ -449,7 +472,7 @@ function renderSlider(data, fdr_cutoff) {
 
 	var g = d3.select("div#rgn_slider").append("svg")
 		.attr("width", 500)
-		.attr("height", 100)
+		.attr("height", 70)
 		.append("g")
 		.attr("transform", "translate(30,30)");
 
