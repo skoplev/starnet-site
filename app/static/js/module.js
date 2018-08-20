@@ -351,24 +351,32 @@ function renderSlider(data, fdr_cutoff) {
 	var fdr_vals = data.map(function(d) { return -Math.log10(d.kda_FDR); })
 
 	var slider = d3.sliderHorizontal()
-	  .min(d3.min(fdr_vals))
-	  .max(d3.max(fdr_vals))
-	  .width(300)
-	  .tickFormat(d3.format('.3s'))
-	  .ticks(5)
-	  .default(-Math.log10(fdr_cutoff))
-	  .on('onchange', function(val) {
-	    setNetwork(data, Math.pow(10, -val));
-	    updateNetwork();
-	  });
+		.min(d3.min(fdr_vals))
+		.max(d3.max(fdr_vals))
+		.width(300)
+		.tickFormat(d3.format('.3s'))
+		.ticks(5)
+		.default(-Math.log10(fdr_cutoff))
+		.on('onchange', function(val) {
+			setNetwork(data, Math.pow(10, -val));
+			updateNetwork();
+		});
 
-	  var g = d3.select("div#rgn_slider").append("svg")
-	    .attr("width", 500)
-	    .attr("height", 100)
-	    .append("g")
-	    .attr("transform", "translate(30,30)");
+	var g = d3.select("div#rgn_slider").append("svg")
+		.attr("width", 500)
+		.attr("height", 100)
+		.append("g")
+		.attr("transform", "translate(30,30)");
 
-	  g.call(slider);
+	g.call(slider);
+
+	// Label
+	g.append("text")
+		.attr("x", 65)
+		.attr("y", -10)
+		.style("font-size", "12px")
+		.style("fill", "grey")
+		.text("Key driver analysis (-log10 FDR)");
 }
 
 
