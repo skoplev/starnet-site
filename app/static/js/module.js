@@ -410,10 +410,13 @@ function renderSlider(data, fdr_cutoff) {
 		.tickFormat(d3.format('.3s'))
 		.ticks(5)
 		.default(-Math.log10(fdr_cutoff))
-		.on('onchange', function(val) {
-			setNetwork(data, Math.pow(10, -val));
-			updateNetwork();
-		});
+		.on('onchange', _.debounce(
+			// Debounce reduced jitter when dragging slider
+			function(val) {
+				setNetwork(data, Math.pow(10, -val));
+				updateNetwork();
+			}
+		), 300);
 
 	var g = d3.select("div#rgn_slider").append("svg")
 		.attr("width", 500)
