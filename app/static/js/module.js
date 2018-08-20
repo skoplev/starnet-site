@@ -4,6 +4,7 @@
 // https://bl.ocks.org/mbostock/950642
 // https://bl.ocks.org/mbostock/1129492
 
+// Bayesian netork
 var height = 600;
 var width = 960;
 var radius = 5;
@@ -12,6 +13,21 @@ var radius = 5;
 var svg = d3.select("#rgn").append("svg")
 	.attr("width", width)
 	.attr("height", height);
+
+// Define arrowheads
+
+svg.append("svg:defs")
+	.append("svg:marker")
+		.attr("id", "subtle")  // 
+		.attr("viewBox", "0 -5 10 10")
+		.attr("refX", 15)
+		.attr("refY", 0.0)
+		.attr("markerWidth", 5)
+		.attr("markerHeight", 5)
+		.attr("orient", "auto")
+	.append("svg:path")
+		.attr("d", "M0,-5L10,0L0,5")
+		.style("fill", "rgb(100,100,100)");
 
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -44,15 +60,16 @@ var node = svg_group.append("g")
 
 // update network based on nodes and links objects
 function updateNetwork() {
-
 	// Apply the general update pattern to the nodes.
+	// Data is bound to the g object, containing circle, label, and link
 	node = node.data(nodes, function(d) { return d.id;});
-	node.exit().remove();
+	node.exit().remove();  // deletes nodes no longer found in nodes object
 
+	// Newly added nodes (from the data() binding)
 	var node_new = node.enter().append("g")
 		.attr("class", "node");
 
-
+	// Construct new node: circle, url link and label
 	var circle = node_new.append("a")
 		// link when clicking nodes
 		.attr("xling:href", function(d) {
@@ -78,13 +95,15 @@ function updateNetwork() {
 			return elems[1];
 		});
 
+	// avoids adding already existing nodes
 	node = node_new.merge(node);
-
 
 	// Apply the general update pattern to the links.
 	link = link.data(links, function(d) { return d.source.id + "-" + d.target.id; });
 	link.exit().remove();
-	link = link.enter().append("line").merge(link);
+	link = link.enter().append("line")
+		.attr("marker-end", "url(#subtle)")  // set customly defined arrow head
+		.merge(link);
 
 	// Update and restart the simulation.
 	simulation.nodes(nodes);
@@ -93,13 +112,12 @@ function updateNetwork() {
 }
 
 function ticked() {
-	// circle
 	node.selectAll("circle")
 		// Bounded by svg box
 		.attr("cx", function(d) { return Math.max(radius, Math.min(width - radius, d.x)); })
 		.attr("cy", function(d) { return Math.max(radius, Math.min(height - radius, d.y)); });
 
-	// label
+	// label position, inherited by g .node
 	node.selectAll("text")
 		.attr("x", function(d) {return d.x; })
 		.attr("y", function(d) {return d.y; });
@@ -499,7 +517,9 @@ function edgeID(edge) {
 	return edge.source.id + "-" + edge.target.id;
 }
 
+
 // Old function for rendering static network
+// ------------------------------------------------------------
 // var nodes = [];
 // var edges_filter = [];
 function renderRGN(edges) {
