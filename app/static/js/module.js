@@ -4,7 +4,13 @@
 // https://bl.ocks.org/mbostock/950642
 // https://bl.ocks.org/mbostock/1129492
 
-// Bayesian netork
+
+// Order of tissues for color scale
+var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM', 'Cross-tissue'];
+var colors = d3.schemeCategory10;
+
+// Bayesian netork with global variables
+// ------------------------------------------------
 var height = 600;
 var width = 960;
 var radius = 5;
@@ -14,8 +20,7 @@ var svg = d3.select("#rgn").append("svg")
 	.attr("width", width)
 	.attr("height", height);
 
-// Define arrowheads
-
+// Define arrowheads on directed edges
 svg.append("svg:defs")
 	.append("svg:marker")
 		.attr("id", "subtle")  // 
@@ -29,7 +34,6 @@ svg.append("svg:defs")
 		.attr("d", "M0,-5L10,0L0,5")
 		.style("fill", "rgb(100,100,100)");
 
-var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 // Variables storing current nodes and links
 var nodes = [];
@@ -60,6 +64,7 @@ var node = svg_group.append("g")
 
 // update network based on nodes and links objects
 function updateNetwork() {
+
 	// Apply the general update pattern to the nodes.
 	// Data is bound to the g object, containing circle, label, and link
 	node = node.data(nodes, function(d) { return d.id;});
@@ -78,10 +83,14 @@ function updateNetwork() {
 			return "/gene/" + ensembl;
 		})
 		.append("circle")
-			.attr("fill", function(d) { return color(d.id); })
+			.attr("fill", function(d) {
+				var elems = d.id.split("_");
+				var tissue = elems[0];
+				return colors[tissue_order.indexOf(tissue)];
+			})
 			.attr("r", radius)
 			.on("mouseover", function(d) {
-				console.log(d);
+				// console.log(d);
 			});
 
 	var label = node_new.append("text")
@@ -204,8 +213,7 @@ var brewer_pastel1 = [
 ]
 
 function renderModulePie(data) {
-	// Specify order of tissues for plotting
-	var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM'];
+	// Uses tissue_order global variable, for plotting order
 
 	// Count transcripts from certain tissues
 	// get array of transcript tissues
@@ -226,7 +234,7 @@ function renderModulePie(data) {
 		sort: false,  // dont reorder and recolor tissues
 		hole: .4,
 		marker: {
-			// colors: brewer_pastel1
+			colors: colors,
 			// outline color
 			line: {
 				color: 'rgba(50, 50, 50, 1.0)',
@@ -481,7 +489,6 @@ function setNetwork(edges, fdr_cutoff) {
 
 	// remove nodes previously in network that are not specified
 	var del_nodes = _.difference(node_ids, new_nodes);
-	// console.log("Removing : ", del_nodes);
 
 	// delete nodes globally
 	del_nodes.map(function(id) {
