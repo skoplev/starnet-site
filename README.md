@@ -176,3 +176,7 @@ scp app/static/data/eigen_network.json neptune:/var/www/starnet-site/app/static/
 
 ## sqlite3 database file
 scp instance/STARNET.sqlite neptune:/var/www/starnet-site/instance
+
+## Static Bayesian networks
+
+scp app/static/data/rgn/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/

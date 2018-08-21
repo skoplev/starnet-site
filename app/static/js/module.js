@@ -17,6 +17,7 @@ var radius = 5;
 
 // Init svg canvas
 var svg = d3.select("#rgn").append("svg")
+	.attr("id", "network_svg")
 	.attr("width", width)
 	.attr("height", height);
 
@@ -579,7 +580,7 @@ function saveSvg(svgEl, name) {
 // Works as a download link.
 function exportNetworkSVG() {
 	console.log("Exporting");
-	var svg = d3.select("#rgn").select("svg").node();  // node() gets DOM object
+	var svg = d3.select("#network_svg").node();  // node() gets DOM object
 	saveSvg(svg, "regulatory_gene_network.svg");
 }
 
