@@ -94,7 +94,7 @@ function updateNetwork() {
 	// wrap entire node in link
 	node_new = node_new.append("a")
 		// link when clicking nodes
-		.attr("xling:href", function(d) {
+		.attr("xlink:href", function(d) {
 			var elems = d.id.split("_");
 			var ensembl = elems[2].split(".")[0];
 			return "/gene/" + ensembl;
