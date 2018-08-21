@@ -2,6 +2,8 @@
 
 - Make site available from Mount Sinai. Improve security/encryption.
 
+- Implement tooltips and descriptions
+
 - Color scale on eigenegene network
 
 - Enrichment analsis based on gene sets. Accessible on main page.

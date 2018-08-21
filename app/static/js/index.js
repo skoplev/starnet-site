@@ -1,4 +1,10 @@
+// Enable bootstrap tooltips
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip({trigger: "click"});
+})
+
 $(document).ready(function() {
+
 	// Load supernetwork data, for visualization
 	$.getJSON('/static/data/eigen_network.json', function(data) {
 
@@ -39,8 +45,6 @@ $(document).ready(function() {
 		// invoke change event to set color
 		var event = new Event('change');
 		document.getElementById("annot_opts").dispatchEvent(event);
-
-
 
 	});
 });

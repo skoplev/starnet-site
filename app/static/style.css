@@ -32,3 +32,20 @@
 #rgn rect:active {
 	cursor: grabbing;
 }
+
+
+/* Tooltips */
+i.fa.fa-question-circle {
+	color: black;
+	cursor: pointer;
+}
+
+.tooltip-inner {
+	text-align: left;
+	max-width: 350px;
+	background: rgb(235,235,235);
+	color: black;
+	/*stroke: black;*/
+	/*border-width: 1;*/
+	border: solid 1px #ccc;
+}
