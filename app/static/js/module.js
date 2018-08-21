@@ -196,8 +196,20 @@ $(document).ready(function() {
 			// Render network
 			setNetwork(data, fdr_cutoff);
 			updateNetwork();
-		}
-	);
+		})
+		.fail(function(err) {
+			$("#rgn").text("Data unavailable.");
+		});
+
+
+	// Key driver analysis
+	$.get('/api/kda',
+		{k: input.mod_id}
+	).done(function(data) {
+		renderTableKDA(data);
+	}).fail(function(err) {
+		$("#kda").text("Data unavailable.");
+	});
 
 	// Get GO enrichment tables
 	$.get('/api/go',
@@ -220,13 +232,6 @@ $(document).ready(function() {
 		renderTableGO(data, '#go_mf_table');
 	});
 
-	// Key driver analysis
-	$.get('/api/kda',
-		{k: input.mod_id}
-	).done(function(data) {
-		// console.log(data);
-		renderTableKDA(data);
-	});
 
 });
 

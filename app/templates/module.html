@@ -23,24 +23,24 @@
 <!-- <div id="myDiv"></div> -->
 
 <h2>Regulatory gene network</h2>
-<!-- <div id="slider1"></div> -->
 
-<!-- <a href=""></a> -->
+<div id="rgn">
+	<div id="rgn_slider" style="display: inline-block"></div>
 
-<div id="rgn_slider" style="display: inline-block"></div>
+	<button type="button" class="btn btn-light" onclick="exportNetworkSVG()">SVG</button>
 
-<button type="button" class="btn btn-light" onclick="exportNetworkSVG()">SVG</button>
-
-<a href="/static/data/rgn/{{mod_id}}.csv">
-	<button type="button" class="btn btn-light">CSV</button>
-</a>
-
-<div id="rgn"></div>
+	<a href="/static/data/rgn/{{mod_id}}.csv">
+		<button type="button" class="btn btn-light">CSV</button>
+	</a>
+</div>
 
 <br>
 
 <h2>Key driver analysis</h2>
-<table id='kda_table' class='display'></table>
+
+<div id="kda">
+	<table id='kda_table' class='display'></table>
+</div>
 
 <h2>Transcripts</h2>
 <table id='mod_table' class='display'></table>
