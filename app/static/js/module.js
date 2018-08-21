@@ -26,40 +26,32 @@ var svg = d3.select("#rgn").append("svg")
 svg.append("rect")
 	.attr("width", width)
 	.attr("height", height)
-	.style("fill", "none")
-	// border
-	.style("stroke", "rgb(180,180,180)")
-	.attr("rx", 5)  // rounded corners
-	// .style("border-radius", "5px")
-	.style("cursor", "grab")  // grabby cursor
 	.style("pointer-events", "all")
+	// zoom and drag callback
 	.call(d3.zoom()
 		.scaleExtent([1 / 2, 4])
 		.on("zoom", zoomed));
 
 function zoomed() {
-	console.log("zoom");
 	svg_group.attr("transform", d3.event.transform);
 }
 
 // Content svg group
 var svg_group = svg.append("g");
 
-
 // Define arrowheads on directed edges
 svg.append("svg:defs")
 	.append("svg:marker")
 		.attr("id", "subtle")  // 
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 15)
+		.attr("refX", 18)
 		.attr("refY", 0.0)
 		.attr("markerWidth", 5)
 		.attr("markerHeight", 5)
 		.attr("orient", "auto")
 	.append("svg:path")
 		.attr("d", "M0,-5L10,0L0,5")
-		.style("fill", "rgb(100,100,100)");
-
+		.style("fill", "rgb(150,150,150)");
 
 // Variables storing current nodes and links
 var nodes = [];
@@ -67,26 +59,20 @@ var links = [];
 
 // Force layout simulation
 var simulation = d3.forceSimulation(nodes)
-    .force("charge", d3.forceManyBody().strength(-10))
+    .force("charge", d3.forceManyBody().strength(-40))
     .force("link", d3.forceLink(links).distance(30))
-    .force("collide", d3.forceCollide().radius(5))
+    .force("collide", d3.forceCollide().radius(15))
     .force("gravity", d3.forceManyBody().strength(5))
     .force("center", d3.forceCenter(width / 2, height / 2))
     .on("tick", ticked);
 
 // Declare D3 selections available to updateNetwork()
-
 var link = svg_group.append("g")
-    	.attr("stroke", "#000")
-    	.attr("stroke-width", 1.0)
     	.selectAll(".link");
 
 // Network nodes containing circle with href span and a node label
 var node = svg_group.append("g")
-    	// .attr("stroke", "#fff")
-    	// .attr("stroke-width", 1.0)
     	.selectAll(".node");
-
 
 // update network based on nodes and links objects
 function updateNetwork() {
@@ -100,31 +86,35 @@ function updateNetwork() {
 	var node_new = node.enter().append("g")
 		.attr("class", "node");
 
-	// Construct new node: circle, url link and label
-	var circle = node_new.append("a")
+	// wrap entire node in link
+	node_new = node_new.append("a")
 		// link when clicking nodes
 		.attr("xling:href", function(d) {
 			var elems = d.id.split("_");
 			var ensembl = elems[2].split(".")[0];
 			return "/gene/" + ensembl;
 		})
+		.on("mouseover", function(d) {
+			d3.select(this).select("circle").attr("r", radius + 1);
+		})
+		.on("mouseout", function(d) {
+			// reset radius
+			d3.select(this).select("circle").attr("r", radius);
+		});
+
+	// Construct new node: circle, url link and label
+	var circle = node_new
 		.append("circle")
 			.attr("fill", function(d) {
 				var elems = d.id.split("_");
 				var tissue = elems[0];
 				return colors[tissue_order.indexOf(tissue)];
 			})
-			.attr("r", radius)
-			.on("mouseover", function(d) {
-				// console.log(d);
-			});
+			.attr("r", radius);
 
 	var label = node_new.append("text")
 		.attr("text-anchor", "middle")
-		.attr("dy", "-0.5em")
-		.style("font-size", "10px")
-		.style("fill", "rgb(100,100,100)")
-		.style("stroke", "none")
+		.attr("dy", "-0.7em")
 		.text(function(d) {
 			var elems = d.id.split("_");
 			return elems[1];
@@ -138,6 +128,7 @@ function updateNetwork() {
 	link.exit().remove();
 	link = link.enter().append("line")
 		.attr("marker-end", "url(#subtle)")  // set customly defined arrow head
+		.attr("class", "link")
 		.merge(link);
 
 	// Update and restart the simulation.
@@ -149,8 +140,11 @@ function updateNetwork() {
 function ticked() {
 	node.selectAll("circle")
 		// Bounded by svg box
-		.attr("cx", function(d) { return Math.max(radius, Math.min(width - radius, d.x)); })
-		.attr("cy", function(d) { return Math.max(radius, Math.min(height - radius, d.y)); });
+		// .attr("cx", function(d) { return Math.max(radius, Math.min(width - radius, d.x)); })
+		// .attr("cy", function(d) { return Math.max(radius, Math.min(height - radius, d.y)); });
+		.attr("cx", function(d) { return d.x; })
+		.attr("cy", function(d) { return d.y; });
+
 
 	// label position, inherited by g .node
 	node.selectAll("text")
@@ -471,7 +465,7 @@ function renderSlider(data, fdr_cutoff) {
 		), 300);
 
 	var g = d3.select("div#rgn_slider").append("svg")
-		.attr("width", 500)
+		.attr("width", 350)
 		.attr("height", 70)
 		.append("g")
 		.attr("transform", "translate(30,30)");
@@ -548,6 +542,32 @@ function setNetwork(edges, fdr_cutoff) {
 function edgeID(edge) {
 	// console.log(edge);
 	return edge.source.id + "-" + edge.target.id;
+}
+
+
+
+// Saves svg elements as .svg file
+function saveSvg(svgEl, name) {
+	svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+	var svgData = svgEl.outerHTML;
+	var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+	var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+	var svgUrl = URL.createObjectURL(svgBlob);
+	var downloadLink = document.createElement("a");
+	downloadLink.href = svgUrl;
+	downloadLink.download = name;
+	document.body.appendChild(downloadLink);
+	downloadLink.click();
+	document.body.removeChild(downloadLink);
+}
+
+
+// Export html svg object as file.
+// Works as a download link.
+function exportNetworkSVG() {
+	console.log("Exporting");
+	var svg = d3.select("#rgn").select("svg").node();  // node() gets DOM object
+	saveSvg(svg, "regulatory_gene_network.svg");
 }
 
 
