@@ -589,128 +589,129 @@ function exportNetworkSVG() {
 // ------------------------------------------------------------
 // var nodes = [];
 // var edges_filter = [];
-function renderRGN(edges) {
-	// console.log(edges);
 
-	var height = 600;
-	var width = 960;
+// function renderRGN(edges) {
+// 	// console.log(edges);
 
-	// Init network layout simulation
-	var simulation = d3.forceSimulation()
-	    .force("link", d3.forceLink().id(function(d) { return d.id; }))
-	    .force("charge", d3.forceManyBody())
-	    .force("gravity", d3.forceManyBody().strength(10))
-	    .force("center", d3.forceCenter(width / 2, height / 2));
+// 	var height = 600;
+// 	var width = 960;
 
-	// Init svg canvas
-	var svg = d3.select("#rgn").append("svg")
-		.attr("width", width)
-		.attr("height", height);
+// 	// Init network layout simulation
+// 	var simulation = d3.forceSimulation()
+// 	    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+// 	    .force("charge", d3.forceManyBody())
+// 	    .force("gravity", d3.forceManyBody().strength(10))
+// 	    .force("center", d3.forceCenter(width / 2, height / 2));
 
-	var line = svg.append("g")
-		.attr("id", "links")
-		.attr("class", "links");
+// 	// Init svg canvas
+// 	var svg = d3.select("#rgn").append("svg")
+// 		.attr("width", width)
+// 		.attr("height", height);
 
-	var node = svg.append("g")
-		.attr("id", "nodes")
-		.attr("class", "nodes");
+// 	var line = svg.append("g")
+// 		.attr("id", "links")
+// 		.attr("class", "links");
 
-	function ticked() {
-	  link
-	      .attr("x1", function(d) { return d.source.x; })
-	      .attr("y1", function(d) { return d.source.y; })
-	      .attr("x2", function(d) { return d.target.x; })
-	      .attr("y2", function(d) { return d.target.y; });
+// 	var node = svg.append("g")
+// 		.attr("id", "nodes")
+// 		.attr("class", "nodes");
 
-	  node
-	      .attr("cx", function(d) { return Math.max(radius, Math.min(width - radius, d.x)); })
-	      .attr("cy", function(d) { return Math.max(radius, Math.min(height - radius, d.y)); });
-	}
+// 	function ticked() {
+// 	  link
+// 	      .attr("x1", function(d) { return d.source.x; })
+// 	      .attr("y1", function(d) { return d.source.y; })
+// 	      .attr("x2", function(d) { return d.target.x; })
+// 	      .attr("y2", function(d) { return d.target.y; });
 
-	fdr_cutoff = calcFdrCutoff(edges)
-	renderNetwork(svg, simulation, edges, fdr_cutoff);
-}
+// 	  node
+// 	      .attr("cx", function(d) { return Math.max(radius, Math.min(width - radius, d.x)); })
+// 	      .attr("cy", function(d) { return Math.max(radius, Math.min(height - radius, d.y)); });
+// 	}
 
-
-// Old function for rendering static network
-function renderNetwork(svg, simulation, edges, fdr_cutoff=undefined) {
-	var radius = 5;
-
-	// Get svg dimensions
-	var width = svg.style("width").replace("px", "");
-	var height = svg.style("height").replace("px", "");
+// 	fdr_cutoff = calcFdrCutoff(edges)
+// 	renderNetwork(svg, simulation, edges, fdr_cutoff);
+// }
 
 
-	if (fdr_cutoff !== undefined) {
-		// Filter edges
-		edges_filter = edges.filter(function(elem) {
-			return Number(elem.kda_FDR) < Number(fdr_cutoff);
-		});
-	} else {
-		edges_filter = edges;
-	}
+// // Old function for rendering static network
+// function renderNetwork(svg, simulation, edges, fdr_cutoff=undefined) {
+// 	var radius = 5;
 
-	var nodes_from = edges_filter.map(function(d) {return d.source; });
-	var nodes_to = edges_filter.map(function(d) {return d.target; });
-
-	var nodes = _.unique(nodes_from.concat(nodes_to));
-
-	nodes = nodes.map(function(d) { return {id: d }; })
+// 	// Get svg dimensions
+// 	var width = svg.style("width").replace("px", "");
+// 	var height = svg.style("height").replace("px", "");
 
 
-	var link = svg.select("#links")
-		.selectAll("line")
-		.data(edges_filter)
-		.enter().append("line")
-			.attr("stroke-width", 2);
+// 	if (fdr_cutoff !== undefined) {
+// 		// Filter edges
+// 		edges_filter = edges.filter(function(elem) {
+// 			return Number(elem.kda_FDR) < Number(fdr_cutoff);
+// 		});
+// 	} else {
+// 		edges_filter = edges;
+// 	}
 
-	var node = svg.select("#nodes")
-		.selectAll("circles")
-		.data(nodes)
-		.enter().append("circle")
-			.attr("r", radius)
-			.attr("fill", "black")
-			.call(d3.drag()
-			    .on("start", dragstarted)
-			    .on("drag", dragged)
-			    .on("end", dragended));
+// 	var nodes_from = edges_filter.map(function(d) {return d.source; });
+// 	var nodes_to = edges_filter.map(function(d) {return d.target; });
 
-	simulation
-		.nodes(nodes)
-		.on("tick", ticked);
+// 	var nodes = _.unique(nodes_from.concat(nodes_to));
 
-	simulation.force("link")
-		.links(edges_filter);
+// 	nodes = nodes.map(function(d) { return {id: d }; })
 
-	function ticked() {
-	  link
-	      .attr("x1", function(d) { return d.source.x; })
-	      .attr("y1", function(d) { return d.source.y; })
-	      .attr("x2", function(d) { return d.target.x; })
-	      .attr("y2", function(d) { return d.target.y; });
 
-	  node
-	      .attr("cx", function(d) { return Math.max(radius, Math.min(width - radius, d.x)); })
-	      .attr("cy", function(d) { return Math.max(radius, Math.min(height - radius, d.y)); });
-	}
+// 	var link = svg.select("#links")
+// 		.selectAll("line")
+// 		.data(edges_filter)
+// 		.enter().append("line")
+// 			.attr("stroke-width", 2);
 
-	// Dragging functions
-	function dragstarted(d) {
-		if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-		d.fx = d.x;
-		d.fy = d.y;
-	}
+// 	var node = svg.select("#nodes")
+// 		.selectAll("circles")
+// 		.data(nodes)
+// 		.enter().append("circle")
+// 			.attr("r", radius)
+// 			.attr("fill", "black")
+// 			.call(d3.drag()
+// 			    .on("start", dragstarted)
+// 			    .on("drag", dragged)
+// 			    .on("end", dragended));
 
-	function dragged(d) {
-		d.fx = d3.event.x;
-		d.fy = d3.event.y;
-	}
+// 	simulation
+// 		.nodes(nodes)
+// 		.on("tick", ticked);
 
-	function dragended(d) {
-		if (!d3.event.active) simulation.alphaTarget(0);
-		d.fx = null;
-		d.fy = null;
-	}
-}
+// 	simulation.force("link")
+// 		.links(edges_filter);
+
+// 	function ticked() {
+// 	  link
+// 	      .attr("x1", function(d) { return d.source.x; })
+// 	      .attr("y1", function(d) { return d.source.y; })
+// 	      .attr("x2", function(d) { return d.target.x; })
+// 	      .attr("y2", function(d) { return d.target.y; });
+
+// 	  node
+// 	      .attr("cx", function(d) { return Math.max(radius, Math.min(width - radius, d.x)); })
+// 	      .attr("cy", function(d) { return Math.max(radius, Math.min(height - radius, d.y)); });
+// 	}
+
+// 	// Dragging functions
+// 	function dragstarted(d) {
+// 		if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+// 		d.fx = d.x;
+// 		d.fy = d.y;
+// 	}
+
+// 	function dragged(d) {
+// 		d.fx = d3.event.x;
+// 		d.fy = d3.event.y;
+// 	}
+
+// 	function dragended(d) {
+// 		if (!d3.event.active) simulation.alphaTarget(0);
+// 		d.fx = null;
+// 		d.fy = null;
+// 	}
+// }
 
 
