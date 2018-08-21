@@ -11,6 +11,7 @@ var tissue_description = {
 };
 
 
+
 // Interactive eigengene supernetwork class
 // id: DOM identifier of <div> to load
 class SuperNetwork {
@@ -40,7 +41,6 @@ class SuperNetwork {
 			.domain([0, max_y])  // input domain
 			.range([this.height - margin, margin]);  // inverted y-axis
 
-
 		// Include edge data in edges			
 		var edges = data.edges.map(function(e) {
 			return {
@@ -57,6 +57,60 @@ class SuperNetwork {
 			}
 		});
 
+
+		// Fixed tissue labels
+		// Data for static tissue labels, relative positionings
+		var tissue_labels = [
+			{
+				tissue: "AOR",
+				x: 4.5,
+				y: 12.5
+			},
+			{
+				tissue: "MAM",
+				x: 9.0,
+				y: 19.0
+			},
+			{
+				tissue: "VAF",
+				x: 9.0,
+				y: 0.8
+			},
+			{
+				tissue: "SF",
+				x: 14.0,
+				y: 1.5
+			},
+			{
+				tissue: "BLOOD",
+				x: 22.0,
+				y: 11.2
+			},
+			{
+				tissue: "LIV",
+				x: 21.0,
+				y: 6.0
+			},
+			{
+				tissue: "SKLM",
+				x: 2.0,
+				y: 3.5
+			}
+		];
+
+		this.svg.selectAll(".tissue_label")
+			.data(tissue_labels)
+			.enter().append("text")
+				.attr("x", function(d) {
+					return xscale(d.x);
+				})
+				.attr("y", function(d) {
+					return yscale(d.y);
+				})
+				.style("fill", "grey")
+				.text(function(d) {
+					return d.tissue;
+				});
 
 	    // build arrows
 	    // see http://bl.ocks.org/d3noob/5141278 for adding data bindings
