@@ -22,10 +22,12 @@ var svg = d3.select("#rgn").append("svg")
 
 
 // Emtpy rectangle for catching zoom events
+// Note that styling in external CSS sheet does not work with SVG export.
 // And for defining 
 svg.append("rect")
 	.attr("width", width)
 	.attr("height", height)
+	.style("fill", "none")
 	.style("pointer-events", "all")
 	// zoom and drag callback
 	.call(d3.zoom()
@@ -68,7 +70,9 @@ var simulation = d3.forceSimulation(nodes)
 
 // Declare D3 selections available to updateNetwork()
 var link = svg_group.append("g")
-    	.selectAll(".link");
+	.style("stroke", "rgb(150,150,150)")
+	.style("stroke-width", 1)
+    .selectAll(".link");
 
 // Network nodes containing circle with href span and a node label
 var node = svg_group.append("g")
@@ -110,11 +114,15 @@ function updateNetwork() {
 				var tissue = elems[0];
 				return colors[tissue_order.indexOf(tissue)];
 			})
+			.attr("stroke", "rgb(50,50,50)")
+			.attr("stroke-width", 1)
 			.attr("r", radius);
 
 	var label = node_new.append("text")
 		.attr("text-anchor", "middle")
 		.attr("dy", "-0.7em")
+		.style("font-size", "10px")
+		.style("fill", "black")
 		.text(function(d) {
 			var elems = d.id.split("_");
 			return elems[1];

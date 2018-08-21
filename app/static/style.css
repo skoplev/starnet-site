@@ -20,25 +20,10 @@
 	text-decoration: none;
 }
 
-#rgn circle {
-	stroke: rgb(50,50,50);
-	stroke-width: 1;
-}
 
-#rgn text {
-	font-size: 10px;
-	fill: black;
-}
-
-#rgn line.link {
-	stroke: rgb(150,150,150);
-	stroke-width: 1;
-}
-
-/* rectangle for zoom */
+/* rectangle for zoom. Only includes decorations that are not exported as .svg file */
 #rgn rect {
 	cursor: grab;
-	fill: none;
 	stroke: rgb(180,180,180);
 	/* rounded corner */
 	rx: 5;
