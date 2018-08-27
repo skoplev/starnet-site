@@ -2,7 +2,19 @@
 
 {% block content %}
 
-<h1>Co-expression module {{ mod_id }}</h1>
+<!-- Inline block allows  -->
+<h1 style="display: inline-block;">Co-expression module {{ mod_id }}</h1>
+
+<i class="fa fa-question-circle" aria-hidden="true"
+	data-toggle="tooltip" data-placement="right"
+	data-html="true"
+	title="
+	<h6>Co-expression module inferred using blockwise weighted gene correlation network analysis (WGCNA).</h6>
+	<p>The <b>circle diagram</b> shows the tissue distribution of the transcripts in this module. Modules are inferred across tissues and can therefore contain genes from multiple tissues.</p>
+	<p><b>Module associations</b> to clinical measures are calculated by aggregating gene-level association p-values using Fisher's method. Association with differential expressed genes (DEG) is estimated by enrichment of DEG signatures using a Hypergeometric test.
+	</p>
+	">
+</i>
 
 <!-- Two equal Bootstrap columns -->
 <div class='row'>
@@ -16,7 +28,17 @@
 	</div>
 </div>
 
-<h2>Regulatory gene network</h2>
+<h2 style="display: inline-block;">Regulatory gene network</h2>
+
+<i class="fa fa-question-circle" aria-hidden="true"
+	data-toggle="tooltip" data-placement="right"
+	data-html="true"
+	title="
+	<h6>Interactive visualization of Bayesian network inferred over the module genes.</h6>
+	<p><b>Nodes</b> are colored based on the transcript tissue.</p>
+	">
+</i>
+
 <div id="rgn">
 	<div id="rgn_slider" style="display: inline-block"></div>
 
@@ -29,22 +51,47 @@
 
 </div>
 
-
-
 <br>
 
-<h2>Key drivers</h2>
+<h2 style="display: inline-block;">Key drivers</h2>
+
+<i class="fa fa-question-circle" aria-hidden="true"
+	data-toggle="tooltip" data-placement="right"
+	data-html="true"
+	title="
+	<h6>From the Bayesian network influential genes (key drivers) are detected using the Mergomics key driver analysis.</h6>
+	">
+</i>
+
 
 <div id="kda">
 	<table id='kda_table' class='display'></table>
 </div>
 
-<h2>Genes</h2>
+<h2 style="display: inline-block">Genes</h2>
+
+<i class="fa fa-question-circle" aria-hidden="true"
+	data-toggle="tooltip" data-placement="right"
+	data-html="true"
+	title="
+	<h6>Table of genes in the co-expression module.</h6>
+	">
+</i>
+
 <table id='mod_table' class='display'></table>
 
 <br>
 
-<h2>Gene Ontology enrichment</h2>
+<h2 style="display: inline-block;">Gene Ontology enrichment</h2>
+
+<i class="fa fa-question-circle" aria-hidden="true"
+	data-toggle="tooltip" data-placement="right"
+	data-html="true"
+	title="
+	<h6>Top enrichment results for the module genes. Enrichment is estimated using the WGCNA method from the R package.</h6>
+	">
+</i>
+
 
 <!-- Tab navigation for GO tables -->
 <nav>

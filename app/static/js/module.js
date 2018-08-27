@@ -1,9 +1,13 @@
+// Enable bootstrap tooltips
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip({trigger: "click"});
+})
+
 // Global variables for dynamic network visualization of regulatory gene networks (Bayesian network)
 // Aproach is based on:
 // https://bl.ocks.org/mbostock/1095795
 // https://bl.ocks.org/mbostock/950642
 // https://bl.ocks.org/mbostock/1129492
-
 
 // Order of tissues for color scale
 var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM', 'Cross-tissue'];
@@ -220,7 +224,6 @@ $(document).ready(function() {
 		if (data.length > 0) {
 			renderTableKDA(data);
 		} else {
-			console.log("No KDA data...");
 			$("#kda").text("Data unavailable. No significant key drivers at FDR < 0.05.");
 			$("#rgn").append(" No significant key drivers.");
 		}
