@@ -8,4 +8,4 @@ Gene pages doesn't load for several RNA genes. Could be a parsing error when gen
 http://localhost:5000/gene/ENSG00000261604
 
 
-
+Network slider offset in Safari

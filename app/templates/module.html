@@ -6,30 +6,32 @@
 
 <!-- Two equal Bootstrap columns -->
 <div class='row'>
-	<div class='col-sm'>
-		<h2>Tissues</h2>
-		<div id="tissue_pie"></div>
+	<div class='col-sm center-block'>
+		<p>The co-expression module contains <b>n=<span id="mod_size"></span></b> genes from the following tissues:</p>
+			<div id="tissue_pie" style="width: 300px; height: 290px;"></div>
+		<!-- <p>The module transcripts in aggregated are associated with the following phenotypes:</p> -->
 	</div>
-
 	<div class='col-sm'>
-		<h2>Phenotype associations</h2>
 		<div id="pheno_assoc"></div>
 	</div>
-
 </div>
 
 
-<h2>Regulatory gene network</h2>
 
+<h2>Regulatory gene network</h2>
 <div id="rgn">
 	<div id="rgn_slider" style="display: inline-block"></div>
 
 	<button type="button" class="btn btn-light" onclick="exportNetworkSVG()">SVG</button>
 
+
 	<a href="/static/data/rgn/{{mod_id}}.csv">
 		<button type="button" class="btn btn-light">CSV</button>
 	</a>
+
 </div>
+
+
 
 <br>
 
@@ -39,7 +41,7 @@
 	<table id='kda_table' class='display'></table>
 </div>
 
-<h2>Transcripts</h2>
+<h2>Genes</h2>
 <table id='mod_table' class='display'></table>
 
 <br>

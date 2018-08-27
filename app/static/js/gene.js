@@ -43,7 +43,11 @@ $(document).ready(function() {
 		{gene: input.gene}
 	).done(function(data) {
 		renderTableQTL(data);
-	});
+	})
+	.fail(function(err) {
+		
+	})
+	;
 });
 
 

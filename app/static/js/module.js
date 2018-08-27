@@ -172,6 +172,7 @@ $(document).ready(function() {
 	$.get('/api/module',
 		{k: input.mod_id}
 	).done(function(data) {
+		setModuleCount(data);
 		renderModulePie(data);
 		renderModuleTable(data);
 	});
@@ -280,6 +281,11 @@ function renderModulePie(data) {
 	Plotly.newPlot('tissue_pie', pie_data)
 }
 
+// Sets description of module size
+function setModuleCount(data) {
+	$("#mod_size").text(data.length);
+}
+
 function renderModuleTable(data) {
 	var columns = Object.keys(data[0]);
 
@@ -325,10 +331,12 @@ function renderPhenoAssoc(data) {
 		d.logp = Math.min(-Math.log10(d.pval), max_logp);
 	})
 
+	var logp = data.map(function(d) {return d.logp});
 
 	var plot_data = [{
 	  type: 'scatter',
-	  x: data.map(function(d) {return d.logp}),
+	  x: logp,
+	  // data.map(function(d) {return d.logp}),
 	  y: data.map(function(d) {return d.type}),
 	  mode: 'markers',
 	  // name: 'Percent of estimated voting age population',
@@ -348,7 +356,7 @@ function renderPhenoAssoc(data) {
 	var layout = {
 	  // title: 'Votes cast for ten lowest voting age population in OECD countries',
 	  xaxis: {
-	  	title: '-log10 p',
+	  	title: 'Aggregate association (-log10 p)',
 	    showgrid: false,
 	    showline: true,
 	    linecolor: 'rgb(102, 102, 102)',
@@ -362,10 +370,7 @@ function renderPhenoAssoc(data) {
 	        color: 'rgb(102, 102, 102)'
 	      }
 	    },
-	    autotick: false,
-	    dtick: 10,
-	    ticks: 'outside',
-	    tickcolor: 'rgb(102, 102, 102)'
+	    tickcolor: 'rgb(102, 102, 102)',
 	  },
 	  margin: {
 	    l: 140,
@@ -380,8 +385,8 @@ function renderPhenoAssoc(data) {
 	    yanchor: 'middle',
 	    xanchor: 'right'
 	  },
-	  width: 600,
-	  height: 600,
+	  width: 350,
+	  height: 400,
 	  // paper_bgcolor: 'rgb(254, 247, 234)',
 	  // plot_bgcolor: 'rgb(254, 247, 234)',
 	  hovermode: 'closest'
