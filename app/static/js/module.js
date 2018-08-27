@@ -175,6 +175,10 @@ $(document).ready(function() {
 		setModuleCount(data);
 		renderModulePie(data);
 		renderModuleTable(data);
+
+		if (data.length > 3000) {
+			$("#rgn").append(" Module is too large to infer Bayesian network.");
+		}
 	});
 
 	// Get phenotype associations
@@ -200,6 +204,8 @@ $(document).ready(function() {
 			updateNetwork();
 		})
 		.fail(function(err) {
+			// Removes html objects in div, replaces with text
+			// Warning: correct error messages written to #rgn relies on this AJAX call to execute first.
 			$("#rgn").text("Data unavailable.");
 		});
 
@@ -208,9 +214,20 @@ $(document).ready(function() {
 	$.get('/api/kda',
 		{k: input.mod_id}
 	).done(function(data) {
-		renderTableKDA(data);
+
+		// console.log(data);
+
+		if (data.length > 0) {
+			renderTableKDA(data);
+		} else {
+			console.log("No KDA data...");
+			$("#kda").text("Data unavailable. No significant key drivers at FDR < 0.05.");
+			$("#rgn").append(" No significant key drivers.");
+		}
+
+		// console.log(data.length);
 	}).fail(function(err) {
-		$("#kda").text("Data unavailable.");
+		console.log("error...")
 	});
 
 	// Get GO enrichment tables
@@ -233,8 +250,6 @@ $(document).ready(function() {
 	).done(function(data) {
 		renderTableGO(data, '#go_mf_table');
 	});
-
-
 });
 
 var brewer_pastel1 = [
@@ -356,7 +371,7 @@ function renderPhenoAssoc(data) {
 	var layout = {
 	  // title: 'Votes cast for ten lowest voting age population in OECD countries',
 	  xaxis: {
-	  	title: 'Aggregate association (-log10 p)',
+	  	title: 'CAD phenotype assoc. (-log10 p)',
 	    showgrid: false,
 	    showline: true,
 	    linecolor: 'rgb(102, 102, 102)',
