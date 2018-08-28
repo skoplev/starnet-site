@@ -51,7 +51,7 @@ svg.append("svg:defs")
 	.append("svg:marker")
 		.attr("id", "subtle")  // 
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 18)
+		.attr("refX", 30)
 		.attr("refY", 0.0)
 		.attr("markerWidth", 5)
 		.attr("markerHeight", 5)
@@ -104,11 +104,12 @@ function updateNetwork() {
 			return "/gene/" + ensembl;
 		})
 		.on("mouseover", function(d) {
-			d3.select(this).select("circle").attr("r", radius + 1);
+			// console.log(d);
+			d3.select(this).select("circle").attr("stroke-width", 2);
 		})
 		.on("mouseout", function(d) {
 			// reset radius
-			d3.select(this).select("circle").attr("r", radius);
+			d3.select(this).select("circle").attr("stroke-width", 1);
 		});
 
 	// Construct new node: circle, url link and label
@@ -121,11 +122,25 @@ function updateNetwork() {
 			})
 			.attr("stroke", "rgb(50,50,50)")
 			.attr("stroke-width", 1)
-			.attr("r", radius);
+			// larger key driver radius
+			.attr("r", function(d) {
+				if (d.key_driver) {
+					return radius + 4;
+				} else {
+					return radius;
+				}
+			});
 
 	var label = node_new.append("text")
 		.attr("text-anchor", "middle")
-		.attr("dy", "-0.7em")
+		// Text off set
+		.attr("dy", function(d) {
+			if (d.key_driver) {
+				return "-1.1em";
+			} else {
+				return "-0.7em";
+			}
+		})
 		.style("font-size", "10px")
 		.style("fill", "black")
 		.text(function(d) {
@@ -522,6 +537,7 @@ function renderSlider(data, fdr_cutoff) {
 
 // Updates state variables of dynamic networks
 function setNetwork(edges, fdr_cutoff) {
+	// console.log(edges);
 
 	// filter edges if fdr_cutoff is provided
 	if (fdr_cutoff !== undefined) {
@@ -534,9 +550,22 @@ function setNetwork(edges, fdr_cutoff) {
 	var nodes_from = edges.map(function(d) {return d.source; });
 	var nodes_to = edges.map(function(d) {return d.target; });
 
+	// Store data for each node key
+	var node_data = {};
+	for (var i in nodes_to) {
+		id = nodes_to[i];
+		node_data[id] = {key_driver: false};
+	}
+	// overwrites key driver status
+	for (var i in nodes_from) {
+		id = nodes_from[i];
+		node_data[id] = {key_driver: true};
+	}
+
 	// Get nodes as array if ids
 	// desired node array
 	var new_nodes = _.unique(nodes_from.concat(nodes_to));
+
 
 	// Get array of existing node ids
 	var node_ids = nodes.map(function(d) { return d.id })
@@ -555,7 +584,10 @@ function setNetwork(edges, fdr_cutoff) {
 	})
 
 	// Convert to node format, such that new nodes can be added
-	add_nodes = add_nodes.map(function(d) { return {id: d }; })
+	add_nodes = add_nodes.map(function(d) {
+		// combine id object and node data
+		return _.assign({id: d}, node_data[d]);
+	});
 
 	// Add new nodes permanently to global node variable
 	nodes = nodes.concat(add_nodes);
