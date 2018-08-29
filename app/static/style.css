@@ -13,6 +13,21 @@
 	cursor: pointer;
 }
 
+
+#super_network #legend text {
+	fill: rgb(150,150,150);
+}
+
+#super_network #legend line {
+	stroke: rgb(150,150,150);
+}
+
+#super_network #legend path {
+	stroke: rgb(150,150,150);
+}
+
+
+
 /* Bayesian network */
 #rgn a:hover {
 	font-weight: bold;

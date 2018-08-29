@@ -98,6 +98,7 @@ class SuperNetwork {
 			}
 		];
 
+		// Add text labels to plot describing tissue clusters
 		this.svg.selectAll(".tissue_label")
 			.data(tissue_labels)
 			.enter().append("text")
@@ -111,6 +112,8 @@ class SuperNetwork {
 				.text(function(d) {
 					return d.tissue;
 				});
+
+
 
 	    // build arrows
 	    // see http://bl.ocks.org/d3noob/5141278 for adding data bindings
@@ -241,6 +244,21 @@ class SuperNetwork {
 			.attr("text-anchor", "middle")
 			.style("fill", "black")
 			.attr("dy", "-1em");
+
+		// Legend color gradients
+		var ncolors = 10;
+		var colors = d3.range(ncolors).map(function(val) { return d3.interpolateYlGnBu(val / ncolors); })
+		// Define color gradient scale
+		this.svg.append("defs").append("linearGradient")
+			.attr("id", "color-gradient-ylgnbu")
+			.attr("x1", "0%").attr("y1", "0%")
+			.attr("x2", "100%").attr("y2", "0%")
+			.selectAll("stop") 
+			.data(colors)                  
+			.enter().append("stop") 
+			.attr("offset", function(d,i) { return i/(colors.length - 1); })   
+			.attr("stop-color", function(d) { return d; });
+
 	}
 
 	// SuperNetwork methods
@@ -266,7 +284,7 @@ class SuperNetwork {
 				return colors[index];
 			});
 
-			this.renderLegend(tissue_order, colors);
+			this.renderTissueLegend(tissue_order, colors);
 
 		} else {
 			// find max value for scaling
@@ -280,6 +298,8 @@ class SuperNetwork {
 				// return d3.interpolateGreens(frac);
 				return d3.interpolateYlGnBu(frac);
 			});
+
+			this.renderGradientLegend(max_val);
 		}
 	}
 
@@ -310,7 +330,7 @@ class SuperNetwork {
 		this.renderLegend(tissue_order, colors);
 	}
 
-	renderLegend(label_order, colors) {
+	renderTissueLegend(label_order, colors) {
 		// add legend
 		var legend = this.svg.append("g")
 			.attr("id", "legend")
@@ -344,13 +364,56 @@ class SuperNetwork {
 					return i * legend_line_width + 4;
 				})
 				.style("font-size", "14px")
-				.style("fill", "rgb(100,100,100)")
 				.text(function(d) {return d;})
 				// html tooltip on hover explaining tissue codes
 				.append("svg:title").text(function(d) {
 					return tissue_description[d];
 				});
 
+	}
+
+	// render color gradient with ticks ranging [0, max_val]
+	renderGradientLegend(max_val) {
+		// Generate colors from sequence of numbers sequence
+		var gradient_width = 200;
+		var gradient_height = 10;
+
+		// set up color scale. Centered at x=0
+		var xscaleColor = d3.scaleLinear()
+			.domain([0, max_val])
+			.range([-gradient_width / 2, gradient_width / 2]);
+
+		// Define x-axis
+		var legendAxis = d3.axisBottom()
+			.ticks(5)
+			.scale(xscaleColor);
+
+		// Position legend
+		var legend = this.svg.append("g")
+			.attr("id", "legend")
+			.attr('transform', 'translate(' + (this.width - 100) + ',20)');
+
+		// Color interpolated gradient as rectangle
+		legend.append("rect")
+			.attr("x", -gradient_width/2)
+			.attr("y", 0)
+			.attr("width", gradient_width)
+			.attr("height", gradient_height)
+			.style("fill", "url(#color-gradient-ylgnbu)");
+
+		// axis indication
+		legend.append("g")
+			.attr("class", "legend_axis")
+			.attr("transform", "translate(0,10)")
+			.call(legendAxis)
+
+		// Label
+		legend.append("text")
+			.style("text-anchor", "middle")
+			.attr("x", 0)
+			.attr("y", gradient_height + 30)
+			.style("font-size", "12px")
+			.text("-log10 p");
 	}
 
 	clearLegend() {
