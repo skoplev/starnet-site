@@ -208,7 +208,7 @@ $(document).ready(function() {
 	});
 
 	// Get Bayesian network
-	url = "/static/data/rgn/" + input.mod_id + ".csv";
+	url = "/static/data/rgn/edges/" + input.mod_id + ".csv";
 	$.get(url)
 		.done(function(data) {
 			// Parse data

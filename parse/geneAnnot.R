@@ -26,7 +26,6 @@ pheno_match = pheno[match(colnames(expr$mat), pheno$starnet.ID), ]
 
 
 # Load differential expression data
-
 deg_tissues = c("AOR", "SKLM", "LIV", "VAF", "SF")
 
 deg = lapply(deg_tissues, function(tissue) {

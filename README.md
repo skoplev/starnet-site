@@ -179,4 +179,5 @@ scp instance/STARNET.sqlite neptune:/var/www/starnet-site/instance
 
 ## Static Bayesian networks
 
-scp app/static/data/rgn/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/
+scp app/static/data/rgn/edges/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/edges/
+scp app/static/data/rgn/nodes/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/nodes/

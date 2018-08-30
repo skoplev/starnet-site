@@ -46,12 +46,41 @@ netw = netw[order(netw$kda_FDR), ]
 
 # netw[netw$module == 98, ]
 
+# Load gene annotation
+annot = fread("data/geneAnnot/annot.csv")
 
 # Print data per co-expression modules as .csv files
 for (k in unique(netw$module)) {
+	# Edges	
 	write.csv(
 		netw[netw$module == k, ],
-		file=paste0("app/static/data/rgn/", k, ".csv"),
+		file=paste0("app/static/data/rgn/edges/", k, ".csv"),
 		row.names=FALSE,
 		quote=FALSE)
+
+	# Nodes
+	idx = netw$module == k
+	nodes = unique(c(netw$source[idx], netw$target[idx]))
+
+	# Convert node ids to match annotation format
+	nodes_short = sapply(nodes, function(id) {
+		tissue = strsplit(id, "_")[[1]][1]
+		ensembl = strsplit(id, "_")[[1]][3]
+		ensembl_base = strsplit(ensembl, "[.]")[[1]][1]
+
+		return(paste(tissue, ensembl_base, sep="_"))
+	})
+
+	# Annotations for node in network
+	annot_sub = annot[match(nodes_short, annot$V1), ]
+	# Rename nodes 
+	annot_sub$V1 = nodes
+	colnames(annot_sub)[1] = "id"
+
+	write.csv(annot_sub,
+		file=paste0("app/static/data/rgn/nodes/", k, ".csv"),
+		row.names=FALSE,
+		quote=FALSE
+	)
 }
+
