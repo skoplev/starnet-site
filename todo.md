@@ -4,8 +4,6 @@
 
 - Continue implementing tooltips and descriptions
 
-- Color scale on eigenegene network
-
 - Enrichment analsis based on gene sets. Accessible on main page.
 
 - Heritability feature on eigenegene network (waiting on Analysis from Linyao)
