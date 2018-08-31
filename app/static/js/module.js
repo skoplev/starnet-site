@@ -208,8 +208,8 @@ $(document).ready(function() {
 	});
 
 	// Get Bayesian network
-	url = "/static/data/rgn/edges/" + input.mod_id + ".csv";
-	$.get(url)
+	var edges_url = "/static/data/rgn/edges/" + input.mod_id + ".csv";
+	$.get(edges_url)
 		.done(function(data) {
 			// Parse data
 			data = $.csv.toObjects(data);
@@ -228,6 +228,32 @@ $(document).ready(function() {
 			$("#rgn").text("Data unavailable.");
 		});
 
+	// Get node annotation data
+	var nodes_url = "/static/data/rgn/nodes/" + input.mod_id + ".csv";
+	$.get(nodes_url)
+		.done(function(data) {
+			// Parse csv data
+			data = $.csv.toObjects(data);
+
+			// Population annotation options with 
+			// loop over each header of data table
+			$.each(Object.keys(data[0]), function(i, item) {
+				if (item !== "id") {
+					// Add to options
+					$("#annot_opts").append($("<option>", {
+						value: item,
+						text: item
+					}));
+				}
+			});
+
+			// Callback function on setting node annotation
+			d3.select("#annot_opts").on("change", function() {
+				var selected_value = d3.select("#annot_opts").property("value");
+				console.log("Change: ", selected_value);
+				// TODO: change internal state of regulatory gene network
+			});
+		});
 
 	// Key driver analysis
 	$.get('/api/kda',
