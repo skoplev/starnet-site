@@ -19,6 +19,10 @@ var height = 600;
 var width = 960;
 var radius = 5;
 
+var node_color_by = "Tissue";  // which feature to color nodes by
+var nodeColorScale = null;  // set by setNodeColorScheme()
+var annot = null;  // dictionary of node annotation data
+
 // Init svg canvas
 var svg = d3.select("#rgn").append("svg")
 	.attr("id", "network_svg")
@@ -85,7 +89,6 @@ var node = svg_group.append("g")
 
 // update network based on nodes and links objects
 function updateNetwork() {
-
 	// Apply the general update pattern to the nodes.
 	// Data is bound to the g object, containing circle, label, and link
 	node = node.data(nodes, function(d) { return d.id;});
@@ -116,9 +119,13 @@ function updateNetwork() {
 	var circle = node_new
 		.append("circle")
 			.attr("fill", function(d) {
-				var elems = d.id.split("_");
-				var tissue = elems[0];
-				return colors[tissue_order.indexOf(tissue)];
+				if (node_color_by === "Tissue") {
+					return getTissueColor(d.id)
+				} else {
+					// get annotation value of current color scheme
+					var val = annot[d.id][node_color_by];
+					return nodeColorScale(val);
+				}
 			})
 			.attr("stroke", "rgb(50,50,50)")
 			.attr("stroke-width", 1)
@@ -185,6 +192,65 @@ function ticked() {
 		.attr("y2", function(d) { return d.target.y; });
 }
 
+// Updates coloring scheme of network based on annotation features
+function colorNodesBy(feature) {
+
+	// set coloring scheme for newly added nodes
+	// node_color_by = feature;
+	setNodeColorScheme(feature);
+
+	var circle = d3.selectAll("#rgn circle");
+
+	// change color for current nodes
+	if (feature === "Tissue") {
+		// Set current 
+		circle.style("fill", function(d) {
+			return getTissueColor(d.id)
+		});
+	} else {
+		circle.style("fill", function(d) {
+			// Get numerical value of selected circle
+			var val = annot[d.id][feature];
+			return nodeColorScale(val);
+		});
+	}
+}
+
+// Update global variables specifying current node coloring scheme
+function setNodeColorScheme(scheme) {
+	// set global variable specifying the current node coloring scheme
+	node_color_by = scheme;
+
+	var min_range = 0.2;  // minimum +- range
+
+	if (scheme !== "Tissue") {
+		// Update continuous color scale based on
+		// Set up colorscale
+		var values = _.map(annot, function(row) {
+			return row[scheme];
+		});
+
+		var range = _.max(values, function(val) {
+			// Comparator
+			return Math.abs(val);
+		});
+		range = Math.abs(range);  // when absolute max is a negative number
+		console.log(range);
+		range = Math.max(range, min_range);
+		console.log(range);
+
+		// set global variable
+		nodeColorScale = d3.scaleSequential(d3.interpolateRdBu)
+			.domain([-range, range]);
+	}
+}
+
+// Get tissue color based on node id
+function getTissueColor(id) {
+	var elems = id.split("_");
+	var tissue = elems[0];
+	return colors[tissue_order.indexOf(tissue)];
+}
 
 $(document).ready(function() {
 	// Get genes found in module
@@ -235,6 +301,13 @@ $(document).ready(function() {
 			// Parse csv data
 			data = $.csv.toObjects(data);
 
+			// array to dictionary indexed by node id
+			// for annotation lookup when changing color of nodes
+			annot = data.reduce(function(map, row) {
+				map[row.id] = row;
+				return map;
+			}, {});
+
 			// Population annotation options with 
 			// loop over each header of data table
 			$.each(Object.keys(data[0]), function(i, item) {
@@ -250,8 +323,9 @@ $(document).ready(function() {
 			// Callback function on setting node annotation
 			d3.select("#annot_opts").on("change", function() {
 				var selected_value = d3.select("#annot_opts").property("value");
-				console.log("Change: ", selected_value);
-				// TODO: change internal state of regulatory gene network
+				// console.log("Change: ", selected_value);
+
+				colorNodesBy(selected_value);
 			});
 		});
 

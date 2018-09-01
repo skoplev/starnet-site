@@ -303,6 +303,7 @@ class SuperNetwork {
 		}
 	}
 
+
 	// Color supernetork nodes based on tissue search
 	// Only supports one color per module
 	// tissue_search: [{gene_tissue: , module: }]
