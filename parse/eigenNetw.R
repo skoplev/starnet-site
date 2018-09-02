@@ -8,6 +8,9 @@ library(igraph)
 library(data.table)
 library(plyr)
 
+setwd("~/Dev/STARNET-site")
+source("parse/lib/parse.R")
+
 # Load supernetwork environment
 load("~/GoogleDrive/projects/STARNET/cross-tissue/co-expression/eigenNetw/Rworkspace/bayesNet2.RData")
 
@@ -97,18 +100,7 @@ gwas_pvals = rename(gwas_pvals, c(
 annot = cbind(annot, pheno_pval, gwas_pvals)
 
 # Renane columns
-annot = rename(annot, c(
-	"case_control_DEG"="DEG",
-	"syntax_score"="SYNTAX",
-	"ndv"="Diseased vessels",
-	"BMI(kg/m2)"="BMI",
-	"CRP(mg/l)"="CRP",
-	"HbA1c(%)"="HbA1c",
-	"P-Chol(mmol/l)"="P-Chol",
-	"fP-LDL-Chol(mmol/l)"="fP-LDL-Chol",
-	"fP-HDL-Chol(mmol/l)"="fP-HDL-Chol",
-	"fP-TG(mmol/l)"="fP-TG"
-))
+annot = renameAnnot(annot)
 
 # Write as combined json file
 cat(

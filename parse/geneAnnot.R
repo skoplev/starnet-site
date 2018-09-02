@@ -1,13 +1,14 @@
 # Calculate matrix of gene-level annotations
 # Used when visualizing the regulatory gene networks
 
+rm(list=ls())
+
 library(data.table)
 library(WGCNA)  # corAndPvalue()
 source("~/GoogleDrive/projects/STARNET/cross-tissue/src/parse.R")
 
 setwd("~/Dev/STARNET-site")
-
-rm(list=ls())
+source("parse/lib/parse.R")
 
 # Load gene expression matrix
 load("~/DataProjects/cross-tissue/STARNET/gene_exp_norm_reshape/expr_recast.RData", verbose=TRUE)
@@ -90,5 +91,7 @@ DEG_annot = data.frame(
 
 # Prepend
 annot = cbind(DEG_annot, annot)
+
+annot = renameAnnot(annot)
 
 write.csv(annot, "data/geneAnnot/annot.csv")

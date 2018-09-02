@@ -289,7 +289,6 @@ function clearLegend() {
 
 // Range is a positve value, indicating interval [-range, range]
 function renderGradientLegend(range, gradient_def, label) {
-	console.log("Render gradient");
 	// Generate colors from sequence of numbers sequence
 	var gradient_width = 200;
 	var gradient_height = 10;
@@ -389,15 +388,25 @@ $(document).ready(function() {
 				return map;
 			}, {});
 
-			// Population annotation options with 
+			// Populate annotation options
 			// loop over each header of data table
 			$.each(Object.keys(data[0]), function(i, item) {
-				if (item !== "id") {
-					// Add to options
-					$("#annot_opts").append($("<option>", {
-						value: item,
-						text: item
-					}));
+				if (item === "id") return;  // skip
+
+				switch(item) {
+					case "DEG_log2FoldChange":
+						// Add to options with different name
+						$("#annot_opts").append($("<option>", {
+							value: item,
+							text: "CAD DEG"
+						}));
+						break;
+					default:
+						// add to options as is
+						$("#annot_opts").append($("<option>", {
+							value: item,
+							text: item
+						}));
 				}
 			});
 
