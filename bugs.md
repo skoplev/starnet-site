@@ -14,5 +14,7 @@ which disappears when adjusting the slider.
 Some key drivers in RGNs are not correctly set as key drivers when using slider. e.g. CRYBG3 in
 http://localhost:5000/module/165
 
+"Y" gene symbols in:
+http://localhost:5000/module/167
 
 Network slider offset in Safari

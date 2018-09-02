@@ -15,8 +15,8 @@ var colors = d3.schemeCategory10;
 
 // Bayesian netork with global variables
 // ------------------------------------------------
-var height = 600;
-var width = 960;
+var rgn_height = 600;
+var rgn_width = 960;
 var radius = 5;
 
 var node_color_by = "Tissue";  // which feature to color nodes by
@@ -26,16 +26,17 @@ var annot = null;  // dictionary of node annotation data
 // Init svg canvas
 var svg = d3.select("#rgn").append("svg")
 	.attr("id", "network_svg")
-	.attr("width", width)
-	.attr("height", height);
+	.attr("width", rgn_width)
+	.attr("height", rgn_height);
 
 
 // Emtpy rectangle for catching zoom events
 // Note that styling in external CSS sheet does not work with SVG export.
 // And for defining 
 svg.append("rect")
-	.attr("width", width)
-	.attr("height", height)
+	.attr("id", "zoom_rect")
+	.attr("width", rgn_width)
+	.attr("height", rgn_height)
 	.style("fill", "none")
 	.style("pointer-events", "all")
 	// zoom and drag callback
@@ -64,6 +65,24 @@ svg.append("svg:defs")
 		.attr("d", "M0,-5L10,0L0,5")
 		.style("fill", "rgb(150,150,150)");
 
+// Define color gradient used in legend
+var gradient_ncolors = 10;
+var gradient_colors = d3.range(gradient_ncolors)
+	.map(function(val) {
+		return d3.interpolateRdBu(1- val / gradient_ncolors); // reverse color scale
+	});
+
+svg.append("defs").append("linearGradient")
+	.attr("id", "color-gradient-burd")
+	// interpolateRdBu
+	.attr("x1", "0%").attr("y1", "0%")
+	.attr("x2", "100%").attr("y2", "0%")
+	.selectAll("stop") 
+	.data(gradient_colors)                  
+	.enter().append("stop") 
+	.attr("offset", function(d,i) { return i/(gradient_colors.length - 1); })   
+	.attr("stop-color", function(d) { return d; });
+
 // Variables storing current nodes and links
 var nodes = [];
 var links = [];
@@ -74,7 +93,7 @@ var simulation = d3.forceSimulation(nodes)
     .force("link", d3.forceLink(links).distance(30))
     .force("collide", d3.forceCollide().radius(15))
     .force("gravity", d3.forceManyBody().strength(5))
-    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("center", d3.forceCenter(rgn_width / 2, rgn_height / 2))
     .on("tick", ticked);
 
 // Declare D3 selections available to updateNetwork()
@@ -199,9 +218,9 @@ function colorNodesBy(feature) {
 	// node_color_by = feature;
 	setNodeColorScheme(feature);
 
-	var circle = d3.selectAll("#rgn circle");
 
 	// change color for current nodes
+	var circle = d3.selectAll("#rgn circle");
 	if (feature === "Tissue") {
 		// Set current 
 		circle.style("fill", function(d) {
@@ -221,7 +240,9 @@ function setNodeColorScheme(scheme) {
 	// set global variable specifying the current node coloring scheme
 	node_color_by = scheme;
 
-	var min_range = 0.2;  // minimum +- range
+	var min_range = 0.3;  // minimum +- range
+
+	clearLegend();  // clear previous color legend
 
 	if (scheme !== "Tissue") {
 		// Update continuous color scale based on
@@ -235,13 +256,23 @@ function setNodeColorScheme(scheme) {
 			return Math.abs(val);
 		});
 		range = Math.abs(range);  // when absolute max is a negative number
-		console.log(range);
 		range = Math.max(range, min_range);
-		console.log(range);
 
 		// set global variable
 		nodeColorScale = d3.scaleSequential(d3.interpolateRdBu)
-			.domain([-range, range]);
+			.domain([range, -range]);  // inverted, blue-red scale
+
+		// Color gradient legend
+		// Determine label
+		switch(scheme) {
+			case "DEG_log2FoldChange":
+				var label = "log2 fold change";
+				break;
+			default:
+				var label = "Pearson's cor.";
+		}
+
+		renderGradientLegend(range, "url(#color-gradient-burd)", label);
 	}
 }
 
@@ -250,6 +281,56 @@ function getTissueColor(id) {
 	var elems = id.split("_");
 	var tissue = elems[0];
 	return colors[tissue_order.indexOf(tissue)];
+}
+
+function clearLegend() {
+	d3.select("#legend").remove();
+}
+
+// Range is a positve value, indicating interval [-range, range]
+function renderGradientLegend(range, gradient_def, label) {
+	console.log("Render gradient");
+	// Generate colors from sequence of numbers sequence
+	var gradient_width = 200;
+	var gradient_height = 10;
+	var margin = 10;
+
+	// set up color scale. Centered at x=0
+	var xscaleColor = d3.scaleLinear()
+		.domain([-range, range])
+		.range([-gradient_width / 2, gradient_width / 2]);
+
+	// Define x-axis
+	var legendAxis = d3.axisBottom()
+		.ticks(5)
+		.scale(xscaleColor);
+
+	// Position legend
+	var legend = d3.select("#network_svg").append("g")
+		.attr("id", "legend")
+		.attr('transform', 'translate(' + (rgn_width - 100 - margin) + ',' + (margin) + ')');
+
+	// Color interpolated gradient as rectangle
+	legend.append("rect")
+		.attr("x", -gradient_width/2)
+		.attr("y", 0)
+		.attr("width", gradient_width)
+		.attr("height", gradient_height)
+		.style("fill", gradient_def);
+
+	// axis indication
+	legend.append("g")
+		.attr("class", "legend_axis")
+		.attr("transform", "translate(0,10)")
+		.call(legendAxis)
+
+	// Label
+	legend.append("text")
+		.style("text-anchor", "middle")
+		.attr("x", 0)
+		.attr("y", gradient_height + 30)
+		.style("font-size", "12px")
+		.text(label);
 }
 
 $(document).ready(function() {

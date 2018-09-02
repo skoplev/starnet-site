@@ -37,7 +37,7 @@
 
 
 /* rectangle for zoom. Only includes decorations that are not exported as .svg file */
-#rgn rect {
+#rgn #zoom_rect {
 	cursor: grab;
 	stroke: rgb(180,180,180);
 	/* rounded corner */
