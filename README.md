@@ -181,3 +181,23 @@ scp instance/STARNET.sqlite neptune:/var/www/starnet-site/instance
 
 scp app/static/data/rgn/edges/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/edges/
 scp app/static/data/rgn/nodes/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/nodes/
+
+
+# Install libraries using bower
+
+## Install bower
+
+## Install site dependencies specified in bower.json
+cd app
+install specifications found in app/bower.json
+bower install
+
+## To add new packages
+
+### examples
+bower install --save datatables.net
+bower install --save datatables.net-dt
+bower install --save datatables.net-colreorder
+bower install --save datatables.net-colreorder-dt
+bower install --save datatables.net-buttons#1.1.2
+bower install --save datatables.net-buttons-dt#1.1.2

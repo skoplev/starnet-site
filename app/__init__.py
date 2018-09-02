@@ -30,8 +30,7 @@ def createApp(test_config=None):
 	from . import db
 	db.initApp(app)
 
-
-	Bower(app)  # use bower.static for paths
+	Bower(app)  # use bower.static for paths, must be installeed in /app folder using bower
 
 	return app
 
