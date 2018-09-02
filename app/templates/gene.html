@@ -22,7 +22,17 @@
 
 <br>
 
-<h2>Co-expression modules</h2>
+<h2 style="display: inline-block;">Co-expression modules</h2>
+
+<i class="fa fa-question-circle" aria-hidden="true"
+  data-toggle="tooltip" data-placement="right"
+  data-html="true"
+  title="
+  <h6>Co-expression modules that contain the query gene</h6>
+  <p>The co-expression modules are inferred using blockwise weighted gene correlation network analysis (WGCNA). The <b>supernetwork</b> indicates where the modules are found, colored by which tissue the query gene transcript comes from. The <b>stacked barplot</b> indicates the tissue composition of the identified modules.</p>
+  <p>Information about co-expressed genes may help to ellucidate what function the query genes has in Coronary Artery Disease. Data on each module can be accessed by clicking the hyperlinks.</p>
+  ">
+</i>
 
 
 <div class='row'>
@@ -42,17 +52,45 @@
 
 <br>
 
-<h2>Absolute expression</h2>
+<h2 style="display: inline-block;">Absolute expression</h2>
+
+<i class="fa fa-question-circle" aria-hidden="true"
+  data-toggle="tooltip" data-placement="right"
+  data-html="true"
+  title="
+  <h6>Tissue comparison of counts per million (CPM) quantifying the overall levels of gene expression</h6>
+  <p>In general, high expression results, such as co-expression of highly expressed genes, is more likely to be biologically meaningful.</p>
+  ">
+</i>
+
 <!-- Boxplot to be populated by plotly.js -->
 <div id='cpm_boxplot'></div>
 
-<h2>Differential expression</h2>
+<h2 style="display: inline-block;">Differential expression</h2>
+
+<i class="fa fa-question-circle" aria-hidden="true"
+  data-toggle="tooltip" data-placement="right"
+  data-html="true"
+  title="
+  <h6>Case-control comparison for Coronary Artery Disease patients and healthy controls</h6>
+  ">
+</i>
+
 
 <table id='deg_table' class='display'></table>
 
 <br>
 
-<h2>Genetic variants (eQTLs)</h2>
+<h2 style="display: inline-block;">Genetic variants (eQTLs)</h2>
+
+<i class="fa fa-question-circle" aria-hidden="true"
+  data-toggle="tooltip" data-placement="right"
+  data-html="true"
+  title="
+  <h6>Association between genetic variants and gene expression, also known as expression quantitative trait loci (eQTL)</h6>
+  ">
+</i>
+
 
 <table id='eqtl_table' class='display'></table>
 

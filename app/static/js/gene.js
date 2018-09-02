@@ -1,3 +1,8 @@
+// Enable bootstrap tooltips
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip({trigger: "click"});
+})
+
 $(document).ready(function() {
 
 	// multiple AJAX calls and dependencies
