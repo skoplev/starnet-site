@@ -84,6 +84,7 @@ svg.append("defs").append("linearGradient")
 	.attr("stop-color", function(d) { return d; });
 
 // Variables storing current nodes and links
+var node_data = {};  // dictionary of id->data
 var nodes = [];
 var links = [];
 
@@ -359,6 +360,8 @@ $(document).ready(function() {
 		.done(function(data) {
 			// Parse data
 			data = $.csv.toObjects(data);
+
+			storeNodeData(data);  // in node_data dict, key driver status
 
 			var fdr_cutoff = calcFdrCutoff(data);
 
@@ -724,7 +727,6 @@ function renderSlider(data, fdr_cutoff) {
 }
 
 
-
 // Updates state variables of dynamic networks
 function setNetwork(edges, fdr_cutoff) {
 	// console.log(edges);
@@ -740,25 +742,13 @@ function setNetwork(edges, fdr_cutoff) {
 	var nodes_from = edges.map(function(d) {return d.source; });
 	var nodes_to = edges.map(function(d) {return d.target; });
 
-	// Store data for each node key
-	var node_data = {};
-	for (var i in nodes_to) {
-		id = nodes_to[i];
-		node_data[id] = {key_driver: false};
-	}
-	// overwrites key driver status
-	for (var i in nodes_from) {
-		id = nodes_from[i];
-		node_data[id] = {key_driver: true};
-	}
-
 	// Get nodes as array if ids
 	// desired node array
 	var new_nodes = _.unique(nodes_from.concat(nodes_to));
 
 
 	// Get array of existing node ids
-	var node_ids = nodes.map(function(d) { return d.id })
+	var node_ids = nodes.map(function(d) { return d.id });
 
 	// Only add new nodes
 	var add_nodes = _.difference(new_nodes, node_ids);
@@ -771,7 +761,7 @@ function setNetwork(edges, fdr_cutoff) {
 		index = nodes.findIndex(function(d) {return d.id === id; })
 
 		nodes.splice(index, 1);  // delete from array
-	})
+	});
 
 	// Convert to node format, such that new nodes can be added
 	add_nodes = add_nodes.map(function(d) {
@@ -803,6 +793,23 @@ function edgeID(edge) {
 	return edge.source.id + "-" + edge.target.id;
 }
 
+// Stores key driver status in node_data
+function storeNodeData(edges) {
+	var nodes_from = edges.map(function(d) {return d.source; });
+	var nodes_to = edges.map(function(d) {return d.target; });
+
+	// Store data for each node key
+	// var node_data = {};
+	for (var i in nodes_to) {
+		id = nodes_to[i];
+		node_data[id] = {key_driver: false};
+	}
+	// overwrites key driver status
+	for (var i in nodes_from) {
+		id = nodes_from[i];
+		node_data[id] = {key_driver: true};
+	}
+}
 
 
 // Saves svg elements as .svg file
