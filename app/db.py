@@ -289,9 +289,9 @@ def cmdInitDB():
     # loadModules()  # co-expression modules
     # loadModuleGO()  # gene ontology tables
     # loadDEG()  # differential expression
-    # loadPhenoAssoc()
+    loadPhenoAssoc()
     # loadKDA()
-    loadEnsembl()
+    # loadEnsembl()
 
 
 # Registration with app

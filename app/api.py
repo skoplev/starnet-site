@@ -200,7 +200,7 @@ def pheno():
 
 	# Rename columns
 	df = df.rename(columns={
-		'case_control_DEG': 'DEG',
+		'case_control_DEG': 'CAD DEG',
 		'syntax_score': 'SYNTAX',
 		'ndv': 'Diseased vessels',
 		'BMI(kg/m2)': 'BMI',
