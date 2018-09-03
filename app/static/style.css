@@ -1,3 +1,9 @@
+/* centered pills or tabs */
+.center-nav {
+    display: flex;
+    justify-content: center;
+}
+
 #super_network line {
 	/*stroke: rgb(180, 180, 180);*/
 	stroke: rgb(200, 200, 200);

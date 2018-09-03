@@ -51,7 +51,6 @@ $(document).ready(function() {
 	});
 
 	// Load autocomplete genes
-
 	$.getJSON("/static/data/gene_symbols.json", function(data) {
 		gene_symbols = data;
 

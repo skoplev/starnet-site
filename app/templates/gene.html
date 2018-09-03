@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 
 <h1>{{symbol}} –– {{ensembl}} </h1>
@@ -101,6 +100,11 @@
 
 
 {% block script %}
+
+<!-- Plotly.js -->
+<!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+<script src="{{ url_for('bower.static', filename='plotly.js/dist/plotly.min.js')}}"></script>
+
 
 <!-- Use assets for minimized code -->
 {% assets 'js_gene' %}

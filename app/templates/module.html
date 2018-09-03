@@ -128,6 +128,10 @@
 
 {% block script %}
 
+<!-- Plotly.js -->
+<!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+<script src="{{ url_for('bower.static', filename='plotly.js/dist/plotly.min.js')}}"></script>
+
 <script src="{{ url_for('static', filename='js/table.js') }}"></script>
 <script src="{{ url_for('static', filename='js/module.js') }}"></script>
 
