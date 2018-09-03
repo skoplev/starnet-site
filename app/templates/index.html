@@ -7,7 +7,7 @@
 <div style="text-align: center;" class="ui-widget">
 	<form action="/search" method="get">
 	  <input id="search_input" type="text" name="gene_snp_query" placeholder="Search for genes...">
-	  <select name="type" onchange="setQueryType(this);">
+	  <select id="search_select" name="type" onchange="setQueryType(this);">
 	    <option>Gene</option>
 	    <option>SNP</option>
 	  </select>

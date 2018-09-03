@@ -55,11 +55,7 @@ $(document).ready(function() {
 	$.getJSON("/static/data/gene_symbols.json", function(data) {
 		gene_symbols = data;
 
-		// set autocomplete
-		$("#search_input").autocomplete({
-			source: gene_symbols,
-			minLength: 2
-		});
+		setQueryType($("#search_select")[0]);  // pass DOM object
 	});
 });
 
@@ -69,7 +65,14 @@ function setQueryType(obj) {
 		case "Gene":
 			$("#search_input")
 				.autocomplete({
-					source: gene_symbols,
+					// specify array of symbols to show with max number of entries
+					// source can also be set as a symbol array
+					source: function(request, response) {
+						var results = $.ui.autocomplete.filter(gene_symbols, request.term);
+
+						// max number or results to show
+						response(results.slice(0, 20));
+					},
 					minLength: 2
 				})
 				.attr("placeholder", "Search for genes...");
@@ -85,5 +88,4 @@ function setQueryType(obj) {
 		default:
 			throw "Invalid option type.";
 	}
-	// console.log(obj.value);
 }
