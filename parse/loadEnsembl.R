@@ -1,4 +1,7 @@
 # Download ensembl annotation data for all genes
+rm(list=ls())
+# setwd("~/Dev/STARNET-site")
+
 library(biomaRt)
 
 # Establish database connection

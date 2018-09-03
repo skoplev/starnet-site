@@ -30,6 +30,7 @@
     "jquery-csv": "^0.8.9",
     "d3": "^5.7.0",
     "d3-simple-slider": "https://github.com/johnwalley/d3-simple-slider/releases/download/v0.2.1/d3-simple-slider.zip",
-    "components-font-awesome": "^5.0.6"
+    "components-font-awesome": "^5.0.6",
+    "jquery-ui": "^1.12.1"
   }
 }

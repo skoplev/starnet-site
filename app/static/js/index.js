@@ -3,6 +3,9 @@ $(function () {
 	$('[data-toggle="tooltip"]').tooltip({trigger: "click"});
 })
 
+
+var gene_symbols = [];  // for autocomplete
+
 $(document).ready(function() {
 
 	// Load supernetwork data, for visualization
@@ -45,6 +48,40 @@ $(document).ready(function() {
 		// invoke change event to set color
 		var event = new Event('change');
 		document.getElementById("annot_opts").dispatchEvent(event);
+	});
 
+	// Load autocomplete genes
+
+	$.getJSON("/static/data/gene_symbols.json", function(data) {
+		gene_symbols = data;
+
+		// set autocomplete
+		$("#search_input").autocomplete({
+			source: gene_symbols
+		});
 	});
 });
+
+// Updates search query autosuggest and placeholder text
+function setQueryType(obj) {
+	switch(obj.value) {
+		case "Gene":
+			$("#search_input")
+				.autocomplete({
+					source: gene_symbols
+				})
+				.attr("placeholder", "Search for genes...");
+			break;
+		case "SNP":
+			// No autosuggest
+			$("#search_input")
+				.autocomplete({
+					source: []
+				})
+				.attr("placeholder", "Search for SNPs...");
+			break;
+		default:
+			throw "Invalid option type.";
+	}
+	// console.log(obj.value);
+}
