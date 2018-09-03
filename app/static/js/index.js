@@ -57,7 +57,8 @@ $(document).ready(function() {
 
 		// set autocomplete
 		$("#search_input").autocomplete({
-			source: gene_symbols
+			source: gene_symbols,
+			minLength: 2
 		});
 	});
 });
@@ -68,7 +69,8 @@ function setQueryType(obj) {
 		case "Gene":
 			$("#search_input")
 				.autocomplete({
-					source: gene_symbols
+					source: gene_symbols,
+					minLength: 2
 				})
 				.attr("placeholder", "Search for genes...");
 			break;
