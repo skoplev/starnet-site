@@ -79,3 +79,16 @@ def search():
 		return redirect(url_for("variant", snp_id=query))
 	else:
 		warnings.warn("Unrecognized GET type")
+
+@app.route("/enrichment-results", methods=['POST'])
+def enrichmentResults():
+	print request.form
+	query = request.form['gene_snp_list'].split()  # split by whitespace
+
+	return "Gene set enrichment results for: " + ' '.join(query)
+
+@app.route("/eqtl-results", methods=['POST'])
+def eqtlResults():
+	query = request.form['gene_snp_list'].split()  # split by whitespace
+
+	return "eQTL results"

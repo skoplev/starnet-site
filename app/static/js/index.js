@@ -3,10 +3,27 @@ $(function () {
 	$('[data-toggle="tooltip"]').tooltip({trigger: "click"});
 })
 
-
 var gene_symbols = [];  // for autocomplete
 
 $(document).ready(function() {
+	// Set action based of multi search form based on selection
+	$("#search_multi select").on("change", function() {
+		var option = $(this).val();
+
+		switch(option) {
+			case "Gene":
+				$("#search_multi form").attr("action", "/enrichment-results");
+				break;
+			case "SNP":
+				$("#search_multi form").attr("action", "/eqtl-results");
+				break
+			default:
+		}
+	});
+
+	// Dispatch change event to set default action for form
+	var event = new Event('change');
+	document.getElementById("search_multi_select").dispatchEvent(event);
 
 	// Load supernetwork data, for visualization
 	$.getJSON('/static/data/eigen_network.json', function(data) {

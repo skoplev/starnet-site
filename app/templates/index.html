@@ -32,7 +32,19 @@
 		</div>
 	</div>
 	<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-		hat
+		<div id="search_multi" style="text-align: center;">
+			<!-- action/routing is set by .js code based on selected option -->
+			<form id="search_multi_form" action="/" method="post">
+				<!-- <input type="text" name="gene_snp_list" style="line-height: 10em;"> -->
+				<textarea name="gene_snp_list" cols="16" rows="5"></textarea>
+				<br>
+				<select id="search_multi_select" name="type">
+					<option>Gene</option>
+					<option>SNP</option>
+				</select>
+				<input type="submit" name="">
+			</form>
+		</div>
 	</div>
 </div>
 
