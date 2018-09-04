@@ -4,6 +4,11 @@
 
 <h1>Gene set enrichment analysis</h1>
 
+<p>Found {{ n_found }} gene symbols out of {{ n_input }}.</p>
+
+<div id="super_network"></div>
+
+<h2>Enrichment table</h2>
 <table id="enrich_table" class="display"></table>
 
 {% endblock %}
@@ -17,8 +22,9 @@
 </script>
 
 <script src="{{ url_for('static', filename='js/table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/supernetw.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/enrichment.js') }}"></script>
 
 {% endblock %}
-
 

@@ -142,7 +142,10 @@ def enrichmentResults():
 	# sort by enrichment p-values
 	enrich = enrich.sort_values("p")
 
-	return render_template("enrichment.html", enrich=enrich.to_json(orient='records'))
+	return render_template("enrichment.html",
+		enrich=enrich.to_json(orient='records'),
+		n_found=len(found_query_genes),
+		n_input=len(query))
 
 @app.route("/eqtl-results", methods=['POST'])
 def eqtlResults():

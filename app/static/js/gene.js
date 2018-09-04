@@ -20,10 +20,7 @@ $(document).ready(function() {
 			moduleBarplot(data);
 		})
 	).then(function(netw_data, tissue_search_data) {
-
-		// netw = new SuperNetwork(netw_data[0], "#super_network");
 		netw = new SuperNetwork(netw_data[0], "#super_network", 500, 500);
-		// netw = new SuperNetwork(netw_data[0], "#super_network");
 
 		// Color supernetwork by
 		netw.colorCirclesTissueSearch(tissue_search_data[0])

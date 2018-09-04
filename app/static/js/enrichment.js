@@ -1,7 +1,20 @@
-console.log("enrichment.js");
-
+// Gene set enrichment analysis results page
 
 $(document).ready(function() {
+	// Load supernetwork
+	$.getJSON("/static/data/eigen_network.json", function(data) {
+		netw = new SuperNetwork(data, "#super_network", 600, 600);
+
+		// Transform data
+		enrich_transform = enrich.map(function(d) {
+			return {clust: d.module, enrichment_FDR: d.FDR};
+		});
+
+		netw.addAnnotationData(enrich_transform);  // for coloring
+		netw.colorCircles("enrichment_FDR", neglog10);
+
+	});
+
 	renderEnrichmentTable(enrich);
 });
 
@@ -32,4 +45,6 @@ function renderEnrichmentTable(enrich) {
 	};
 
 	renderTable(enrich, "#enrich_table", config);
+
+	// Set color based on enrichment values
 }

@@ -113,8 +113,6 @@ class SuperNetwork {
 					return d.tissue;
 				});
 
-
-
 	    // build arrows
 	    // see http://bl.ocks.org/d3noob/5141278 for adding data bindings
 	    this.svg.append("svg:defs")
@@ -299,7 +297,11 @@ class SuperNetwork {
 				return d3.interpolateYlGnBu(frac);
 			});
 
-			this.renderGradientLegend(max_val);
+			if (feature == "enrichment_FDR") {
+				this.renderGradientLegend(max_val, "-log10 FDR");
+			} else {
+				this.renderGradientLegend(max_val);
+			}
 		}
 	}
 
@@ -312,7 +314,6 @@ class SuperNetwork {
 		// format search data to arrays
 		var found_modules = tissue_search.map(function(d) {return d.module});
 		var found_tissues = tissue_search.map(function(d) {return d.gene_tissue});
-
 
 		// Ordinal tissue color scale
 		var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM'];
@@ -374,7 +375,7 @@ class SuperNetwork {
 	}
 
 	// render color gradient with ticks ranging [0, max_val]
-	renderGradientLegend(max_val) {
+	renderGradientLegend(max_val, label="-log10 p") {
 		// Generate colors from sequence of numbers sequence
 		var gradient_width = 200;
 		var gradient_height = 10;
@@ -414,11 +415,21 @@ class SuperNetwork {
 			.attr("x", 0)
 			.attr("y", gradient_height + 30)
 			.style("font-size", "12px")
-			.text("-log10 p");
+			.text(label);
 	}
 
 	clearLegend() {
 		d3.select("#legend").remove();
+	}
+
+	// Adds annotation feature data
+	addAnnotationData(new_data) {
+		var clust_ids = this.data.annot.map(function(d) { return d.clust });
+
+		// merge each module entry by clust ids
+		this.data.annot = _.map(this.data.annot, function(item){
+		    return _.extend(item, _.findWhere(new_data, { clust: item.clust }));
+		});
 	}
 }
 
