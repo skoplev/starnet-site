@@ -143,7 +143,7 @@ def enrichmentResults():
 	enrich = enrich.sort_values("p")
 
 	return render_template("enrichment.html",
-		enrich=enrich.to_json(orient='records'),
+		enrich=enrich.to_json(orient='records', double_precision=15),
 		n_found=len(found_query_genes),
 		n_input=len(query))
 
@@ -156,8 +156,13 @@ def eqtlResults():
 	snp_string = ", ".join("'{0}'".format(x) for x in snps)
 	sql = "SELECT * FROM eqtl WHERE `adj.p-value` < 0.05 AND (SNP IN (%s))" % (snp_string)
 
-	df = pd.read_sql_query(sql, db)
+	eqtl = pd.read_sql_query(sql, db)
 
-	print df
+	eqtl = eqtl.sort_values("p-value")
+	# print eqtl.to_string()
+	# print eqtl.to_json(orient='records')
 
-	return render_template("eqtl-multi.html", snps=json.dumps(snps))
+	return render_template("eqtl-multi.html",
+		snps=json.dumps(snps),
+		eqtl=eqtl.to_json(orient='records', double_precision=15)
+	)

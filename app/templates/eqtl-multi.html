@@ -4,7 +4,9 @@
 
 <h1>eQTL</h1>
 
-{{ eqtl }}
+<!-- {{ eqtl }} -->
+
+<table id="eqtl_table" class="display"></table>
 
 {% endblock %}
 
@@ -14,10 +16,11 @@
 	// Store SNP query
 	// tojson avoids escape characters from Jinja
 	var snps = JSON.parse({{ snps | tojson }});
+	var eqtl = JSON.parse({{ eqtl | tojson }});
 </script>
 
 
-<!-- <script src="{{ url_for('static', filename='js/table.js') }}"></script> -->
+<script src="{{ url_for('static', filename='js/table.js') }}"></script>
 <!-- <script src="{{ url_for('static', filename='js/supernetw.js') }}"></script> -->
 
 <script src="{{ url_for('static', filename='js/eqtl-multi.js') }}"></script>
