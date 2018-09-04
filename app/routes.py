@@ -2,6 +2,10 @@ from flask import (
 	render_template, request, redirect, url_for, g, abort
 )
 
+import pandas as pd
+import numpy as np
+import scipy.stats, statsmodels.stats.multitest
+
 from app.db import getDB, queryDB, closeDB
 
 from app import app  # required
@@ -82,8 +86,63 @@ def search():
 
 @app.route("/enrichment-results", methods=['POST'])
 def enrichmentResults():
-	print request.form
+	# print request.form
+
 	query = request.form['gene_snp_list'].split()  # split by whitespace
+
+	# Load module table
+	db = getDB()
+
+	sql = "SELECT gene_symbol, clust FROM modules"
+	gene_tab = pd.read_sql_query(sql, db)
+
+	# unique gene symbols
+	gene_universe = set(gene_tab['gene_symbol'])
+
+	# number of co-expression modules. should be 224
+	nmodules = max(gene_tab['clust'])
+
+	# Calculate overlaps
+	found_query_genes = set(query) & gene_universe
+
+	# Init statistics for Hypergeometric test
+	enrich = pd.DataFrame({
+		'module': xrange(1, nmodules + 1)
+	})
+
+	# Hypergeometric test for each module
+	# https://blog.alexlenail.me/understanding-and-implementing-the-hypergeometric-test-in-python-a7db688a7458
+	for i, row in enrich.iterrows():
+		k = row["module"]  # module ID
+
+		# get gene symbols for module ID
+		module_symbols = gene_tab.gene_symbol[gene_tab['clust'] == k]
+		module_symbols = set(module_symbols)
+
+		# Calculate overlap size
+		overlap = found_query_genes & module_symbols
+		k_overlap = len(overlap)
+		M_universe = len(gene_universe)
+		n_mod_size = len(module_symbols)
+		N_input_genes = len(found_query_genes)
+
+		# survival function, 1 - CDF
+		hypergeom_pval = scipy.stats.hypergeom.sf(k_overlap - 1, M_universe, n_mod_size, N_input_genes)
+
+		# Store variables
+		enrich.at[i, "overlap"] = k_overlap
+		enrich.at[i, "module_size"] = n_mod_size
+		enrich.at[i, "p"] = hypergeom_pval
+		enrich.at[i, "genes"] = ";".join(overlap)  # string of overlapping genes
+
+	# Multiple hypothesis correction
+	rej, pval_adj = statsmodels.stats.multitest.multipletests(enrich['p'], method='fdr_bh')[:2]
+	enrich['FDR'] = pval_adj
+
+	# sort by enrichment p-values
+	enrich = enrich.sort_values("p")
+
+	print enrich
 
 	return "Gene set enrichment results for: " + ' '.join(query)
 
