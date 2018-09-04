@@ -36,6 +36,7 @@ def initDB():
 	with current_app.open_resource('schema.sql') as f:
 	    db.executescript(f.read().decode('utf8'))
 
+	db.commit()
 
 def loadCPM(cpm_dir="data/expr/cpm"):
 	"""Load gene expression data into SQL database."""
@@ -71,6 +72,16 @@ def loadeQTL():
 	Load cis-eQTL tables for all tissues including macrophages and foam cells.
 	"""
 	db = getDB()
+
+	click.echo("Loading co-expression modules...")
+	mod_tab = pd.read_csv("data/modules/modules.csv")
+
+	# Make tissue-ensembl id string for matching with eQTL tables
+	mod_tab['ensembl_base'] = [elem.split(".")[0] for elem in mod_tab['ensembl']]
+	mod_tab['tissue'] = mod_tab['tissue'].str.upper()  # upper case
+	mod_tab['tissue_ensembl'] = mod_tab['tissue'] + "_" + mod_tab['ensembl_base']
+	print mod_tab
+
 	click.echo("Loading cis-eQTL...")
 
 	eqtl_files = glob.glob('data/eQTL/STARNET.eQTLs.MatrixEQTL*')
@@ -81,6 +92,7 @@ def loadeQTL():
 
 		# load eqtl table, as tab-separated file
 		df = pd.read_csv(file, sep='\t')
+		# df = pd.read_csv(file, sep='\t', nrows=50)  # for testing
 
 		# split gene ids by ensembl base and version
 		ensembl, ensembl_version = df['gene'].str.split('.').str
@@ -99,7 +111,20 @@ def loadeQTL():
 	# sort by p-value globally
 	combined_df = combined_df.sort_values(by='p-value')
 
-	print(combined_df)
+	# ids for matching with module tables
+	combined_df['tissue'] = combined_df['tissue'].str.upper()  # upper case tissues
+	combined_df['tissue_ensembl'] = combined_df['tissue'] + "_" + combined_df['gene']
+
+	combined_df = combined_df.merge(
+		mod_tab[['tissue_ensembl', 'clust']],
+		on='tissue_ensembl',
+		how='left')
+
+	combined_df = combined_df.drop(columns=['tissue_ensembl'])  # not required
+
+	# print(combined_df)
+
+	click.echo("Writing to database...")
 
 	combined_df.to_sql('eqtl',
 		db,
@@ -273,13 +298,22 @@ def loadPhenoAssoc():
 	db.commit()
 	closeDB()
 
+def indexSQL():
+	db = getDB()
+	print "Indexing SQL database..."
+
+	with current_app.open_resource('optimize.sql') as f:
+	    db.executescript(f.read().decode('utf8'))
+
+	db.commit()
+
 
 # flask init-db command
 @click.command('init-db')
 @with_appcontext
 def cmdInitDB():
     """Clear the existing data and create new tables."""
-    initDB()
+    # initDB()
     click.echo('Initialized the database.')
 
     # Load tables to database
@@ -289,9 +323,10 @@ def cmdInitDB():
     # loadModules()  # co-expression modules
     # loadModuleGO()  # gene ontology tables
     # loadDEG()  # differential expression
-    loadPhenoAssoc()
+    # loadPhenoAssoc()
     # loadKDA()
     # loadEnsembl()
+    indexSQL()
 
 
 # Registration with app
@@ -308,3 +343,4 @@ def queryDB(query, args=(), one=False):
 	rv = cur.fetchall()
 	cur.close()
 	return (rv[0] if rv else None) if one else rv
+

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>eQTL</h1>
+
+{{ eqtl }}
+
+{% endblock %}
+
+{% block script %}
+
+<script type="text/javascript">
+	// Store SNP query
+	// tojson avoids escape characters from Jinja
+	var snps = JSON.parse({{ snps | tojson }});
+</script>
+
+
+<!-- <script src="{{ url_for('static', filename='js/table.js') }}"></script> -->
+<!-- <script src="{{ url_for('static', filename='js/supernetw.js') }}"></script> -->
+
+<script src="{{ url_for('static', filename='js/eqtl-multi.js') }}"></script>
+
+{% endblock %}
+

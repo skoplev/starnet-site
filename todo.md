@@ -2,8 +2,6 @@
 
 - Make site available from Mount Sinai. Improve security/encryption.
 
-- Enrichment analysis based on gene sets. Accessible on main page.
-
 - Heritability feature on eigenegene network (waiting on Analysis from Linyao)
 
 - Improve loading performance my migrating to a MySQL database (instead of sqlite3)

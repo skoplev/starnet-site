@@ -4,7 +4,7 @@ from flask import (
 
 import pandas as pd
 import numpy as np
-import scipy.stats, statsmodels.stats.multitest
+import scipy.stats, statsmodels.stats.multitest, json
 
 from app.db import getDB, queryDB, closeDB
 
@@ -149,6 +149,15 @@ def enrichmentResults():
 
 @app.route("/eqtl-results", methods=['POST'])
 def eqtlResults():
-	query = request.form['gene_snp_list'].split()  # split by whitespace
+	snps = request.form['gene_snp_list'].split()  # split by whitespace
 
-	return "eQTL results"
+	db = getDB()
+
+	snp_string = ", ".join("'{0}'".format(x) for x in snps)
+	sql = "SELECT * FROM eqtl WHERE `adj.p-value` < 0.05 AND (SNP IN (%s))" % (snp_string)
+
+	df = pd.read_sql_query(sql, db)
+
+	print df
+
+	return render_template("eqtl-multi.html", snps=json.dumps(snps))

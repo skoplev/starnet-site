@@ -45,6 +45,4 @@ function renderEnrichmentTable(enrich) {
 	};
 
 	renderTable(enrich, "#enrich_table", config);
-
-	// Set color based on enrichment values
 }
