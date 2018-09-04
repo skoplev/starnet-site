@@ -159,8 +159,6 @@ def eqtlResults():
 	eqtl = pd.read_sql_query(sql, db)
 
 	eqtl = eqtl.sort_values("p-value")
-	# print eqtl.to_string()
-	# print eqtl.to_json(orient='records')
 
 	return render_template("eqtl-multi.html",
 		snps=json.dumps(snps),

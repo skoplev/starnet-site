@@ -1,12 +1,10 @@
-console.log("eqtl js");
-
 $(document).ready(function() {
 	renderEqtlTable(eqtl);
 });
 
 function renderEqtlTable(eqtl) {
 	var config = {
-		column_order: ['SNP', 'gene', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value', 'clust'],
+		column_order: ['clust', 'SNP', 'gene', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
 		orderby: 'p-value',  // sort by p-value column
 		num_cols: ['beta', 't-stat', 'p-value', 'adj.p-value'],
 		precision: 5,

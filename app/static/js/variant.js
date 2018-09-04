@@ -4,7 +4,6 @@ $(document).ready(function() {
 	$.get('/api/eqtl',
 		{snp: input.snp}
 	).done(function(data) {
-		// console.log(data);
 		renderTableQTL(data);
 	});
 });

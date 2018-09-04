@@ -181,6 +181,8 @@ def eqtl():
 	# Rename gene column to ensembl
 	df = df.rename(columns={'gene': 'ensembl'})
 
+	df = df.fillna('NA')  # NaN to 'NA', otherwise json protocol fails
+
 	return jsonify(df.to_dict(orient='records'))
 
 

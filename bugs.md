@@ -17,6 +17,3 @@ http://localhost:5000/module/167
 Network slider offset in Safari
 
 Gene network svg export text offset on y-axis.
-
-No eQTL for:
-http://localhost:5000/variant/rs10495907

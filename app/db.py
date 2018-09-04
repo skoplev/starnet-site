@@ -122,10 +122,7 @@ def loadeQTL():
 
 	combined_df = combined_df.drop(columns=['tissue_ensembl'])  # not required
 
-	# print(combined_df)
-
 	click.echo("Writing to database...")
-
 	combined_df.to_sql('eqtl',
 		db,
 		index=False,
