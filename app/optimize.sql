@@ -34,3 +34,9 @@ CREATE INDEX SKLM_cpm_index ON cpm_SKLM (ensembl_base);
 DROP INDEX IF EXISTS vaf_cpm_index;
 CREATE INDEX vaf_cpm_index ON cpm_VAF (ensembl_base);
 
+-- Modules table
+DROP INDEX IF EXISTS modules_ensembl_index;
+CREATE INDEX modules_ensembl_index ON modules (ensembl);
+
+DROP INDEX IF EXISTS modules_clust_index;
+CREATE INDEX modules_clust_index ON modules (clust);
