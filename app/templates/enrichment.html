@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Gene set enrichment analysis</h1>
+
+<table id="enrich_table" class="display"></table>
+
+{% endblock %}
+
+{% block script %}
+
+<script type="text/javascript">
+	// Store enrichment table
+	// tojson avoids escape characters from Jinja
+	var enrich = JSON.parse({{ enrich | tojson }});
+</script>
+
+<script src="{{ url_for('static', filename='js/table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/enrichment.js') }}"></script>
+
+{% endblock %}
+
+

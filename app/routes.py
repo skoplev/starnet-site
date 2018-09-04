@@ -1,5 +1,5 @@
 from flask import (
-	render_template, request, redirect, url_for, g, abort
+	render_template, request, redirect, url_for, g, abort, jsonify
 )
 
 import pandas as pd
@@ -142,9 +142,7 @@ def enrichmentResults():
 	# sort by enrichment p-values
 	enrich = enrich.sort_values("p")
 
-	print enrich
-
-	return "Gene set enrichment results for: " + ' '.join(query)
+	return render_template("enrichment.html", enrich=enrich.to_json(orient='records'))
 
 @app.route("/eqtl-results", methods=['POST'])
 def eqtlResults():
