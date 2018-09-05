@@ -29,6 +29,14 @@ class SuperNetwork {
 			.attr('width', this.width)
 			.attr('height', this.height);
 
+		// background rect for catching click events
+		this.svg.append("rect")
+			.attr("id", "zoom_rect")
+			.attr("width", width)
+			.attr("height", height)
+			.style("fill", "none")
+			.style("pointer-events", "all");
+
 		// Scales
 		var max_x = _.max(data.layout.map(function(d) {return d.x}));
 		var max_y = _.max(data.layout.map(function(d) {return d.y}));
@@ -264,7 +272,7 @@ class SuperNetwork {
 
 	// Color circles based on annotation feature
 	// assumes that the data object and svg is in scope
-	colorCircles(feature, transform) {
+	colorCircles(feature, transform, label="-log10 p") {
 		var data = this.data;  // for use 'outside' SuperNetwork class
 
 		this.clearLegend();
@@ -291,17 +299,19 @@ class SuperNetwork {
 			}));
 
 			this.circle.style("fill", function(d) {
-				var val = data.annot[d.module - 1][feature];
-				var frac = transform(val) / max_val;
+				var val = transform(data.annot[d.module - 1][feature]);
+				// console.log(val);
+				// Default value when undefined
+				if (val === undefined) {
+					val = 0;
+				}
+				var frac = val / max_val;
+
 				// return d3.interpolateGreens(frac);
 				return d3.interpolateYlGnBu(frac);
 			});
 
-			if (feature == "enrichment_FDR") {
-				this.renderGradientLegend(max_val, "-log10 FDR");
-			} else {
-				this.renderGradientLegend(max_val);
-			}
+			this.renderGradientLegend(max_val, label);
 		}
 	}
 
@@ -375,7 +385,7 @@ class SuperNetwork {
 	}
 
 	// render color gradient with ticks ranging [0, max_val]
-	renderGradientLegend(max_val, label="-log10 p") {
+	renderGradientLegend(max_val, label) {
 		// Generate colors from sequence of numbers sequence
 		var gradient_width = 200;
 		var gradient_height = 10;

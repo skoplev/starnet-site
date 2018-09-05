@@ -11,7 +11,7 @@ $(document).ready(function() {
 		});
 
 		netw.addAnnotationData(enrich_transform);  // for coloring
-		netw.colorCircles("enrichment_FDR", neglog10);
+		netw.colorCircles("enrichment_FDR", neglog10, "-log10 FDR");
 
 	});
 

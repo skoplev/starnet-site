@@ -154,14 +154,25 @@ def eqtlResults():
 
 	db = getDB()
 
+	# comma-separated string of SNP ids
 	snp_string = ", ".join("'{0}'".format(x) for x in snps)
+
+	# sql query using IN
 	sql = "SELECT * FROM eqtl WHERE `adj.p-value` < 0.05 AND (SNP IN (%s))" % (snp_string)
 
 	eqtl = pd.read_sql_query(sql, db)
 
 	eqtl = eqtl.sort_values("p-value")
 
+	# Get modules->eQTL gene dictionary
+	gene_dict = {}
+
+	modules = eqtl.clust.dropna().unique()
+	for mod in modules:
+		gene_dict[int(mod)] = eqtl.gene[eqtl.clust == mod].unique().tolist()
+
 	return render_template("eqtl-multi.html",
 		snps=json.dumps(snps),
-		eqtl=eqtl.to_json(orient='records', double_precision=15)
+		eqtl=eqtl.to_json(orient='records', double_precision=15),
+		eqtl_by_module=json.dumps(gene_dict)
 	)

@@ -33,7 +33,7 @@ $(document).ready(function() {
 		// Select dropdown callback function
 		d3.select("#annot_opts").on("change", function() {
 			var selected_value = d3.select("#annot_opts").property("value")
-			netw.colorCircles(selected_value, neglog10);
+			netw.colorCircles(selected_value, neglog10, "-log10 p");
 		});
 
 		// Populate options based on all annotations
