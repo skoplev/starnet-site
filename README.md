@@ -52,6 +52,10 @@ sudo apt-get install libapache2-mod-wsgi
 https://devops.profitbricks.com/tutorials/deploy-a-flask-application-on-ubuntu-1404/
 sudo a2enmod wsgi
 
+## Install bower through npm
+curl -sL https://deb.nodesource.com/setup_8.x | sudo bash -
+sudo apt-get install -y nodejs
+sudo npm install -g bower
 
 ## Clone repository for website into Apache directory
 cd /var/www
@@ -173,6 +177,9 @@ Creates the sqlite3 database file in instance/STARNET.sqlite
 
 ## Eigenentwork layout and annotation data
 scp app/static/data/eigen_network.json neptune:/var/www/starnet-site/app/static/data/
+scp app/static/data/gene_symbols.json neptune:/var/www/starnet-site/app/static/data/
+scp app/static/data/rgn/edges/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/edges/
+scp app/static/data/rgn/nodes/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/nodes/
 
 ## sqlite3 database file
 scp instance/STARNET.sqlite neptune:/var/www/starnet-site/instance

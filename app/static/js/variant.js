@@ -14,7 +14,7 @@ function renderTableQTL(data) {
 	var columns = Object.keys(data[0]);
 
 	var config = {
-		column_order: ['SNP', 'ensembl', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
+		column_order: ['clust', 'SNP', 'ensembl', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
 		orderby: 'p-value',  // sort by p-value column
 		num_cols: ['beta', 't-stat', 'p-value', 'adj.p-value'],
 		precision: 5,
@@ -30,6 +30,12 @@ function renderTableQTL(data) {
 				return "<a href='/gene/" + gene + "'>" + gene + "</a>";
 			},
 			targets: 'ensembl'
+		},
+		{
+			render: function(gene, type, row) {
+				return "<a href='/module/" + gene + "'>" + gene + "</a>";
+			},
+			targets: 'clust'
 		}]
 	};
 

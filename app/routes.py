@@ -147,6 +147,7 @@ def enrichmentResults():
 		n_found=len(found_query_genes),
 		n_input=len(query))
 
+# Queries multiple SNPs
 @app.route("/eqtl-results", methods=['POST'])
 def eqtlResults():
 	snps = request.form['gene_snp_list'].split()  # split by whitespace
