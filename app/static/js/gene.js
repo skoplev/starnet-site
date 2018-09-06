@@ -47,8 +47,7 @@ $(document).ready(function() {
 		renderTableQTL(data);
 	})
 	.fail(function(err) {
-	})
-	;
+	});
 });
 
 

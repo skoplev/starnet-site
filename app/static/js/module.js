@@ -461,6 +461,16 @@ $(document).ready(function() {
 	).done(function(data) {
 		renderTableGO(data, '#go_mf_table');
 	});
+
+	// eQTL tables
+	$.get('/api/eqtl',
+		{module: input.mod_id}
+	).done(function(data) {
+		renderEqtlTable(data);
+	})
+	.fail(function(err) {
+	});
+
 });
 
 var brewer_pastel1 = [
@@ -536,6 +546,39 @@ function renderModuleTable(data) {
 
 	renderTable(data, '#mod_table', config);
 }
+
+function renderEqtlTable(eqtl) {
+	var config = {
+		column_order: ['clust', 'SNP', 'ensembl', 'hgnc_symbol', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
+		orderby: 'p-value',  // sort by p-value column
+		num_cols: ['beta', 't-stat', 'p-value', 'adj.p-value'],
+		precision: 5,
+		dom: 'Blfrtip',
+		buttons: ['copyHtml5', 'csvHtml5'],
+		columnDefs: [{
+			render: function(clust, type, row) {
+				return "<a href='/module/" + clust + "'>" + clust + "</a>";
+			},
+			targets: 'clust'
+		},
+		{
+			render: function(gene, type, row) {
+				return "<a href='/gene/" + gene + "'>" + gene + "</a>";
+			},
+			targets: 'ensembl'
+		},
+		{
+			render: function(snp, type, row) {
+				return "<a href='/variant/" + snp + "'>" + snp + "</a>";
+			},
+			targets: 'SNP'
+		}]
+	};
+
+	renderTable(eqtl, "#eqtl_table", config);
+}
+
+
 
 function renderPhenoAssoc(data) {
 	var max_logp = 100;

@@ -172,6 +172,11 @@ def eqtl():
 	elif request.args.get('snp') is not None:
 		sql = "SELECT * FROM eqtl WHERE SNP = ?"
 		query = request.args['snp']
+	elif request.args.get('module') is not None:
+		# FDR < 0.05 cutoff in order to not send large amounts of data on each module page
+		# Group by restricts row to one result per gene
+		sql = "SELECT * FROM eqtl WHERE clust = ? AND `adj.p-value` < 0.05 GROUP BY gene"
+		query = request.args['module']
 	else:
 		abort(400)  # bad request
 
