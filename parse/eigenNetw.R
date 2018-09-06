@@ -109,7 +109,8 @@ cat(
 			layout=unname(split(lay_json, 1:nrow(lay_json))),
 			edges=unname(split(edges, 1:nrow(edges))),
 			nodes=as.character(as.vector(V(g))),
-			annot=unname(split(annot, 1:nrow(annot)))
+			annot=unname(split(annot, 1:nrow(annot))),
+			mod_size=mod_tab$mod_size
 		)
 	),
 	file="app/static/data/eigen_network.json"

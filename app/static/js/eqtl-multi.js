@@ -6,12 +6,22 @@ $(document).ready(function() {
 
 		// Count number of eQTL genes per module
 		var n_eqtl_genes = Object.keys(eqtl_by_module).map(function(key) {
-			return {clust: parseInt(key), n_eqtl_genes: eqtl_by_module[key].length};
+			// return {clust: parseInt(key), n_eqtl_genes: eqtl_by_module[key].length};
+			return {
+				clust: parseInt(key),
+				n_eqtl_genes: eqtl_by_module[key].length,
+				eqtl_gene_frac: eqtl_by_module[key].length / data.mod_size[key - 1] * 100
+			}
 		});
 
+
 		netw.addAnnotationData(n_eqtl_genes);  // for coloring
-		netw.colorCircles("n_eqtl_genes", function(x) { return x; }, "eQTL genes");
+		// netw.colorCircles("n_eqtl_genes", function(x) { return x; }, "eQTL genes");
 		// netw.colorCircles("n_eqtl_genes", Math.log10, "log10 eQTL genes");
+		netw.colorCircles("eqtl_gene_frac", function(x) { return x; }, "eQTL gene %");
+
+		// netw.colorCircles("n_eqtl_genes", function(x) { return x > 0; }, "eQTL genes");
+
 
 		// Modification of supernetwork
 		// Remove all hyperlinks on click, such that clicks can be used for filtering on page

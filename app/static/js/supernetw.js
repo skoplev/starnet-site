@@ -308,6 +308,7 @@ class SuperNetwork {
 
 				// return d3.interpolateGreens(frac);
 				return d3.interpolateYlGnBu(frac);
+				// return d3.interpolateRainbow(frac);
 			});
 
 			this.renderGradientLegend(max_val, label);
