@@ -58,10 +58,22 @@ function renderEqtlTable(eqtl) {
 		dom: 'Blfrtip',
 		buttons: ['copyHtml5', 'csvHtml5'],
 		columnDefs: [{
-			render: function(gene, type, row) {
-				return "<a href='/module/" + gene + "'>" + gene + "</a>";
+			render: function(clust, type, row) {
+				return "<a href='/module/" + clust + "'>" + clust + "</a>";
 			},
 			targets: 'clust'
+		},
+		{
+			render: function(gene, type, row) {
+				return "<a href='/gene/" + gene + "'>" + gene + "</a>";
+			},
+			targets: 'gene'
+		},
+		{
+			render: function(snp, type, row) {
+				return "<a href='/variant/" + snp + "'>" + snp + "</a>";
+			},
+			targets: 'SNP'
 		}]
 	};
 

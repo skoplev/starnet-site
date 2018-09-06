@@ -8,6 +8,8 @@
 
 - Search by list of SNPs. Returns supernetwork with highlight, on hover, of genome-wide significant eQTLs.
 
+- eQTL on module pages
+
 # Ideas
 
 - locuszoom.js plots of eQTL on gene page
