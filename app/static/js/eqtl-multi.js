@@ -11,6 +11,7 @@ $(document).ready(function() {
 
 		netw.addAnnotationData(n_eqtl_genes);  // for coloring
 		netw.colorCircles("n_eqtl_genes", function(x) { return x; }, "eQTL genes");
+		// netw.colorCircles("n_eqtl_genes", Math.log10, "log10 eQTL genes");
 
 		// Modification of supernetwork
 		// Remove all hyperlinks on click, such that clicks can be used for filtering on page
@@ -30,6 +31,10 @@ $(document).ready(function() {
 			table.search('')
 				.columns().search('')
 				.draw();  // reset
+
+			// reset selection
+			netw.svg.selectAll("circle")
+				.style("stroke-width", 1);  // reset previous
 		});
 
 		// click searches eQTL table
@@ -42,8 +47,12 @@ $(document).ready(function() {
 					.search("^" + d.module + "$", regex=true, smart=false)  // exact match
 					.draw();  // render table
 
-				// d3.select(this).attr("stroke-width", 2);
+				// Circle on select
+				netw.svg.selectAll("circle")
+					.style("stroke-width", 1);  // reset previous
+				d3.select(this).style("stroke-width", 2.5);
 			});
+
 	});
 
 	renderEqtlTable(eqtl);

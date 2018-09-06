@@ -300,7 +300,6 @@ class SuperNetwork {
 
 			this.circle.style("fill", function(d) {
 				var val = transform(data.annot[d.module - 1][feature]);
-				// console.log(val);
 				// Default value when undefined
 				if (val === undefined) {
 					val = 0;

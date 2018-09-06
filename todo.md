@@ -6,8 +6,6 @@
 
 - STARNET logo and description page
 
-- Search by list of SNPs. Returns supernetwork with highlight, on hover, of genome-wide significant eQTLs.
-
 - eQTL on module pages
 
 # Ideas
