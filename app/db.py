@@ -80,7 +80,17 @@ def loadeQTL():
 	mod_tab['ensembl_base'] = [elem.split(".")[0] for elem in mod_tab['ensembl']]
 	mod_tab['tissue'] = mod_tab['tissue'].str.upper()  # upper case
 	mod_tab['tissue_ensembl'] = mod_tab['tissue'] + "_" + mod_tab['ensembl_base']
-	print mod_tab
+
+	click.echo("Loading ensembl database...")
+	ensembl_tab = pd.read_csv("data/ensembl/genes.csv")
+	ensembl_tab['gene'] = ensembl_tab.ensembl_gene_id  # for merging with hgnc_symbol
+	# for memory efficiency
+	ensembl_tab['gene'] = ensembl_tab.gene.astype('category')
+	ensembl_tab['hgnc_symbol'] = ensembl_tab.hgnc_symbol.astype('category')
+
+	# Ensure one row per ensembl ID
+	# If not, the join operation later expands the eQTL table
+	ensembl_tab = ensembl_tab.drop_duplicates('gene')
 
 	click.echo("Loading cis-eQTL...")
 
@@ -106,27 +116,48 @@ def loadeQTL():
 
 		frames.append(df)
 
-	combined_df = pd.concat(frames)
+	df = pd.concat(frames)
+	del frames
+
+	click.echo("Sorting eQTL table...")
 
 	# sort by p-value globally
-	combined_df = combined_df.sort_values(by='p-value')
+	df = df.sort_values(by='p-value')
 
 	# ids for matching with module tables
-	combined_df['tissue'] = combined_df['tissue'].str.upper()  # upper case tissues
-	combined_df['tissue_ensembl'] = combined_df['tissue'] + "_" + combined_df['gene']
+	df['tissue'] = df['tissue'].str.upper()  # upper case tissues
+	df['tissue_ensembl'] = df['tissue'] + "_" + df['gene']
 
-	combined_df = combined_df.merge(
+	# Convert to categorical for memory efficiency
+	df['SNP'] = df.SNP.astype('category')
+	df['gene'] = df.gene.astype('category')
+	df['tissue'] = df.tissue.astype('category')
+	df['tissue_ensembl'] = df.tissue_ensembl.astype('category')
+
+	click.echo("Adding columns...")
+	# join with co-expression module IDs
+	df = df.merge(
 		mod_tab[['tissue_ensembl', 'clust']],
 		on='tissue_ensembl',
 		how='left')
 
-	combined_df = combined_df.drop(columns=['tissue_ensembl'])  # not required
+	df = df.drop(columns=['tissue_ensembl'])  # not required
+
+	# join with HGNC gene symbols from ensembl
+	df = df.merge(
+		ensembl_tab[['gene', 'hgnc_symbol']],
+		on='gene',
+		how='left')
+
+	print df
 
 	click.echo("Writing to database...")
-	combined_df.to_sql('eqtl',
+	df.to_sql('eqtl',
 		db,
 		index=False,
-		if_exists='replace')
+		if_exists='replace',
+		chunksize=10000
+	)
 
 
 def loadModules():

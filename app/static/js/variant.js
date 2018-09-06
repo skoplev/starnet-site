@@ -10,11 +10,12 @@ $(document).ready(function() {
 
 
 function renderTableQTL(data) {
+	console.log(data);
 	// Sets up eQTL table call for DataTable render
 	var columns = Object.keys(data[0]);
 
 	var config = {
-		column_order: ['clust', 'SNP', 'ensembl', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
+		column_order: ['clust', 'SNP', 'ensembl', 'hgnc_symbol', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
 		orderby: 'p-value',  // sort by p-value column
 		num_cols: ['beta', 't-stat', 'p-value', 'adj.p-value'],
 		precision: 5,

@@ -16,6 +16,14 @@ $(document).ready(function() {
 		// Remove all hyperlinks on click, such that clicks can be used for filtering on page
 		netw.svg.selectAll("a").attr("xlink:href", null)
 
+		// netw.svg.selectAll("circle")
+		// 	.on("mouseover", function(d) {
+
+		// 	})
+		// 	.on("mouseout", function(d) {
+
+		// 	})
+
 		d3.select("#zoom_rect").on("click", function() {
 			// Research eQTL search filter
 			var table = $("#eqtl_table").DataTable()
@@ -33,6 +41,8 @@ $(document).ready(function() {
 					.column(0)  // select column to search in
 					.search("^" + d.module + "$", regex=true, smart=false)  // exact match
 					.draw();  // render table
+
+				// d3.select(this).attr("stroke-width", 2);
 			});
 	});
 
@@ -41,7 +51,7 @@ $(document).ready(function() {
 
 function renderEqtlTable(eqtl) {
 	var config = {
-		column_order: ['clust', 'SNP', 'gene', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
+		column_order: ['clust', 'SNP', 'gene', 'hgnc_symbol', 'tissue', 'beta', 't-stat', 'p-value', 'adj.p-value'],
 		orderby: 'p-value',  // sort by p-value column
 		num_cols: ['beta', 't-stat', 'p-value', 'adj.p-value'],
 		precision: 5,
