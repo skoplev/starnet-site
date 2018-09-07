@@ -28,10 +28,12 @@ def gene(ensembl):
 	if len(results) == 0:
 		abort(404)  # not found
 
+	description = results[0]['description'] or ''  # defaults to empty string if null, avoids failure on .split()
+
 	return render_template('gene.html',
 		ensembl=ensembl,
 		symbol=results[0]['hgnc_symbol'],
-		description=results[0]['description'].split(" [")[0],
+		description=description.split(" [")[0],
 		gene_biotype=results[0]['gene_biotype'],
 		chromosome=results[0]['chromosome_name'],
 		start_position=results[0]['start_position'],
