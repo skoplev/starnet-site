@@ -43,3 +43,7 @@ CREATE INDEX modules_ensembl_index ON modules (ensembl);
 
 DROP INDEX IF EXISTS modules_clust_index;
 CREATE INDEX modules_clust_index ON modules (clust);
+
+-- Endocrines table
+DROP INDEX IF EXISTS endocrines_from_module_index;
+CREATE INDEX endocrines_from_module_index ON endocrines (from_module);

@@ -220,3 +220,19 @@ def pheno():
 	})
 
 	return jsonify(df.to_dict(orient='records'))
+
+@app.route('/api/endocrines', methods=['GET'])
+def endocrines():
+	"""
+	Get table of endocrine candidates from co-expression module.
+	"""
+
+	db = getDB()
+
+	from_mod = request.args['from']
+
+	sql = "SELECT * FROM endocrines WHERE from_module = ?"
+
+	df = pd.read_sql_query(sql, db, params=[from_mod])
+
+	return jsonify(df.to_dict(orient='records'))

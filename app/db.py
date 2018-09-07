@@ -326,6 +326,32 @@ def loadPhenoAssoc():
 	db.commit()
 	closeDB()
 
+def loadEndocrines():
+	db = getDB()
+	click.echo("Loading endocrine candidates...")
+
+	df = pd.read_csv('data/endocrines/CT_endocrines_TS_interactions.csv')
+
+	df = df.drop(columns=['id', 'endo_eigen_cor', 'endo_eigen_cor_pval', 'target_tissue_primary', 'target_clust_GWAS_pheno', 'source_clust_GWAS_pheno', 'eigengene_eigengene_cor', 'eigen_eigen_cor_pval'])
+
+	df = df.rename(columns={
+		"gene_symbol": "hgnc_symbol",
+		"clust": "from_module",
+		"target_clust": "target_module",
+		"supernetwork_edge": "supernetwork",
+		"ts_endo_cor": "cor",
+		"ts_endo_cor_p": "p",
+		"ts_endo_cor_p_adj": "FDR",
+		"tissue": "from_tissue"
+	})
+
+	# Write to database
+	df.to_sql('endocrines',
+		db,
+		index=False,
+		if_exists='replace')
+
+
 def indexSQL():
 	db = getDB()
 	print "Indexing SQL database..."
@@ -354,6 +380,7 @@ def cmdInitDB():
     # loadPhenoAssoc()
     # loadKDA()
     # loadEnsembl()
+    loadEndocrines()
     indexSQL()
 
 

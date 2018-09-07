@@ -435,10 +435,15 @@ $(document).ready(function() {
 			$("#kda").text("Data unavailable. No significant key drivers at FDR < 0.05.");
 			$("#rgn").append(" No significant key drivers.");
 		}
-
-		// console.log(data.length);
 	}).fail(function(err) {
 		console.log("error...")
+	});
+
+	// Endocrine candidates
+	$.get('/api/endocrines',
+		{from: input.mod_id}
+	).done(function(data) {
+		renderEndocrineTable(data);
 	});
 
 	// Get GO enrichment tables
@@ -576,6 +581,49 @@ function renderEqtlTable(eqtl) {
 	};
 
 	renderTable(eqtl, "#eqtl_table", config);
+}
+
+
+function renderEndocrineTable(eqtl) {
+	var config = {
+		column_order: ['hgnc_symbol', 'from_tissue', 'from_module', 'target_module', 'supernetwork', 'p', 'FDR'],
+		orderby: 'p',  // sort by p-value column
+		num_cols: ['p', 'FDR'],
+		precision: 5,
+		dom: 'Blfrtip',
+		buttons: ['copyHtml5', 'csvHtml5'],
+		columnDefs: [{
+			render: function(clust, type, row) {
+				return "<a href='/module/" + clust + "'>" + clust + "</a>";
+			},
+			targets: 'from_module'
+		}, {
+			render: function(clust, type, row) {
+				return "<a href='/module/" + clust + "'>" + clust + "</a>";
+			},
+			targets: 'target_module'
+		}, {
+			render: function(gene, type, row) {
+				return "<a href='/search?gene_snp_query=" + gene + "&type=Gene'>" + gene + "</a>";
+			},
+			targets: 'hgnc_symbol'
+		}
+		]
+		// {
+		// 	render: function(gene, type, row) {
+		// 		return "<a href='/gene/" + gene + "'>" + gene + "</a>";
+		// 	},
+		// 	targets: 'ensembl'
+		// },
+		// {
+		// 	render: function(snp, type, row) {
+		// 		return "<a href='/variant/" + snp + "'>" + snp + "</a>";
+		// 	},
+		// 	targets: 'SNP'
+		// }]
+	};
+
+	renderTable(eqtl, "#endocrine_table", config);
 }
 
 
