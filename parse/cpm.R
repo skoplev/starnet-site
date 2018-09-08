@@ -6,9 +6,9 @@ library(biomaRt)
 
 # Use for debug only
 # rm(list=ls())
-# setwd("~/GoogleDrive/projects/STARNET/site")
+# setwd("~/Dev/STARNET/site")
 
-emat_folder = "data/expr"
+emat_folder = "data/expr2"
 
 
 # Load biomaRt data
@@ -20,7 +20,7 @@ gene_map = getBM(
 
 dir.create(file.path(emat_folder, "cpm"))
 
-mat_files = list.files(emat_folder, "*.exp.mat$")
+mat_files = list.files(emat_folder, "*.mat$")
 # print(mat_files)
 out = lapply(mat_files, function(file_name) {
 	message("parsing: ", file_name)
@@ -33,8 +33,11 @@ out = lapply(mat_files, function(file_name) {
 	mat = data.matrix(mat)
 
 	# Additional transcript annotation
-	tissue = sapply(strsplit(file_name, "[.]"), function(x) x[2])
-	ensembl_base = sapply(strsplit(id, "[.]"), function(x) x[1])
+	tissue = sapply(strsplit(file_name, "[.]"), function(x) x[4])
+
+	ensembl_versioned = sapply(strsplit(id, "_"), function(x) x[length(x)])
+	ensembl_base = sapply(strsplit(ensembl_versioned, "[.]"), function(x) x[1])
+
 	hgnc_symbol = gene_map$hgnc_symbol[match(ensembl_base, gene_map$ensembl_gene_id)]
 
 	# Counts per million

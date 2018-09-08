@@ -38,7 +38,7 @@ def initDB():
 
 	db.commit()
 
-def loadCPM(cpm_dir="data/expr/cpm"):
+def loadCPM(cpm_dir="data/expr2/cpm"):
 	"""Load gene expression data into SQL database."""
 
 	# get database handle
@@ -49,8 +49,22 @@ def loadCPM(cpm_dir="data/expr/cpm"):
 	cpm_files = os.listdir(cpm_dir)
 
 	for file in cpm_files:
-		tissue = file.split(".")[1]
-		print("Adding ", file)
+		tissue = file.split(".")[3]
+
+		if (tissue == "COR"):
+			continue  # ignore
+		elif (tissue == "BLO"):
+			tissue = "Blood"
+		elif (tissue == "SKM"):
+			tissue = "SKLM"
+		elif (tissue == "SUF"):
+			tissue = "SF"
+		elif (tissue == "FOC"):
+			tissue = "FC"
+		elif (tissue == "MAC"):
+			tissue = "MP"
+
+		print("Adding " + file)
 		
 		# Read as panda dataframe
 		df = pd.read_csv(os.path.join(cpm_dir, file))
@@ -372,7 +386,7 @@ def cmdInitDB():
 
     # Load tables to database
     # Comment out during development to avoid reloading
-    # loadCPM()
+    loadCPM()
     # loadeQTL()
     # loadModules()  # co-expression modules
     # loadModuleGO()  # gene ontology tables
@@ -380,7 +394,7 @@ def cmdInitDB():
     # loadPhenoAssoc()
     # loadKDA()
     # loadEnsembl()
-    loadEndocrines()
+    # loadEndocrines()
     indexSQL()
 
 
