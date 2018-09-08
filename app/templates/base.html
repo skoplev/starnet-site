@@ -45,9 +45,19 @@
 
 <body>
 
-<a href="/">search</a>
-<a href="/about">about</a>
-<a href="/download">download</a>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
+  <!-- <a class="navbar-brand" href="#">STARNET</a> -->
+
+	<ul class="navbar-nav mr-auto">
+		<li class="nav-item active">
+			<a class="nav-link" href="/">find <span class="sr-only">(current)</span></a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="/about">about</a>
+		</li>
+	</ul>
+</nav>
 
 <div class="container">
 	{% block content%}{% endblock %}

@@ -17,6 +17,10 @@ import warnings
 def index():
 	return render_template("index.html")
 
+@app.route('/about')
+def about():
+	return render_template("about.html")
+	
 # Gene page
 @app.route('/gene/<ensembl>')
 def gene(ensembl):

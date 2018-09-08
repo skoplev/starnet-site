@@ -177,7 +177,6 @@ function updateNetwork() {
 			// allows correct labels of 'Y_RNA' gene symbols
 			elems.shift()
 			elems.pop()
-			console.log(elems);
 			return elems.join("_");
 		});
 

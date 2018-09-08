@@ -10,7 +10,6 @@ $(document).ready(function() {
 
 
 function renderTableQTL(data) {
-	console.log(data);
 	// Sets up eQTL table call for DataTable render
 	var columns = Object.keys(data[0]);
 

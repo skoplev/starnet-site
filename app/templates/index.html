@@ -20,16 +20,25 @@
 </div>
 <div class="tab-content" id="pills-tabContent">
 	<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-		<div style="text-align: center;" class="ui-widget">
+
+		<!-- Single gene/SNP query -->
+		<div class="ui-widget">
 			<form action="/search" method="get">
-			  <input id="search_input" type="text" name="gene_snp_query" placeholder="Search for genes...">
-			  <select id="search_select" name="type" onchange="setQueryType(this);">
-			    <option>Gene</option>
-			    <option>SNP</option>
-			  </select>
-			  <input type="submit" name="">
+				<div class="input-group">
+					<input id="search_input" type="text" name="gene_snp_query" class="form-control" aria-label="Text input with segmented dropdown button">
+					<div class="input-group-append">
+						<select id="search_select" class="custom-select" name="type" onchange="setQueryType(this);">
+							<option selected>Gene</option>
+							<option>SNP</option>
+						</select>
+						<button class="btn btn-outline-secondary" type="submit">
+							<i class="fa fa-search"></i>
+						</button>
+					</div>
+				</div>
 			</form>
 		</div>
+
 	</div>
 	<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
 		<div id="search_multi" style="text-align: center;">
