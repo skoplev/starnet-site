@@ -35,6 +35,19 @@ out = lapply(mat_files, function(file_name) {
 	# Additional transcript annotation
 	tissue = sapply(strsplit(file_name, "[.]"), function(x) x[4])
 
+	# Correct tissue encoding
+	if (tissue == "BLO") {
+		tissue = "BLOOD"
+	} else if (tissue == "SKM") {
+		tissue = "SKLM"
+	} else if (tissue == "SUF") {
+		tissue = "SF"
+	} else if (tissue == "FOC") {
+		tissue = "FC"
+	} else if (tissue == "MAC") {
+		tissue = "MP"
+	}
+
 	ensembl_versioned = sapply(strsplit(id, "_"), function(x) x[length(x)])
 	ensembl_base = sapply(strsplit(ensembl_versioned, "[.]"), function(x) x[1])
 

@@ -782,11 +782,13 @@ function calcFdrCutoff(data) {
 // extended from example at
 // https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
 function renderSlider(data, fdr_cutoff) {
+	var epsilon = 0.5;  // low slider padding, log10 scale
 	// log transformed FDR values
 	var fdr_vals = data.map(function(d) { return -Math.log10(d.kda_FDR); })
 
 	var slider = d3.sliderHorizontal()
-		.min(d3.min(fdr_vals))
+		// .min(d3.min(fdr_vals))
+		.min(Math.max(d3.min(fdr_vals) - epsilon, 0))
 		.max(d3.max(fdr_vals))
 		.width(300)
 		.tickFormat(d3.format('.3s'))
