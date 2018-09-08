@@ -443,7 +443,11 @@ $(document).ready(function() {
 	$.get('/api/endocrines',
 		{from: input.mod_id}
 	).done(function(data) {
-		renderEndocrineTable(data);
+		if (data.length == 0) {
+			$("#endocrine_div").html("No candidates in co-expression module.");
+		} else {
+			renderEndocrineTable(data);
+		}
 	});
 
 	// Get GO enrichment tables
