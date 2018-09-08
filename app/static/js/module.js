@@ -123,7 +123,8 @@ function updateNetwork() {
 		// link when clicking nodes
 		.attr("xlink:href", function(d) {
 			var elems = d.id.split("_");
-			var ensembl = elems[2].split(".")[0];
+			// ensembl ID as last element
+			var ensembl = elems.pop().split(".")[0];
 			return "/gene/" + ensembl;
 		})
 		.on("mouseover", function(d) {
@@ -172,7 +173,12 @@ function updateNetwork() {
 		.style("fill", "black")
 		.text(function(d) {
 			var elems = d.id.split("_");
-			return elems[1];
+			// remove first (tissue) and last element (ensembl)
+			// allows correct labels of 'Y_RNA' gene symbols
+			elems.shift()
+			elems.pop()
+			console.log(elems);
+			return elems.join("_");
 		});
 
 	// avoids adding already existing nodes
@@ -587,7 +593,6 @@ function renderEqtlTable(eqtl) {
 	renderTable(eqtl, "#eqtl_table", config);
 }
 
-
 function renderEndocrineTable(eqtl) {
 	var config = {
 		column_order: ['hgnc_symbol', 'from_tissue', 'from_module', 'target_module', 'supernetwork', 'p', 'FDR'],
@@ -611,26 +616,11 @@ function renderEndocrineTable(eqtl) {
 				return "<a href='/search?gene_snp_query=" + gene + "&type=Gene'>" + gene + "</a>";
 			},
 			targets: 'hgnc_symbol'
-		}
-		]
-		// {
-		// 	render: function(gene, type, row) {
-		// 		return "<a href='/gene/" + gene + "'>" + gene + "</a>";
-		// 	},
-		// 	targets: 'ensembl'
-		// },
-		// {
-		// 	render: function(snp, type, row) {
-		// 		return "<a href='/variant/" + snp + "'>" + snp + "</a>";
-		// 	},
-		// 	targets: 'SNP'
-		// }]
+		}]
 	};
 
 	renderTable(eqtl, "#endocrine_table", config);
 }
-
-
 
 function renderPhenoAssoc(data) {
 	var max_logp = 100;
