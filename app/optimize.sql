@@ -9,6 +9,10 @@ CREATE INDEX snp_index ON eqtl (SNP);
 DROP INDEX IF EXISTS eqtl_module_index;
 CREATE INDEX eqtl_module_index ON eqtl (clust);
 
+DROP INDEX IF EXISTS eqtl_module_p_index;
+CREATE INDEX eqtl_module_p_index ON eqtl (clust, `adj.p-value`);
+
+
 -- CPM data indexing
 DROP INDEX IF EXISTS aor_cpm_index;
 CREATE INDEX aor_cpm_index ON cpm_AOR (ensembl_base);

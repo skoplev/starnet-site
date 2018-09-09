@@ -386,7 +386,7 @@ def cmdInitDB():
 
     # Load tables to database
     # Comment out during development to avoid reloading
-    loadCPM()
+    # loadCPM()
     # loadeQTL()
     # loadModules()  # co-expression modules
     # loadModuleGO()  # gene ontology tables

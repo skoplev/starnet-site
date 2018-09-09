@@ -178,7 +178,7 @@ def eqtl():
 		# selects minimum p-value for each group
 		sql = """
 			SELECT *, MIN(`p-value`) FROM eqtl
-			WHERE clust = ? AND `adj.p-value` < 0.05
+			WHERE `adj.p-value` < 0.05 AND clust = ?
 			GROUP BY gene
 			"""
 		query = request.args['module']
