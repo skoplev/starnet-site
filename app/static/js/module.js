@@ -449,7 +449,7 @@ $(document).ready(function() {
 		{from: input.mod_id}
 	).done(function(data) {
 		if (data.length == 0) {
-			$("#endocrine_div").html("No candidates in co-expression module.");
+			$("#endocrine_div").html("No candidates detected in the co-expression module.");
 		} else {
 			renderEndocrineTable(data);
 		}
