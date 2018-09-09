@@ -1,3 +1,8 @@
+// Enable bootstrap tooltips
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip({trigger: "click"});
+})
+
 $(document).ready(function() {
 	// netw = new SuperNetwork(data, "#super_network", 600, 600);
 
