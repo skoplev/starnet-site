@@ -180,7 +180,8 @@ def eqtl():
 			SELECT *, MIN(`p-value`) FROM eqtl
 			WHERE `adj.p-value` < 0.05 AND clust = ?
 			GROUP BY gene
-			"""
+		"""
+
 		query = request.args['module']
 	else:
 		abort(400)  # bad request

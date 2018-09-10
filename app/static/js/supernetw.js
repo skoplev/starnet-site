@@ -280,8 +280,12 @@ class SuperNetwork {
 		if (feature === "Tissue") {
 			var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM', 'Cross-tissue'];
 			// Ordinal color scale
-			var colors = d3.schemeCategory10;
-			colors[7] = "white";  // cross-tissue
+			// Reorder colors
+			var colors = [0, 4, 3, 7, 1, 6, 2].map(function(i) {
+				return d3.schemeSet1[i];
+			});
+
+			colors.push("white");  // cross-tissue
 
 			this.circle.style("fill", function(d) {
 				// get value for nominal feature (tissue)
