@@ -331,7 +331,10 @@ class SuperNetwork {
 
 		// Ordinal tissue color scale
 		var tissue_order = ['AOR', 'MAM', 'VAF', 'SF', 'BLOOD', 'LIV', 'SKLM'];
-		var colors = d3.schemeCategory10;
+		// Reorder colorbrewer colors
+		var colors = [0, 4, 3, 7, 1, 6, 2].map(function(i) {
+			return d3.schemeSet1[i];
+		});
 
 		// Color circles
 		this.circle.style("fill", function(d) {

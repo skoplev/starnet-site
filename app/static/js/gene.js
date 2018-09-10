@@ -3,6 +3,14 @@ $(function () {
 	$('[data-toggle="tooltip"]').tooltip({trigger: "click"});
 })
 
+// Reshape data from Ajax get to comply with Plotly barplot format
+var tissues = ['AOR', 'MAM', 'VAF', 'SF',  'BLOOD', 'LIV', 'SKLM',]
+
+// Reorder colorbrewer colors
+var colors = [0, 4, 3, 7, 1, 6, 2].map(function(i) {
+	return d3.schemeSet1[i];
+});
+
 $(document).ready(function() {
 
 	// multiple AJAX calls and dependencies
@@ -114,6 +122,10 @@ function cpmBoxplot(data) {
 		d.y = d.cpm;
 		d.type = 'box';
 		d.name = d.tissue;  // name of each box plot
+
+		d.marker = {};
+		d.marker.color = colors[tissues.indexOf(d.tissue)];
+
 		return d;
 	});
 
@@ -155,8 +167,6 @@ function addModuleLinks(data) {
 function moduleBarplot(data) {
 	// Plots module transcript statistics as stacked barplot
 
-	// Reshape data from Ajax get to comply with Plotly barplot format
-	var tissues = ['AOR', 'MAM', 'VAF', 'SF',  'BLOOD', 'LIV', 'SKLM',]
 
 	// Get module ids
 	// Prepended with 'mod' to avoid number interpretation by Plotly
@@ -171,6 +181,10 @@ function moduleBarplot(data) {
 		d.name = t;
 
 		d.type = 'bar';
+
+		d.marker = {};
+		d.marker.color = colors[tissues.indexOf(t)];
+
 		return(d)
 	});
 
