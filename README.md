@@ -1,3 +1,5 @@
+See also flask notes with nvAlt for how to activate pip virtual environment.
+
 # STARNET gene expression browser
 Web site for visualizing and searching STARNET RNA-seq data.
 
@@ -165,6 +167,7 @@ pipenv install --python 2.7.10
 ## Prepare data
 Rscript parse/cpm.R
 Rscript parse/eigenNetw.R
+Rscript parse/bayesNetw.R  # GENIE3 networks
 Rscript loadEnsembl.R
 
 ## Run python scripts specified in Flask app, in app/db.py

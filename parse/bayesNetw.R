@@ -10,9 +10,16 @@ setwd("~/Dev/STARNET-site")
 ct_project_dir = "~/GoogleDrive/projects/STARNET/cross-tissue"
 
 # Load inferred Bayesian  network
-netw = fread(file.path(ct_project_dir, "co-expression/annotate/bayesNet/all.tsv"))
-nodes = fread(file.path(ct_project_dir, "co-expression/annotate/bayesNet/nodes.tsv"))
-kda = fread(file.path(ct_project_dir, "co-expression/annotate/bayesNet/kda/modules.results.txt"))
+# Bayesian networks
+# netw = fread(file.path(ct_project_dir, "co-expression/annotate/bayesNet/all.tsv"))
+# nodes = fread(file.path(ct_project_dir, "co-expression/annotate/bayesNet/nodes.tsv"))
+# kda = fread(file.path(ct_project_dir, "co-expression/annotate/bayesNet/kda/modules.results.txt"))
+
+# Regulatory gene networks inferred with GENIE3
+netw = fread(file.path(ct_project_dir, "co-expression/annotate/grn/all.tsv"))
+nodes = fread(file.path(ct_project_dir, "co-expression/annotate/grn/nodes.tsv"))
+kda = fread(file.path(ct_project_dir, "co-expression/annotate/grn/kda/modules.results.txt"))
+
 
 
 # add source node cluster
@@ -83,4 +90,3 @@ for (k in unique(netw$module)) {
 		quote=FALSE
 	)
 }
-
