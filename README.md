@@ -182,14 +182,13 @@ Creates the sqlite3 database file in instance/STARNET.sqlite
 ## Eigenentwork layout and annotation data
 scp app/static/data/eigen_network.json neptune:/var/www/starnet-site/app/static/data/
 scp app/static/data/gene_symbols.json neptune:/var/www/starnet-site/app/static/data/
-scp app/static/data/rgn/edges/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/edges/
-scp app/static/data/rgn/nodes/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/nodes/
 
 ## sqlite3 database file
 scp instance/STARNET.sqlite neptune:/var/www/starnet-site/instance
 
-## Static Bayesian networks
+scp instance/STARNET.sqlite neptune:/var/www/starnet-site/instance/STARNET_new.sqlite
 
+## Static gene regulatory networks
 scp app/static/data/rgn/edges/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/edges/
 scp app/static/data/rgn/nodes/*.csv neptune:/var/www/starnet-site/app/static/data/rgn/nodes/
 

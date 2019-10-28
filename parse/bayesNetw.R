@@ -3,7 +3,7 @@
 rm(list=ls())
 
 library(data.table)
-library(plyr)
+library(dplyr)
 
 setwd("~/Dev/STARNET-site")
 
@@ -30,10 +30,8 @@ netw$kda_FDR = kda$FDR[match(netw$TAIL, kda$NODE)]
 
 # Format edge list
 netw = rename(netw,
-	replace=c(
-		"TAIL"="source",
-		"HEAD"="target"
-	)
+	"source"="TAIL",
+	"target"="HEAD"
 )
 
 # Remove ensembl version from ndoe ids
