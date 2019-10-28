@@ -277,7 +277,8 @@ def loadKDA():
 	db = getDB()
 	click.echo("Loading key driver analysis...")
 
-	kda = pd.read_csv("data/kda/modules.results.txt", sep="\t")
+	# kda = pd.read_csv("data/kda/modules.results.txt", sep="\t")  # Based on Bayesian networks
+	kda = pd.read_csv("data/kda_grn/modules.results.txt", sep="\t")  # Based on GENIE3 networks
 
 	# Format node ID string
 	tissue, gene, ensembl_versioned, extra = kda['NODE'].str.split('_').str
@@ -340,6 +341,21 @@ def loadPhenoAssoc():
 	db.commit()
 	closeDB()
 
+def loadHeritability():
+	db = getDB()
+	click.echo("Loading heritability table...")
+
+	df = pd.read_csv('data/heritability/STARNETmoduleH2_LD2GWAS302_20180920.csv')
+
+	df.to_sql('heritability',
+		db,
+		index=False,
+		if_exists='replace'
+	)
+
+	db.commit()
+	closeDB()
+
 def loadEndocrines():
 	db = getDB()
 	click.echo("Loading endocrine candidates...")
@@ -392,6 +408,7 @@ def cmdInitDB():
     # loadModuleGO()  # gene ontology tables
     # loadDEG()  # differential expression
     # loadPhenoAssoc()
+    loadHeritability()
     # loadKDA()
     # loadEnsembl()
     # loadEndocrines()

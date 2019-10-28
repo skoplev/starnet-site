@@ -1,4 +1,5 @@
 See also flask notes with nvAlt for how to activate pip virtual environment.
+pipenv shell
 
 # STARNET gene expression browser
 Web site for visualizing and searching STARNET RNA-seq data.
