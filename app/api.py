@@ -227,6 +227,24 @@ def pheno():
 
 	return jsonify(df.to_dict(orient='records'))
 
+@app.route('/api/heritability', methods=['GET'])
+def heritability():
+	"""
+	Get network heritability statistics
+	"""
+
+	db = getDB()
+
+	k = request.args['k']
+
+	sql = "SELECT * FROM heritability WHERE Module_ID = ?"
+
+	df = pd.read_sql_query(sql, db, params=[k])
+
+	print df
+
+	return jsonify(df.to_dict(orient='records'))
+
 @app.route('/api/endocrines', methods=['GET'])
 def endocrines():
 	"""
