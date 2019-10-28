@@ -457,6 +457,10 @@ function neglog10(x) {
 	return Math.min(-Math.log10(x), 32);
 }
 
+function linearScale(x) {
+	return x;
+}
+
 
 // Reorder svg elements within parent object -- such as 'g'
 // https://github.com/wbkd/d3-extended

@@ -33,7 +33,13 @@ $(document).ready(function() {
 		// Select dropdown callback function
 		d3.select("#annot_opts").on("change", function() {
 			var selected_value = d3.select("#annot_opts").property("value")
-			netw.colorCircles(selected_value, neglog10, "-log10 p");
+
+			if (selected_value === "perSNP_h2_CAD" || selected_value === "module_H2_CAD") {
+				netw.colorCircles(selected_value, linearScale, "Heritability (%)");
+			} else {
+				// Default scale
+				netw.colorCircles(selected_value, neglog10, "-log10 p");
+			}
 		});
 
 		// Populate options based on all annotations
@@ -48,6 +54,11 @@ $(document).ready(function() {
 
 				// Introduce separators in option selector by order
 				if (item === "Secreted proteins") {
+					// insert separator
+					$("#annot_opts").append("<option disabled>─────Network heritability─────</option>");
+				}
+
+				if (item === "perSNP_h2_CAD") {
 					// insert separator
 					$("#annot_opts").append("<option disabled>─────Phenotypes─────</option>");
 				}

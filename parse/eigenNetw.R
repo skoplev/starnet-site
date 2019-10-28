@@ -20,20 +20,25 @@ load("~/GoogleDrive/projects/STARNET/cross-tissue/co-expression/eigenNetw/Rworks
 mod_tab = fread("~/GoogleDrive/projects/STARNET/cross-tissue/co-expression/tables/module_tab.csv")
 pheno_pval = fread("~/GoogleDrive/projects/STARNET/cross-tissue/pheno/tables/pheno_pval.csv")
 
-# writes dataframe to json file
-writeToJSON = function(df, file) {
-	cat(
-		# writes to file
-		toJSON(
-			unname(
-				# one data frame per row, carrying over the column ids
-				split(df, 1:nrow(df))
-			)
-		),
-		file=file
-	)
-	return(1)
-}
+heritability = fread("~/GoogleDrive/projects/STARNET/cross-tissue/heritability/from_johan/STARNETmoduleH2_LD2GWAS302_20180920.csv")
+
+# Order heritability by module IDs
+heritability = heritability[match(1:nrow(mod_tab), heritability[["Module ID"]]), ]
+
+# # writes dataframe to json file
+# writeToJSON = function(df, file) {
+# 	cat(
+# 		# writes to file
+# 		toJSON(
+# 			unname(
+# 				# one data frame per row, carrying over the column ids
+# 				split(df, 1:nrow(df))
+# 			)
+# 		),
+# 		file=file
+# 	)
+# 	return(1)
+# }
 
 
 # Write layout to .csv and .json file
@@ -69,6 +74,8 @@ annot = data.frame(
 annot$Tissue[mod_tab$purity < 0.95]  = "Cross-tissue"
 
 annot["Secreted proteins"] = mod_tab$secreted_protein_pval
+annot["module_H2_CAD"] = heritability$module_H2_CAD
+annot["perSNP_h2_CAD"] = heritability$perSNP_h2_CAD
 
 # GWAS enrichments
 gwas_pvals = mod_tab[, c(

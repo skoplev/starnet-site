@@ -549,8 +549,13 @@ function setModuleCount(data) {
 	$("#mod_size").text(data.length);
 }
 
+// Set network heritability (in percentage) in the module title
 function setModuleHeritability(data) {
-	$("#netw_heritability").text(data[0].module_H2_CAD);
+	if (typeof data[0] !== "undefined") {
+		$("#netw_heritability").text(data[0].module_H2_CAD);
+	} else {
+		$("#netw_heritability").text("NA");
+	}
 }
 
 function renderModuleTable(data) {
