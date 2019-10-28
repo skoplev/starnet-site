@@ -345,6 +345,13 @@ function renderGradientLegend(range, gradient_def, label) {
 }
 
 $(document).ready(function() {
+	// Get heritability estimate
+	$.get('/api/heritability',
+		{k: input.mod_id}
+	).done(function(data) {
+		setModuleHeritability(data);
+	});
+
 	// Get genes found in module
 	$.get('/api/module',
 		{k: input.mod_id}
@@ -354,7 +361,7 @@ $(document).ready(function() {
 		renderModuleTable(data);
 
 		if (data.length > 3000) {
-			$("#rgn").append(" Module is too large to infer Bayesian network.");
+			$("#rgn").append(" Module is too large to infer GENIE3 network.");
 		}
 	});
 
@@ -540,6 +547,10 @@ function renderModulePie(data) {
 // Sets description of module size
 function setModuleCount(data) {
 	$("#mod_size").text(data.length);
+}
+
+function setModuleHeritability(data) {
+	$("#netw_heritability").text(data[0].module_H2_CAD);
 }
 
 function renderModuleTable(data) {

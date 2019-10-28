@@ -3,13 +3,17 @@
 {% block content %}
 
 <!-- Inline block allows  -->
-<h1 style="display: inline-block;">Co-expression module {{ mod_id }}</h1>
+<!-- <h1 style="display: inline-block;">Co-expression module {{ mod_id }}</h1> -->
+<h1 style="display: inline-block;">Co-expression module {{ mod_id }}
+	&nbsp (H<sup>2</sup>=<span id="netw_heritability"></span>%)
+</h1>
 
 <i class="fa fa-question-circle" aria-hidden="true"
 	data-toggle="tooltip" data-placement="right"
 	data-html="true"
 	title="
 	<h6>Co-expression module inferred using blockwise weighted gene correlation network analysis (WGCNA).</h6>
+	<p>The <b>network heritability</b> H<sup>2</sup> estimate from significant eSNPs, excluding variants in linkage disequilibrium (LD>0.2) with known loci identified by GWAS.</p>
 	<p>The <b>circle diagram</b> shows the tissue distribution of the transcripts in this module. Modules are inferred across tissues and can therefore contain genes from multiple tissues.</p>
 	<p><b>Module associations</b> to clinical measures are calculated by aggregating gene-level association p-values using Fisher's method. Association with differential expressed genes (DEG) is estimated by enrichment of DEG signatures using a Hypergeometric test.
 	</p>
@@ -34,7 +38,7 @@
 	data-toggle="tooltip" data-placement="right"
 	data-html="true"
 	title="
-	<h6>Interactive visualization of Bayesian network inferred over the module genes.</h6>
+	<h6>Interactive visualization of GENIE3 network inferred over the module genes.</h6>
 	<p><b>Nodes</b> are colored based on the transcript tissue.</p>
 	">
 </i>
@@ -65,7 +69,7 @@
 	data-toggle="tooltip" data-placement="right"
 	data-html="true"
 	title="
-	<h6>From the Bayesian network influential genes (key drivers) are detected using the Mergomics key driver analysis.</h6>
+	<h6>From the GENIE3 network influential genes (key drivers) are detected using the Mergomics key driver analysis.</h6>
 	">
 </i>
 

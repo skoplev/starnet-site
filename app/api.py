@@ -241,8 +241,6 @@ def heritability():
 
 	df = pd.read_sql_query(sql, db, params=[k])
 
-	print df
-
 	return jsonify(df.to_dict(orient='records'))
 
 @app.route('/api/endocrines', methods=['GET'])
