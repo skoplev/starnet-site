@@ -386,7 +386,8 @@ def loadHeritability():
 	db = getDB()
 	click.echo("Loading heritability table...")
 
-	df = pd.read_csv('data/heritability/STARNETmoduleH2_LD2GWAS302_20180920.csv')
+	# df = pd.read_csv('data/heritability/STARNETmoduleH2_LD2GWAS302_20180920.csv')
+	df = pd.read_csv('data/heritability/v2/STARNETmoduleH2_LD2GWAS302_20190318.csv')
 
 	df.to_sql('heritability',
 		db,
@@ -449,11 +450,11 @@ def cmdInitDB():
     # loadModuleGO()  # gene ontology tables
     # loadDEG()  # differential expression
     # loadPhenoAssoc()
-    # loadHeritability()
-    loadKDA()
+    loadHeritability()
+    # loadKDA()
     # loadEnsembl()
     # loadEndocrines()
-    indexSQL()
+    # indexSQL()
 
 
 # Registration with app
