@@ -1,6 +1,6 @@
 import sqlite3
 
-import os, glob, re
+import os, glob, re, sys
 import pandas as pd
 
 import click
@@ -108,30 +108,70 @@ def loadeQTL():
 
 	click.echo("Loading cis-eQTL...")
 
-	eqtl_files = glob.glob('data/eQTL/STARNET.eQTLs.MatrixEQTL*')
+	# # Oscar's eQTL
+	# eqtl_files = glob.glob('data/eQTL/STARNET.eQTLs.MatrixEQTL*')
+
+	# frames = []
+	# for file in eqtl_files:
+	# 	base_name = os.path.basename(file)
+
+	# 	# load eqtl table, as tab-separated file
+	# 	df = pd.read_csv(file, sep='\t')
+	# 	# df = pd.read_csv(file, sep='\t', nrows=50)  # for testing
+
+	# 	# split gene ids by ensembl base and version
+	# 	ensembl, ensembl_version = df['gene'].str.split('.').str
+
+	# 	# overwrite gene entry with ensembl id
+	# 	df['gene'] = ensembl
+
+	# 	# get tissue of file, write to column
+	# 	tissue = base_name.split('.')[3]
+	# 	df['tissue'] = tissue
+
+	# 	frames.append(df)
+
+	# df = pd.concat(frames)
+	# del frames
+
+	# Vamsi's eQTL
+	eqtl_files = glob.glob('/Users/sk/DataProjects/STARNET/vamsi_eQTL/adjusted.final/*.tbl')
 
 	frames = []
 	for file in eqtl_files:
 		base_name = os.path.basename(file)
 
 		# load eqtl table, as tab-separated file
-		df = pd.read_csv(file, sep='\t')
-		# df = pd.read_csv(file, sep='\t', nrows=50)  # for testing
-
-		# split gene ids by ensembl base and version
-		ensembl, ensembl_version = df['gene'].str.split('.').str
-
-		# overwrite gene entry with ensembl id
-		df['gene'] = ensembl
+		df = pd.read_csv(file, sep='\s+')  # whitespace delimiter
+		# df = pd.read_csv(file, sep='\s+', nrows=50)  # for testing
 
 		# get tissue of file, write to column
-		tissue = base_name.split('.')[3]
+		tissue = base_name.split('_')[0]
+
+		# Recode tissues
+		if tissue == "SKM":
+			tissue = "SKLM"
+		elif tissue == "SUF":
+			tissue = "SF"
+		elif tissue == "BLO":
+			tissue = "BLOOD"
+
 		df['tissue'] = tissue
 
 		frames.append(df)
 
 	df = pd.concat(frames)
 	del frames
+
+
+	# Drop columns that are not necesary
+	df = df.drop(['SNP', 'V1', 'chr', 'pos', 'padj_bonferroni'], 'columns')
+
+	# Rename columns to use same field names as Oscars MatrixEQTL tables.
+	df = df.rename(columns={"snpid": "SNP", "padj_fdr": "adj.p-value"})
+
+	# END of Vamsi eQTL code
+
 
 	click.echo("Sorting eQTL table...")
 
@@ -278,7 +318,8 @@ def loadKDA():
 	click.echo("Loading key driver analysis...")
 
 	# kda = pd.read_csv("data/kda/modules.results.txt", sep="\t")  # Based on Bayesian networks
-	kda = pd.read_csv("data/kda_grn/modules.results.txt", sep="\t")  # Based on GENIE3 networks
+	# kda = pd.read_csv("data/kda_grn/modules.results.txt", sep="\t")  # Based on GENIE3 networks
+	kda = pd.read_csv("/Users/sk/GoogleDrive/projects/STARNET/cross-tissue/co-expression/annotate/grn_vamsi_eqtl/kda/modules.results.txt", sep="\t")  # Based on GENIE3 networks
 
 	# Format node ID string
 	tissue, gene, ensembl_versioned, extra = kda['NODE'].str.split('_').str
@@ -408,8 +449,8 @@ def cmdInitDB():
     # loadModuleGO()  # gene ontology tables
     # loadDEG()  # differential expression
     # loadPhenoAssoc()
-    loadHeritability()
-    # loadKDA()
+    # loadHeritability()
+    loadKDA()
     # loadEnsembl()
     # loadEndocrines()
     indexSQL()

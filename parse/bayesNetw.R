@@ -15,11 +15,15 @@ ct_project_dir = "~/GoogleDrive/projects/STARNET/cross-tissue"
 # nodes = fread(file.path(ct_project_dir, "co-expression/annotate/bayesNet/nodes.tsv"))
 # kda = fread(file.path(ct_project_dir, "co-expression/annotate/bayesNet/kda/modules.results.txt"))
 
-# Regulatory gene networks inferred with GENIE3
-netw = fread(file.path(ct_project_dir, "co-expression/annotate/grn/all.tsv"))
-nodes = fread(file.path(ct_project_dir, "co-expression/annotate/grn/nodes.tsv"))
-kda = fread(file.path(ct_project_dir, "co-expression/annotate/grn/kda/modules.results.txt"))
+# # Regulatory gene networks inferred with GENIE3
+# netw = fread(file.path(ct_project_dir, "co-expression/annotate/grn/all.tsv"))
+# nodes = fread(file.path(ct_project_dir, "co-expression/annotate/grn/nodes.tsv"))
+# kda = fread(file.path(ct_project_dir, "co-expression/annotate/grn/kda/modules.results.txt"))
 
+# Regulatory gene networks inferred with GENIE3, new eQTL
+netw = fread(file.path(ct_project_dir, "co-expression/annotate/grn_vamsi_eqtl/all.tsv"))
+nodes = fread(file.path(ct_project_dir, "co-expression/annotate/grn_vamsi_eqtl/nodes.tsv"))
+kda = fread(file.path(ct_project_dir, "co-expression/annotate/grn_vamsi_eqtl/kda/modules.results.txt"))
 
 
 # add source node cluster
