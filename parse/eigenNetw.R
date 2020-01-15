@@ -20,7 +20,8 @@ load("~/GoogleDrive/projects/STARNET/cross-tissue/co-expression/eigenNetw/Rworks
 mod_tab = fread("~/GoogleDrive/projects/STARNET/cross-tissue/co-expression/tables/module_tab.csv")
 pheno_pval = fread("~/GoogleDrive/projects/STARNET/cross-tissue/pheno/tables/pheno_pval.csv")
 
-heritability = fread("~/GoogleDrive/projects/STARNET/cross-tissue/heritability/from_johan/STARNETmoduleH2_LD2GWAS302_20180920.csv")
+# heritability = fread("~/GoogleDrive/projects/STARNET/cross-tissue/heritability/from_johan/STARNETmoduleH2_LD2GWAS302_20180920.csv")
+heritability = fread("~/GoogleDrive/projects/STARNET/cross-tissue/heritability/from_johan/v2/STARNETmoduleH2_LD2GWAS302_20190318.csv")
 
 # Order heritability by module IDs
 heritability = heritability[match(1:nrow(mod_tab), heritability[["Module ID"]]), ]

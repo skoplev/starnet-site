@@ -783,13 +783,17 @@ function calcFdrCutoff(data) {
 	// Calculate default selection
 	// Filter edges based on number of edges that can be shown
 	// Default filtering, can be changed by slider.
-	var max_edges = 300;
+	// var max_edges = 300;
+	// var max_edges = 1000;
+	var max_edges = 2000;
 	if (data.length > max_edges) {
 		// Assumes that edges data is ordered by kda_FDR
 		var fdr_cutoff = data[max_edges - 1].kda_FDR
 	} else {
 		var fdr_cutoff = 1.0;  // show all
 	}
+
+	// var fdr_cutoff = 1.0;  // show all
 
 	return(fdr_cutoff)
 }
