@@ -23,7 +23,8 @@ ct_project_dir = "~/GoogleDrive/projects/STARNET/cross-tissue"
 # Regulatory gene networks inferred with GENIE3, new eQTL
 netw = fread(file.path(ct_project_dir, "co-expression/annotate/grn_vamsi_eqtl/all.tsv"))
 nodes = fread(file.path(ct_project_dir, "co-expression/annotate/grn_vamsi_eqtl/nodes.tsv"))
-kda = fread(file.path(ct_project_dir, "co-expression/annotate/grn_vamsi_eqtl/kda/modules.results.txt"))
+# kda = fread(file.path(ct_project_dir, "co-expression/annotate/grn_vamsi_eqtl/kda/modules.results.txt"))
+kda = fread(file.path(ct_project_dir, "co-expression/annotate/grn_vamsi_eqtl/kda/modules.directed.results.txt"))
 
 
 # add source node cluster

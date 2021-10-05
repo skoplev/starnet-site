@@ -319,16 +319,22 @@ def loadKDA():
 
 	# kda = pd.read_csv("data/kda/modules.results.txt", sep="\t")  # Based on Bayesian networks
 	# kda = pd.read_csv("data/kda_grn/modules.results.txt", sep="\t")  # Based on GENIE3 networks
-	kda = pd.read_csv("/Users/sk/GoogleDrive/projects/STARNET/cross-tissue/co-expression/annotate/grn_vamsi_eqtl/kda/modules.results.txt", sep="\t")  # Based on GENIE3 networks
+	# kda = pd.read_csv("/Users/sk/GoogleDrive/projects/STARNET/cross-tissue/co-expression/annotate/grn_vamsi_eqtl/kda/modules.results.txt", sep="\t")  # Based on GENIE3 networks
+	kda = pd.read_csv("/Users/sk/GoogleDrive/projects/STARNET/cross-tissue/co-expression/annotate/grn_vamsi_eqtl/kda/modules.directed.results.txt", sep="\t")  # Based on GENIE3 networks, directed key driver analysis
 
-	# Format node ID string
-	tissue, gene, ensembl_versioned, extra = kda['NODE'].str.split('_').str
+	# print kda
 
-	# Fix 4 entries of gene: Metazoa_SRP
-	# using Boolean array indexing
-	idx = gene == "Metazoa"
-	gene[idx] = "Metazoa_SRP"
-	ensembl_versioned[idx] = extra[idx]
+	# Format node ID string, if erroneously encoded with 4 '_' separated
+	# tissue, gene, ensembl_versioned, extra = kda['NODE'].str.split('_').str
+
+	# # Fix 4 entries of gene: Metazoa_SRP
+	# # using Boolean array indexing
+	# idx = gene == "Metazoa"
+	# gene[idx] = "Metazoa_SRP"
+	# ensembl_versioned[idx] = extra[idx]
+
+	tissue, gene, ensembl_versioned = kda['NODE'].str.split('_').str
+
 
 	kda['tissue'] = tissue
 	kda['gene'] = gene
@@ -450,8 +456,8 @@ def cmdInitDB():
     # loadModuleGO()  # gene ontology tables
     # loadDEG()  # differential expression
     # loadPhenoAssoc()
-    loadHeritability()
-    # loadKDA()
+    # loadHeritability()
+    loadKDA()
     # loadEnsembl()
     # loadEndocrines()
     # indexSQL()
