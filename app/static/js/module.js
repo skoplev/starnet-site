@@ -277,7 +277,10 @@ function setNodeColorScheme(scheme) {
 		// Color gradient legend
 		// Determine label
 		switch(scheme) {
-			case "DEG_log2FoldChange":
+			case "CAD DEG":
+				var label = "log2 fold change";
+				break;
+			case "Gender DEG":
 				var label = "log2 fold change";
 				break;
 			default:
