@@ -34,7 +34,7 @@ netw$module = nodes$MODULE[match(netw$TAIL, nodes$NODE)]
 netw$kda_FDR = kda$FDR[match(netw$TAIL, kda$NODE)]
 
 # Format edge list
-netw = rename(netw,
+netw = dplyr::rename(netw,
 	"source"="TAIL",
 	"target"="HEAD"
 )

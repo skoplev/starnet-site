@@ -27,6 +27,7 @@ pheno_match = pheno[match(colnames(expr$mat), pheno$starnet.ID), ]
 
 
 # Load differential expression data
+# ----------------------------------
 deg_tissues = c("AOR", "SKLM", "LIV", "VAF", "SF")
 
 deg = lapply(deg_tissues, function(tissue) {
@@ -45,6 +46,27 @@ deg_all = rbindlist(deg)
 colnames(deg_all)[1] = "ensembl"
 
 deg_all$tissue_ensembl = paste(deg_all$tissue, deg_all$ensembl, sep="_")
+
+
+# Load gender differential expression data
+# ----------------------
+
+gender_deg = readRDS("~/GoogleDrive/projects/STARNET/cross-tissue/gender/tables/gender_deseq_tables_by_tissue.rds")
+
+# Annotate each table with tissue-ensembl IDs for matching
+for (tissue in names(gender_deg)) {
+
+	ensembl = sapply(strsplit(rownames(gender_deg[[tissue]]), "_"), function(x) x[length(x)])
+
+	# strip version
+	ensembl = sapply(strsplit(ensembl, "[.]"), function(x) x[1])
+
+	gender_deg[[tissue]]$tissue_ensembl = paste(tissue, ensembl, sep="_")
+}
+
+gender_deg = lapply(gender_deg, as.data.frame)
+gender_deg_all = rbindlist(gender_deg)
+
 
 # For matching DEG gene IDs to expression data
 expr$meta_row$tissue_ensembl = paste(expr$meta_row$tissue, expr$meta_row$ensembl_base, sep="_")
@@ -84,8 +106,11 @@ annot = data.frame(annot, check.names=FALSE)
 
 # Prepend differential expression statistics
 DEG_annot = data.frame(
-	DEG_log2FoldChange=deg_all$log2FoldChange[
+	CAD_DEG_log2FoldChange=deg_all$log2FoldChange[
 		match(expr$meta_row$tissue_ensembl, deg_all$tissue_ensembl)
+	],
+	gender_DEG_log2FoldCHange=gender_deg_all$log2FoldChange[
+		match(expr$meta_row$tissue_ensembl, gender_deg_all$tissue_ensembl)
 	]
 )
 

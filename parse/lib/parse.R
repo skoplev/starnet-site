@@ -3,7 +3,8 @@
 # Rename annotation table
 renameAnnot = function(annot) {
 	annot = rename(annot, c(
-		"case_control_DEG"="CAD DEG",
+		"CAD_DEG_log2FoldChange"="CAD DEG",
+		"gender_DEG_log2FoldCHange"="Gender DEG",
 		"syntax_score"="SYNTAX",
 		"ndv"="Diseased vessels",
 		"BMI(kg/m2)"="BMI",
