@@ -25,13 +25,13 @@ visudo
 ## Convenient accessibility 
 
 ### RSA key
-ssh-copy-id sk@<IP>
+ssh-copy-id sk@IP
 
 ### Alias for neptune server
 Configure host on ~/.ssh/config, allowing 'ssh neptune':
 
 Host neptune
-	HostName <IP>
+	HostName IP
 	User sk
 	ControlMaster auto
 	ControlPath /tmp/ssh_mux_%h_%p_%r
